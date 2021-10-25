@@ -3,6 +3,7 @@ import sys
 import config
 import threading
 import joke
+import sheethandler
 #from vk_api.longpoll import VkLongPoll, VkEventType
 from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType
 from enum import Enum
@@ -29,6 +30,10 @@ def sender(id, text):
 
 def main():
     global listening_thread, controls_thread, vk_session
+    listening_thread = threading.Thread(target=listening, args=(vk_session,))
+    controls_thread = threading.Thread(target=controls)
+    controls_thread.start()
+    listening_thread.start()
     """ Login, Password = config.login, config.password
     vk_session = vk_api.VkApi(login=Login, password=Password,auth_handler=two_factor, app_id=2685278)
     try:
@@ -36,10 +41,6 @@ def main():
     except:
         print('Authorization failed.')
     print('Successfully logged in.') """
-    listening_thread = threading.Thread(target=listening, args=(vk_session,))
-    controls_thread = threading.Thread(target=controls)
-    controls_thread.start()
-    listening_thread.start()
 
 
 def listening(vk_session):
@@ -56,6 +57,9 @@ def listening(vk_session):
                 print(event.chat_id, event.client_info, event.object.items)
             if msg == 'анекдот':
                 sender(event.chat_id, joke.get_joke())
+                print(event.chat_id, event.client_info, event.object.items)
+            if msg == 'расписание':
+                sender(event.chat_id, sheethandler.get_schedule())
                 print(event.chat_id, event.client_info, event.object.items)
 
 
