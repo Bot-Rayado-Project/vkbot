@@ -58,8 +58,8 @@ def listening(vk_session):
             if msg == 'анекдот':
                 sender(event.chat_id, joke.get_joke())
                 print(event.chat_id, event.client_info, event.object.items)
-            if msg == 'расписание':
-                sender(event.chat_id, sheethandler.get_schedule())
+            if '!расписание' in msg:
+                sender(event.chat_id, sheethandler.get_schedule(msg))
                 print(event.chat_id, event.client_info, event.object.items)
 
 
@@ -70,7 +70,6 @@ def controls():
         command = str(input()).lower()
         for commands in Commands:
             if command == commands.name.lower():
-                print(command, commands.name, commands.value)
                 print('Stop command detected. Waiting for event to exit...')
                 while True:
                     if listening_flag == "isStopped":
