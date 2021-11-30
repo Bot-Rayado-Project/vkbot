@@ -35,13 +35,13 @@ def get_sheet():
 
 def print_schedule(start, end):
     global groups_id, group
-    schedule = '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n'
+    schedule = '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n'
     schedule += time[k] + '\n'
     for i in range(start, end + 1):
         if str(sheet.cell_value(i, groups_id[group])) != '':
             schedule += str(sheet.cell_value(i, groups_id[group]) + '\n')
     if k == 4:
-        schedule += '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n'
+        schedule += '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n'
     return schedule
 
 
