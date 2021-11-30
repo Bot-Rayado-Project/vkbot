@@ -7,7 +7,7 @@ stuff/
 *.xls
 *.xlsx
 temp/
-
+workspace/
 # C extensions
 *.so
 
