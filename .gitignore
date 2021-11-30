@@ -13,7 +13,7 @@ workspace/
 
 # Distribution / packaging
 .Python
-.ipynb
+*.ipynb
 build/
 develop-eggs/
 dist/
