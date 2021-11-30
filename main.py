@@ -4,13 +4,14 @@ import sys
 import config
 import threading
 from commands import *
-from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType
+from vk_api.longpoll import VkLongPoll, VkEventType
 from enum import Enum
 
 
 listening_thread, controls_thread, command = None, None, None
 listening_flag = "isRunning"
 vk_session = vk_api.VkApi(token=config.Token)
+session_api = vk_session.get_api()
 
 
 class Commands(Enum):
@@ -39,8 +40,9 @@ def dispatch(msg, event):
                 wrong_arguments_error(request)
                 print(request)
                 break
-        Commands[cmd][-1](request)
-        print(request)
+        if len(request) == Commands[cmd][0] + 1:
+            Commands[cmd][-1](request)
+            print(request)
 
 
 def main():
@@ -53,13 +55,14 @@ def main():
 
 def listening(vk_session):
     global command, listening_flag
-    longpoll = VkBotLongPoll(vk_session, config.group_id)
+    longpoll = VkLongPoll(vk_session)
     for event in longpoll.listen():
-        if command == Commands.STOP.name.lower():
-            listening_flag = "isStopped"
-            break
-        if event.type == VkBotEventType.MESSAGE_NEW and event.object.message['text'][0] == "!":
-            dispatch(event.object.message['text'].lower(), event)
+        if event.to_me:
+            if command == Commands.STOP.name.lower():
+                listening_flag = "isStopped"
+                break
+            if event.type == VkEventType.MESSAGE_NEW and event.text[0] == "!":
+                dispatch(event.text.lower(), event)
 
 
 def controls():
