@@ -24,7 +24,7 @@ def Instr(msg, event):
         sender(event.chat_id, joke.get_joke())
     else:
         if CMD == '!расписание' and ARGS != [] and len(ARGS) == 1:
-            sender(event.chat_id, )
+            sender(event.chat_id, sheethandler.get_schedule(ARGS[0]))
         else:
             sender(event.chat_id, 'Invalid argument.')
 
