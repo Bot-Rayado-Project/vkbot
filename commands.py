@@ -29,7 +29,8 @@ def do_get_joke(request):
 
 
 def do_get_schedule(request):
-    sender(request[0].chat_id, sheethandler.get_schedule(request[1]))
+    sender(request[0].chat_id, sheethandler.get_schedule(
+        request[1], request[2]))
 
 
 def do_get_help(request):
