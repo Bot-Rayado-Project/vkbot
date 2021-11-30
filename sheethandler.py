@@ -1,16 +1,7 @@
 import download
 import xlrd
+import whataweek
 from enum import Enum
-import datetime
-
-
-class weekday(Enum):
-    Monday = 0xA
-    Tuesday = 0xB
-    Wednesday = 0xC
-    Thursday = 0xD
-    Friday = 0xE
-    Saturday = 0xF
 
 
 def get_schedule(cmd):

@@ -24,6 +24,10 @@ def Instr(msg, event):
         sender(event.chat_id, joke.get_joke())
     else:
         sender(event.chat_id, 'Invalid argument.')
+    if CMD == '!расписание' and ARGS != [] and len(ARGS) == 1:
+        sender(event.chat_id, )
+    else:
+        sender(event.chat_id, 'Invalid argument.')
 
 
 def sender(id, text):
