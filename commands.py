@@ -12,6 +12,14 @@ def sender(id, text):
                       'chat_id': id, 'message': text, 'random_id': 0})
 
 
+def wrong_arguments_error(request):
+    sender(request[0].chat_id, "Неверные аргументы.")
+
+
+def too_much_arguments_error(request):
+    sender(request[0].chat_id, "Слишком много аргументов.")
+
+
 def do_get_joke(request):
     sender(request[0].chat_id, joke.get_joke())
 

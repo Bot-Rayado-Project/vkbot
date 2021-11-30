@@ -26,13 +26,13 @@ def dispatch(msg, event):
     }
     request = [event]
     if len(args) != Commands[cmd][0]:
-        print('Слишком много аргументов.')
+        too_much_arguments_error(request)
     else:
         for i in range(len(args)):
             if args[i] in Commands[cmd][i+1]:
                 request += [args[i]]
             else:
-                print('Неверные аргументы.')
+                wrong_arguments_error(request)
                 break
         Commands[cmd][-1](request)
 
