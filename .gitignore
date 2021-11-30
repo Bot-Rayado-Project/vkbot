@@ -3,7 +3,10 @@ __pycache__/
 *.py[cod]
 *$py.class
 workspace.code-workspace
-test.ipynb
+stuff/
+*.xls
+*.xlsx
+temp/
 
 # C extensions
 *.so

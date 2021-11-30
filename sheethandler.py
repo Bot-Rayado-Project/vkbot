@@ -19,7 +19,7 @@ def get_schedule(cmd):
     if get_week() == "четная":
 
         days = [[11, 30], [31, 50], [51, 70], [71, 90], [91, 110], [111, 130]]
-        
+
         if "понедельник" in cmd:
             start = days[0][0]
             end = days[0][1]
