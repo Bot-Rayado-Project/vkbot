@@ -1,8 +1,8 @@
-import re
 import config
 import vk_api
 import joke
 import sheethandler
+import russian_roulette
 
 vk_session = vk_api.VkApi(token=config.Token)
 
@@ -18,6 +18,10 @@ def wrong_arguments_error(request):
 
 def too_much_arguments_error(request):
     sender(request[0].chat_id, "Слишком много аргументов.")
+
+
+def do_roulette(request):
+    sender(request[0].chat_id, russian_roulette.roulette())
 
 
 def do_get_joke(request):

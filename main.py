@@ -22,7 +22,8 @@ def dispatch(msg, event):
     Commands = {
         '!анекдот': [0, '', do_get_joke],
         '!расписание': [1, ['понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'], do_get_schedule],
-        '!помощь': [0, '', do_get_help]
+        '!помощь': [0, '', do_get_help],
+        '!рулетка': [0, '', do_roulette]
     }
     request = [event]
     if len(args) != Commands[cmd][0]:
