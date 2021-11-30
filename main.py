@@ -2,8 +2,7 @@ import vk_api
 import sys
 import config
 import threading
-import joke
-import sheethandler
+from commands import *
 from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType
 from enum import Enum
 
@@ -17,21 +16,25 @@ class Commands(Enum):
     STOP = 0xA
 
 
-def Instr(msg, event):
-    ARGS = msg.split()[1::]
-    CMD = msg.split()[0]
-    if CMD == '!анекдот' and ARGS == []:
-        sender(event.chat_id, joke.get_joke())
+def dispatch(msg, event):
+    args = msg.split(' ')[1::]
+    cmd = msg.split(' ')[0]
+    Commands = {
+        '!анекдот': [0, '', do_get_joke],
+        '!расписание': [1, ['понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'], do_get_schedule],
+        '!помощь': [0, '', do_get_help]
+    }
+    request = [event]
+    if len(args) != Commands[cmd][0]:
+        print('Слишком много аргументов.')
     else:
-        if CMD == '!расписание' and ARGS != [] and len(ARGS) == 1:
-            sender(event.chat_id, )
-        else:
-            sender(event.chat_id, 'Invalid argument.')
-
-
-def sender(id, text):
-    vk_session.method('messages.send', {
-                      'chat_id': id, 'message': text, 'random_id': 0})
+        for i in range(len(args)):
+            if args[i] in Commands[cmd][i+1]:
+                request += [args[i]]
+            else:
+                print('Неверные аргументы.')
+                break
+        Commands[cmd][-1](request)
 
 
 def main():
@@ -50,7 +53,7 @@ def listening(vk_session):
             listening_flag = "isStopped"
             break
         if event.type == VkBotEventType.MESSAGE_NEW and event.object.message['text'][0] == "!":
-            Instr(event.object.message['text'].lower(), event)
+            dispatch(event.object.message['text'].lower(), event)
 
 
 def controls():
