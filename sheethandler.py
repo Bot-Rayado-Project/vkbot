@@ -2,11 +2,27 @@ import download
 import xlrd
 import whataweek
 
-isDownloaded = False
+global groups
+groups_id = {'бфи2101': 3,
+             'бфи2102': 4,
+             'бвт2101': 5,
+             'бвт2102': 6,
+             'бвт2103': 7,
+             'бвт2104': 8,
+             'бвт2105': 9,
+             'бвт2106': 10,
+             'бвт2107': 11,
+             'бвт2108': 12,
+             'бст2101': 13,
+             'бст2102': 14,
+             'бст2103': 15,
+             'бст2104': 16,
+             'бст2105': 17,
+             'бст2106': 18,
+             }
 
 
 def get_sheet():
-    global isDownloaded
     if not download.is_downloaded:
         download.download_sheet()
     if download.is_xls:
@@ -14,24 +30,23 @@ def get_sheet():
     else:
         wb = xlrd.open_workbook('temp/table_xlsx.xlsx', formatting_info=True)
     sheet = wb.sheet_by_index(0)
-    isDownloaded = True
     return sheet
 
 
 def print_schedule(start, end):
-    global groups, group
+    global groups_id, group
     schedule = '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n'
     schedule += time[k] + '\n'
     for i in range(start, end + 1):
-        if str(sheet.cell_value(i, groups[group])) != '':
-            schedule += str(sheet.cell_value(i, groups[group]) + '\n')
+        if str(sheet.cell_value(i, groups_id[group])) != '':
+            schedule += str(sheet.cell_value(i, groups_id[group]) + '\n')
     if k == 4:
         schedule += '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n'
     return schedule
 
 
 def calculation(days_of_week, j):
-    global groups,group
+    global groups_id, group
     coef = {0: 0,
             1: 4,
             2: 8,
@@ -39,7 +54,7 @@ def calculation(days_of_week, j):
             4: 16
             }
 
-    if (sheet.cell_value(days_of_week + coef[j], groups[group]) == '' and sheet.cell_value(days_of_week + coef[j] + 1, groups[group]) != '') or sheet.cell_value(days_of_week + coef[j], groups[group]) == 'дистанционно':
+    if (sheet.cell_value(days_of_week + coef[j], groups_id[group]) == '' and sheet.cell_value(days_of_week + coef[j] + 1, groups_id[group]) != '') or sheet.cell_value(days_of_week + coef[j], groups_id[group]) == 'дистанционно':
         start = days_of_week + coef[j]
         end = days_of_week + 3 + coef[j]
         return start, end
@@ -59,9 +74,9 @@ def pred_print(day, i):
     return print_schedule(start, end)
 
 
-def get_schedule(day_of_week,group_input):
+def get_schedule(day_of_week, group_input):
 
-    global sheet, time, k, stroka,groups,group
+    global sheet, time, k, stroka, groups, group
     group = group_input
     stroka = ''
     k = 0
@@ -101,23 +116,3 @@ def get_schedule(day_of_week,group_input):
             k += 1
 
     return stroka
-global groups
-groups_id = { 'бфи2101' : 3,
-           'бфи2102' : 4,
-           'бвт2101' : 5,
-           'бвт2102' : 6,
-           'бвт2103' : 7,
-           'бвт2104' : 8,
-           'бвт2105' : 9,
-           'бвт2106' : 10,
-           'бвт2107' : 11,
-           'бвт2108' : 12,
-           'бcт2101' : 13,
-           'бcт2102' : 14,
-           'бcт2103' : 15,
-           'бcт2104' : 16,
-           'бcт2105' : 17,
-           'бcт2106' : 18,
-
-}
-

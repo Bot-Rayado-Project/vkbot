@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import vk_api
 import sys
 import config
@@ -19,9 +20,10 @@ class Commands(Enum):
 def dispatch(msg, event):
     args = msg.split(' ')[1::]
     cmd = msg.split(' ')[0]
+    print(args, len(args), cmd)
     Commands = {
         '!анекдот': [0, '', do_get_joke],
-        '!расписание': [2, ['понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'], ['бфи2101', 'бфи2102', 'бвт2101', 'бвт2102', 'бвт2103', 'бвт2104', 'бвт2105', 'бвт2106', 'бвт2107', 'бвт2108', 'бcт2101', 'бcт2102', 'бcт2103', 'бcт2104', 'бcт2105', 'бcт2106'], do_get_schedule],
+        '!расписание': [2, ['понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'], ['бфи2101', 'бфи2102', 'бвт2101', 'бвт2102', 'бвт2103', 'бвт2104', 'бвт2105', 'бвт2106', 'бвт2107', 'бвт2108', 'бст2101', 'бст2102', 'бст2103', 'бст2104', 'бст2105', 'бст2106'], do_get_schedule],
         '!помощь': [0, '', do_get_help]
     }
     request = [event]
@@ -29,12 +31,16 @@ def dispatch(msg, event):
         too_much_arguments_error(request)
     else:
         for i in range(len(args)):
+            print(args[i], Commands[cmd][i+1])
             if args[i] in Commands[cmd][i+1]:
                 request += [args[i]]
+                print(request)
             else:
                 wrong_arguments_error(request)
+                print(request)
                 break
         Commands[cmd][-1](request)
+        print(request)
 
 
 def main():
