@@ -42,6 +42,7 @@ def print_schedule(start, end):
         if temp != '':
             if 'дистанционно' in temp or 'Дистанционно' in temp:
                 schedule.append(temp[len(temp) - 12 : len(temp)])
+                schedule[len(schedule) - 2] += ' ' + temp[0:len(temp) - 12]
             else:
                 schedule.append(temp)
     if schedule[len(schedule) - 1] == 'Физическая культура и спорт  на 16, 17 нед.':
