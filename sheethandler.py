@@ -56,6 +56,14 @@ def print_schedule(start, end):
         schedule.pop(1)
         schedule.pop(1)
         schedule += temp + temp_dist
+    if len(schedule) == 5:
+        temp = schedule[2] + ' ' + schedule[3] + ' ' + schedule[4]
+        schedule.pop(1)
+        schedule.pop(1)
+        schedule.pop(1)
+        schedule.pop(1)
+        schedule.append(temp)
+        schedule.append('дистанционно')
     return schedule
 
 
