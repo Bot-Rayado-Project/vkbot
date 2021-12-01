@@ -1,48 +1,85 @@
-# -*- coding: utf-8 -*-
 import vk_api
 import sys
 import config
 import threading
+import sheethandler
 from commands import *
 from vk_api.longpoll import VkLongPoll, VkEventType
-from enum import Enum
+from vk_api.keyboard import VkKeyboard, VkKeyboardColor
 
 
 listening_thread, controls_thread, command = None, None, None
 listening_flag = "isRunning"
 vk_session = vk_api.VkApi(token=config.Token)
-session_api = vk_session.get_api()
 
-
-class Commands(Enum):
-    STOP = 0xA
+keyboardStart = VkKeyboard()
+keyboardChooseGroup = VkKeyboard()
+keyboardChooseDayOfWeek = VkKeyboard()
+groups = ['бфи2101', 'бфи2102', 'бвт2101', 'бвт2102', 'бвт2103', 'бвт2104', 'бвт2105', 'бвт2106',
+          'бвт2107', 'бвт2108', 'бст2101', 'бст2102', 'бст2103', 'бст2104', 'бст2105', 'бст2106']
+daysofweek = ['понедельник', 'вторник',
+              'среда', 'четверг', 'пятница', 'суббота']
+request = []
+keyboardStart.add_button('Расписание', VkKeyboardColor.SECONDARY)
+keyboardStart.add_line()
+keyboardStart.add_button('Анекдот', VkKeyboardColor.SECONDARY)
+keyboardStart.add_button('Рулетка', VkKeyboardColor.SECONDARY)
+keyboardStart.add_button('Помощь', VkKeyboardColor.SECONDARY)
+keyboardChooseGroup.add_button('БФИ2101', VkKeyboardColor.SECONDARY)
+keyboardChooseGroup.add_button('БФИ2102', VkKeyboardColor.SECONDARY)
+keyboardChooseGroup.add_button('БВТ2101', VkKeyboardColor.SECONDARY)
+keyboardChooseGroup.add_line()
+keyboardChooseGroup.add_button('БВТ2102', VkKeyboardColor.SECONDARY)
+keyboardChooseGroup.add_button('БВТ2103', VkKeyboardColor.SECONDARY)
+keyboardChooseGroup.add_button('БВТ2104', VkKeyboardColor.SECONDARY)
+keyboardChooseGroup.add_line()
+keyboardChooseGroup.add_button('БВТ2105', VkKeyboardColor.SECONDARY)
+keyboardChooseGroup.add_button('БВТ2106', VkKeyboardColor.SECONDARY)
+keyboardChooseGroup.add_button('БВТ2107', VkKeyboardColor.SECONDARY)
+keyboardChooseGroup.add_line()
+keyboardChooseGroup.add_button('БВТ2108', VkKeyboardColor.SECONDARY)
+keyboardChooseGroup.add_button('БСТ2101', VkKeyboardColor.SECONDARY)
+keyboardChooseGroup.add_button('БСТ2102', VkKeyboardColor.SECONDARY)
+keyboardChooseGroup.add_line()
+keyboardChooseGroup.add_button('БСТ2103', VkKeyboardColor.SECONDARY)
+keyboardChooseGroup.add_button('БСТ2104', VkKeyboardColor.SECONDARY)
+keyboardChooseGroup.add_button('БСТ2105', VkKeyboardColor.SECONDARY)
+keyboardChooseGroup.add_line()
+keyboardChooseGroup.add_button('БСТ2106', VkKeyboardColor.SECONDARY)
+keyboardChooseGroup.add_line()
+keyboardChooseGroup.add_button('Меню', VkKeyboardColor.PRIMARY)
+keyboardChooseDayOfWeek.add_button('Понедельник', VkKeyboardColor.SECONDARY)
+keyboardChooseDayOfWeek.add_button('Вторник', VkKeyboardColor.SECONDARY)
+keyboardChooseDayOfWeek.add_button('Среда', VkKeyboardColor.SECONDARY)
+keyboardChooseDayOfWeek.add_line()
+keyboardChooseDayOfWeek.add_button('Четверг', VkKeyboardColor.SECONDARY)
+keyboardChooseDayOfWeek.add_button('Пятница', VkKeyboardColor.SECONDARY)
+keyboardChooseDayOfWeek.add_button('Суббота', VkKeyboardColor.SECONDARY)
+keyboardChooseDayOfWeek.add_line()
+keyboardChooseDayOfWeek.add_button('Меню', VkKeyboardColor.PRIMARY)
 
 
 def dispatch(msg, event):
-    args = msg.split(' ')[1::]
-    cmd = msg.split(' ')[0]
-    print(args, len(args), cmd)
-    Commands = {
-        '!анекдот': [0, '', do_get_joke],
-        '!расписание': [2, ['понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'], ['бфи2101', 'бфи2102', 'бвт2101', 'бвт2102', 'бвт2103', 'бвт2104', 'бвт2105', 'бвт2106', 'бвт2107', 'бвт2108', 'бст2101', 'бст2102', 'бст2103', 'бст2104', 'бст2105', 'бст2106'], do_get_schedule],
-        '!помощь': [0, '', do_get_help]
-    }
-    request = [event]
-    if len(args) != Commands[cmd][0]:
-        too_much_arguments_error(request)
-    else:
-        for i in range(len(args)):
-            print(args[i], Commands[cmd][i+1])
-            if args[i] in Commands[cmd][i+1]:
-                request += [args[i]]
-                print(request)
-            else:
-                wrong_arguments_error(request)
-                print(request)
-                break
-        if len(request) == Commands[cmd][0] + 1:
-            Commands[cmd][-1](request)
-            print(request)
+    global keyboardStart, keyboardChooseGroup, keyboardChooseDayOfWeek, groups, daysofweek, request
+    if msg == "начать" or msg == "меню":
+        sender(event.user_id, 'Выберите команду.', keyboardStart)
+        request = []
+    if msg == "анекдот":
+        sender(event.user_id, joke.get_joke(), keyboardStart)
+    if msg == "рулетка":
+        sender(event.user_id, russian_roulette.roulette(), keyboardStart)
+    if msg == "помощь":
+        sender(event.user_id,
+               "Иван - vk.com/crymother\nАлександр - vk.com/lamabot2000", keyboardStart)
+    if msg == "расписание":
+        choose_group(event, keyboardChooseGroup)
+    if msg in groups:
+        request += [msg]
+        choose_dayofweek(event, keyboardChooseDayOfWeek)
+    if msg in daysofweek:
+        request += [msg]
+        do_get_schedule(event, request, keyboardStart)
+        request = []
 
 
 def main():
@@ -58,10 +95,10 @@ def listening(vk_session):
     longpoll = VkLongPoll(vk_session)
     for event in longpoll.listen():
         if event.to_me:
-            if command == Commands.STOP.name.lower():
+            if command == 'stop':
                 listening_flag = "isStopped"
                 break
-            if event.type == VkEventType.MESSAGE_NEW and event.text[0] == "!":
+            if event.type == VkEventType.MESSAGE_NEW:
                 dispatch(event.text.lower(), event)
 
 
@@ -70,14 +107,13 @@ def controls():
     print('Control utils are working.')
     while True:
         command = str(input()).lower()
-        for commands in Commands:
-            if command == commands.name.lower():
-                print('Stop command detected. Waiting for event to exit...')
-                while True:
-                    if listening_flag == "isStopped":
-                        controls_flag = "isStopped"
-                        exiting(controls_flag)
-                        break
+        if command == 'stop':
+            print('Stop command detected. Waiting for event to exit...')
+            while True:
+                if listening_flag == "isStopped":
+                    controls_flag = "isStopped"
+                    exiting(controls_flag)
+                    break
 
 
 def exiting(controls_flag):
