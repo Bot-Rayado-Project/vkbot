@@ -168,16 +168,29 @@ def table_ui(stroka1):
 
         if len(stroka[i]) > 2:
 
-            if 'ФИЗИЧЕСКАЯ' in stroka[i][1]:
+            boolean = True
 
-                print_group += stroka[i][1][1:len(stroka[i][1])] + '\n'
+            if stroka[i][2] == 'КУЛЬТУРА И СПОРТ' and stroka[i][1] == ' ФИЗИЧЕСКАЯ':
+
+                print_group += stroka[i][1][1:len(stroka[i][1])] + ' ' + stroka[i][2] + '\n'
+                boolean = False
 
             else:
 
-                print_group += stroka[i][1] + '\n'
+                if 'ФИЗИЧЕСКАЯ' in stroka[i][1]:
 
-            print_group += 'Кабинет: ' + stroka[i][2] + '\n' + '\n'
+                    print_group += stroka[i][1][1:len(stroka[i][1])] + '\n'
 
+                else:
+
+                    print_group += stroka[i][1] + '\n'
+
+            if boolean:
+
+                print_group += 'Кабинет: ' + stroka[i][2] + '\n' + '\n'
+            
+            else:
+                print_group += 'Кабинет: ' + 'дистанционно' + '\n' + '\n'
         else:
 
             print_group += 'Пары нет' + '\n' + '\n'
