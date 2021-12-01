@@ -35,13 +35,13 @@ def get_sheet():
 
 def print_schedule(start, end):
     global groups_id, group
-    schedule = [] #str(sheet.cell_value(i, groups_id[group]))
+    schedule = []  # str(sheet.cell_value(i, groups_id[group]))
     schedule.append(time[k])
     for i in range(start, end + 1):
         temp = str(sheet.cell_value(i, groups_id[group]))
         if temp != '':
             if 'дистанционно' in temp or 'Дистанционно' in temp:
-                schedule.append(temp[len(temp) - 12 : len(temp)])
+                schedule.append(temp[len(temp) - 12: len(temp)])
                 schedule[len(schedule) - 2] += ' ' + temp[0:len(temp) - 12]
             else:
                 schedule.append(temp)
@@ -95,15 +95,17 @@ def pred_print(day, i):
     start, end = calculation(day, i)
     return print_schedule(start, end)
 
+
 def table_ui(stroka1):
     global stroka
-    
+
     print_group = '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n' + 'Группа: ' + group.upper() + '\n' \
-    + 'День недели: ' + day.capitalize() + '\n' + 'Неделя: ' + whataweek.get_week().capitalize() + '\n' \
-    + '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n'
+        + 'День недели: ' + day.capitalize() + '\n' + 'Неделя: ' + whataweek.get_week().capitalize() + '\n' \
+        + '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n'
 
     for i in range(len(stroka)):
-        print_group += '\n' + 'Пара №' + str(i + 1) + ' (' + str(stroka[i][0]) + ')' + '\n'
+        print_group += '\n' + 'Пара №' + \
+            str(i + 1) + ' (' + str(stroka[i][0]) + ')' + '\n'
         if len(stroka[i]) > 2:
             if 'ФИЗИЧЕСКАЯ' in stroka[i][1]:
                 print_group += stroka[i][1][1:len(stroka[i][1])] + '\n'

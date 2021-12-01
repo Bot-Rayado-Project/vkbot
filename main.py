@@ -2,7 +2,6 @@ import vk_api
 import sys
 import config
 import threading
-import sheethandler
 from commands import *
 from vk_api.longpoll import VkLongPoll, VkEventType
 from vk_api.keyboard import VkKeyboard, VkKeyboardColor
@@ -10,53 +9,47 @@ from vk_api.keyboard import VkKeyboard, VkKeyboardColor
 
 listening_thread, controls_thread, command = None, None, None
 listening_flag = "isRunning"
+request = []
 vk_session = vk_api.VkApi(token=config.Token)
 
-keyboardStart = VkKeyboard()
-keyboardChooseGroup = VkKeyboard()
-keyboardChooseDayOfWeek = VkKeyboard()
-groups = ['бфи2101', 'бфи2102', 'бвт2101', 'бвт2102', 'бвт2103', 'бвт2104', 'бвт2105', 'бвт2106',
-          'бвт2107', 'бвт2108', 'бст2101', 'бст2102', 'бст2103', 'бст2104', 'бст2105', 'бст2106']
-daysofweek = ['понедельник', 'вторник',
-              'среда', 'четверг', 'пятница', 'суббота']
-request = []
-keyboardStart.add_button('Расписание', VkKeyboardColor.SECONDARY)
-keyboardStart.add_line()
-keyboardStart.add_button('Анекдот', VkKeyboardColor.SECONDARY)
-keyboardStart.add_button('Рулетка', VkKeyboardColor.SECONDARY)
-keyboardStart.add_button('Помощь', VkKeyboardColor.SECONDARY)
-keyboardChooseGroup.add_button('БФИ2101', VkKeyboardColor.SECONDARY)
-keyboardChooseGroup.add_button('БФИ2102', VkKeyboardColor.SECONDARY)
-keyboardChooseGroup.add_button('БВТ2101', VkKeyboardColor.SECONDARY)
-keyboardChooseGroup.add_line()
-keyboardChooseGroup.add_button('БВТ2102', VkKeyboardColor.SECONDARY)
-keyboardChooseGroup.add_button('БВТ2103', VkKeyboardColor.SECONDARY)
-keyboardChooseGroup.add_button('БВТ2104', VkKeyboardColor.SECONDARY)
-keyboardChooseGroup.add_line()
-keyboardChooseGroup.add_button('БВТ2105', VkKeyboardColor.SECONDARY)
-keyboardChooseGroup.add_button('БВТ2106', VkKeyboardColor.SECONDARY)
-keyboardChooseGroup.add_button('БВТ2107', VkKeyboardColor.SECONDARY)
-keyboardChooseGroup.add_line()
-keyboardChooseGroup.add_button('БВТ2108', VkKeyboardColor.SECONDARY)
-keyboardChooseGroup.add_button('БСТ2101', VkKeyboardColor.SECONDARY)
-keyboardChooseGroup.add_button('БСТ2102', VkKeyboardColor.SECONDARY)
-keyboardChooseGroup.add_line()
-keyboardChooseGroup.add_button('БСТ2103', VkKeyboardColor.SECONDARY)
-keyboardChooseGroup.add_button('БСТ2104', VkKeyboardColor.SECONDARY)
-keyboardChooseGroup.add_button('БСТ2105', VkKeyboardColor.SECONDARY)
-keyboardChooseGroup.add_line()
-keyboardChooseGroup.add_button('БСТ2106', VkKeyboardColor.SECONDARY)
-keyboardChooseGroup.add_line()
-keyboardChooseGroup.add_button('Меню', VkKeyboardColor.PRIMARY)
-keyboardChooseDayOfWeek.add_button('Понедельник', VkKeyboardColor.SECONDARY)
-keyboardChooseDayOfWeek.add_button('Вторник', VkKeyboardColor.SECONDARY)
-keyboardChooseDayOfWeek.add_button('Среда', VkKeyboardColor.SECONDARY)
-keyboardChooseDayOfWeek.add_line()
-keyboardChooseDayOfWeek.add_button('Четверг', VkKeyboardColor.SECONDARY)
-keyboardChooseDayOfWeek.add_button('Пятница', VkKeyboardColor.SECONDARY)
-keyboardChooseDayOfWeek.add_button('Суббота', VkKeyboardColor.SECONDARY)
-keyboardChooseDayOfWeek.add_line()
-keyboardChooseDayOfWeek.add_button('Меню', VkKeyboardColor.PRIMARY)
+
+def InitializeComponent():
+
+    global keyboardStart, keyboardChooseGroup, keyboardChooseDayOfWeek, start, groups, daysofweek
+    # Создание экземпляров клавиатуры
+
+    keyboardStart = VkKeyboard()
+    keyboardChooseGroup = VkKeyboard()
+    keyboardChooseDayOfWeek = VkKeyboard()
+
+    # Названия кнопок
+    start = ['Расписание', 'Анекдот', 'Рулетка', 'Помощь']
+    groups = ['бфи2101', 'бфи2102', 'бвт2101', 'бвт2102', 'бвт2103', 'бвт2104', 'бвт2105', 'бвт2106',
+              'бвт2107', 'бвт2108', 'бст2101', 'бст2102', 'бст2103', 'бст2104', 'бст2105', 'бст2106']
+    daysofweek = ['понедельник', 'вторник',
+                  'среда', 'четверг', 'пятница', 'суббота']
+
+    # Добавление кнопок
+    for i in range(len(start)):
+        keyboardStart.add_button(start[i], VkKeyboardColor.SECONDARY)
+        if i == 0:
+            keyboardStart.add_line()
+    for i in range(1, len(groups)+1):
+        keyboardChooseGroup.add_button(
+            groups[i-1].upper(), VkKeyboardColor.SECONDARY)
+        if i % 3 == 0:
+            keyboardChooseGroup.add_line()
+        elif i == len(groups):
+            keyboardChooseGroup.add_line()
+            keyboardChooseGroup.add_button('Меню', VkKeyboardColor.PRIMARY)
+    for i in range(1, len(daysofweek)+1):
+        keyboardChooseGroup.add_button(
+            daysofweek[i-1].capitalize(), VkKeyboardColor.SECONDARY)
+        if i % 3 == 0:
+            keyboardChooseGroup.add_line()
+        elif i == len(daysofweek):
+            keyboardChooseGroup.add_line()
+            keyboardChooseDayOfWeek.add_button('Меню', VkKeyboardColor.PRIMARY)
 
 
 def dispatch(msg, event):
@@ -83,6 +76,7 @@ def dispatch(msg, event):
 
 
 def main():
+    InitializeComponent()
     global listening_thread, controls_thread, vk_session
     listening_thread = threading.Thread(target=listening, args=(vk_session,))
     controls_thread = threading.Thread(target=controls)
