@@ -49,13 +49,20 @@ def print_schedule(start, end):
         temp = schedule[len(schedule) - 1]
         schedule.pop(len(schedule) - 1)
         schedule[len(schedule) - 2] += '\n' + temp
+    if len(schedule) > 1 and schedule[1] == 'КУЛЬТУРА И СПОРТ ':
+        temp = ' ФИЗИЧЕСКАЯ' + ' ' + schedule[1]
+        schedule.pop(1)
+        schedule.pop(1)
+        schedule.append(temp)
+        schedule.append('дистанционно')
     if len(schedule) == 4:
         temp = schedule[1] + ' ' + schedule[2]
         temp_dist = schedule[3]
         schedule.pop(1)
         schedule.pop(1)
         schedule.pop(1)
-        schedule += temp + temp_dist
+        schedule.append(temp)
+        schedule.append(temp_dist)
     if len(schedule) == 5:
         temp = schedule[2] + ' ' + schedule[3] + ' ' + schedule[4]
         schedule.pop(1)
