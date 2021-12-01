@@ -44,14 +44,17 @@ def print_schedule(start, end):
                 schedule.append(temp[len(temp) - 12 : len(temp)])
             else:
                 schedule.append(temp)
+    if schedule[len(schedule) - 1] == 'Физическая культура и спорт  на 16, 17 нед.':
+        temp = schedule[len(schedule) - 1]
+        schedule.pop(len(schedule) - 1)
+        schedule[len(schedule) - 2] += '\n' + temp
     if len(schedule) == 4:
         temp = schedule[1] + ' ' + schedule[2]
         temp_dist = schedule[3]
         schedule.pop(1)
         schedule.pop(1)
         schedule.pop(1)
-        schedule.append(temp)
-        schedule.append(temp_dist)
+        schedule += temp + temp_dist
     return schedule
 
 
@@ -97,9 +100,10 @@ def table_ui(stroka1):
                 print_group += stroka[i][1][1:len(stroka[i][1])] + '\n'
             else:
                 print_group += stroka[i][1] + '\n'
-            print_group += 'Кабинет: ' + stroka[i][2] + '\n' + '\n' + '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n'
+            print_group += 'Кабинет: ' + stroka[i][2] + '\n' + '\n'
         else:
-            print_group += 'Пары нет' + '\n' + '\n' + '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n'
+            print_group += 'Пары нет' + '\n' + '\n'
+    print_group += '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n'
     return print_group
 
 
