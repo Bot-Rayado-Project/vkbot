@@ -158,9 +158,9 @@ def pred_print(day, i):
 def table_ui(stroka1):
     global stroka
     
-    print_group = '⸻⸻⸻⸻⸻⸻\n' + 'Группа: ' + group.upper() + '\n' \
+    print_group = '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n' + 'Группа: ' + group.upper() + '\n' \
     + 'День недели: ' + day.capitalize() + '\n' + 'Неделя: ' + whataweek.get_week().capitalize() + '\n' \
-    + '⸻⸻⸻⸻⸻⸻\n'
+    + '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n'
 
     for i in range(len(stroka)):
 
@@ -195,7 +195,7 @@ def table_ui(stroka1):
 
             print_group += 'Пары нет' + '\n' + '\n'
 
-    print_group += '⸻⸻⸻⸻⸻⸻\n'
+    print_group += '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n'
 
     return print_group
 
