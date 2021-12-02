@@ -2,7 +2,7 @@ import download
 import xlrd
 import whataweek
 
-global groups
+global groups,mas
 groups_id = {'бфи2101': 3,
              'бфи2102': 4,
              'бвт2101': 5,
@@ -22,6 +22,8 @@ groups_id = {'бфи2101': 3,
              }
 
 def get_sheet():
+    
+    global mas
 
     if not download.is_downloaded:
 
@@ -37,19 +39,27 @@ def get_sheet():
 
     sheet = wb.sheet_by_index(0)
 
+    mas = []
+    for crange in sheet.merged_cells:
+        rlo, rhi, clo, chi = crange
+        for rowx in range(rlo, rhi):
+            mas += [[rlo,clo+1]]
+            for colx in range(clo, chi):
+                pass
+
     return sheet
 
 
 
 def print_schedule(start, end):
 
-    global groups_id, group
+    global groups_id, group,t, k
     schedule = []
     schedule.append(time[k])
 
     for i in range(start, end + 1):
 
-        temp = str(sheet.cell_value(i, groups_id[group]))
+        temp = str(sheet.cell_value(i, t))
 
         if temp != '':
 
@@ -113,37 +123,70 @@ def print_schedule(start, end):
 
 def calculation(days_of_week, j):
 
-    global groups_id, group
+    global groups_id, group,t
     coef = {0: 0,
             1: 4,
             2: 8,
             3: 12,
             4: 16
             }
+    if sheet.cell_value(days_of_week + coef[j], groups_id[group]) == '' and \
+        sheet.cell_value(days_of_week + coef[j], groups_id[group]) == '' and \
+        sheet.cell_value(days_of_week + coef[j], groups_id[group]) == '' and \
+        sheet.cell_value(days_of_week + coef[j], groups_id[group]) == '' and \
+        ([days_of_week + coef[j], groups_id[group]] in mas or [days_of_week + 2 + coef[j], groups_id[group]] in mas):
+            
+            t = groups_id[group] - 1
 
-    if (sheet.cell_value(days_of_week + coef[j], groups_id[group]) == '' \
-    and sheet.cell_value(days_of_week + coef[j] + 1, groups_id[group]) != '') \
-    or sheet.cell_value(days_of_week + coef[j], groups_id[group]) == 'дистанционно' \
-    or sheet.cell_value(days_of_week + coef[j], groups_id[group]) == 'на 1 нед.':
+            if (sheet.cell_value(days_of_week + coef[j], t) == '' \
+            and sheet.cell_value(days_of_week + coef[j] + 1, t) != '') \
+            or sheet.cell_value(days_of_week + coef[j], t) == 'дистанционно' \
+            or sheet.cell_value(days_of_week + coef[j], t) == 'на 1 нед.':
 
-        start = days_of_week + coef[j]
-        end = days_of_week + 3 + coef[j]
+                start = days_of_week + coef[j]
+                end = days_of_week + 3 + coef[j]
 
-        return start, end
+                return start, end
+
+            else:
+
+                if whataweek.get_week() == "четная":
+
+                    start = days_of_week + 2 + coef[j]
+                    end = days_of_week + 3 + coef[j]
+
+                else:
+
+                    start = days_of_week + coef[j]
+                    end = days_of_week + 1 + coef[j]
+
+                return start, end
 
     else:
+        t = groups_id[group]
+        if (sheet.cell_value(days_of_week + coef[j], t) == '' \
+        and sheet.cell_value(days_of_week + coef[j] + 1, t) != '') \
+        or sheet.cell_value(days_of_week + coef[j], t) == 'дистанционно' \
+        or sheet.cell_value(days_of_week + coef[j], t) == 'на 1 нед.':
 
-        if whataweek.get_week() == "четная":
-
-            start = days_of_week + 2 + coef[j]
+            start = days_of_week + coef[j]
             end = days_of_week + 3 + coef[j]
+
+            return start, end
 
         else:
 
-            start = days_of_week + coef[j]
-            end = days_of_week + 1 + coef[j]
+            if whataweek.get_week() == "четная":
 
-        return start, end
+                start = days_of_week + 2 + coef[j]
+                end = days_of_week + 3 + coef[j]
+
+            else:
+
+                start = days_of_week + coef[j]
+                end = days_of_week + 1 + coef[j]
+
+            return start, end
 
 
 
@@ -219,6 +262,8 @@ def get_schedule(day_of_week, group_input):
         'суббота': 111,
     }
 
-    for i in range(5): stroka.append(pred_print(days_of_week[day], i))
+    for i in range(5): 
+        stroka.append(pred_print(days_of_week[day], i))
+        k += 1
 
     return table_ui(stroka)
