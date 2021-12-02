@@ -120,10 +120,40 @@ def print_schedule(start, end):
     return schedule
 
 
+def calculationv2(days_of_week_2,t_2,j_2):
+
+    global t,coef
+    days_of_week = days_of_week_2
+    j = j_2
+
+    if (sheet.cell_value(days_of_week + coef[j], t) == '' \
+            and sheet.cell_value(days_of_week + coef[j] + 1, t) != '') \
+            or sheet.cell_value(days_of_week + coef[j], t) == 'дистанционно' \
+            or sheet.cell_value(days_of_week + coef[j], t) == 'на 1 нед.':
+
+                start = days_of_week + coef[j]
+                end = days_of_week + 3 + coef[j]
+
+                return start, end
+
+    else:
+
+        if whataweek.get_week() == "четная":
+
+            start = days_of_week + 2 + coef[j]
+            end = days_of_week + 3 + coef[j]
+
+        else:
+
+            start = days_of_week + coef[j]
+            end = days_of_week + 1 + coef[j]
+
+        return start, end
+
 
 def calculation(days_of_week, j):
 
-    global groups_id, group,t
+    global groups_id, group,t, coef
     coef = {0: 0,
             1: 4,
             2: 8,
@@ -138,55 +168,13 @@ def calculation(days_of_week, j):
             
             t = groups_id[group] - 1
 
-            if (sheet.cell_value(days_of_week + coef[j], t) == '' \
-            and sheet.cell_value(days_of_week + coef[j] + 1, t) != '') \
-            or sheet.cell_value(days_of_week + coef[j], t) == 'дистанционно' \
-            or sheet.cell_value(days_of_week + coef[j], t) == 'на 1 нед.':
-
-                start = days_of_week + coef[j]
-                end = days_of_week + 3 + coef[j]
-
-                return start, end
-
-            else:
-
-                if whataweek.get_week() == "четная":
-
-                    start = days_of_week + 2 + coef[j]
-                    end = days_of_week + 3 + coef[j]
-
-                else:
-
-                    start = days_of_week + coef[j]
-                    end = days_of_week + 1 + coef[j]
-
-                return start, end
+            return calculationv2(days_of_week,t,j)
 
     else:
+
         t = groups_id[group]
-        if (sheet.cell_value(days_of_week + coef[j], t) == '' \
-        and sheet.cell_value(days_of_week + coef[j] + 1, t) != '') \
-        or sheet.cell_value(days_of_week + coef[j], t) == 'дистанционно' \
-        or sheet.cell_value(days_of_week + coef[j], t) == 'на 1 нед.':
-
-            start = days_of_week + coef[j]
-            end = days_of_week + 3 + coef[j]
-
-            return start, end
-
-        else:
-
-            if whataweek.get_week() == "четная":
-
-                start = days_of_week + 2 + coef[j]
-                end = days_of_week + 3 + coef[j]
-
-            else:
-
-                start = days_of_week + coef[j]
-                end = days_of_week + 1 + coef[j]
-
-            return start, end
+        
+        return calculationv2(days_of_week,t,j)
 
 
 
@@ -212,6 +200,7 @@ def table_ui(stroka1):
         if len(stroka[i]) > 2:
 
             boolean = True
+            boolean_2 = True
 
             if stroka[i][2] == 'КУЛЬТУРА И СПОРТ' and stroka[i][1] == ' ФИЗИЧЕСКАЯ':
 
@@ -225,18 +214,32 @@ def table_ui(stroka1):
                     print_group += stroka[i][1][1:len(stroka[i][1])] + '\n'
 
                 else:
+                    
+                    if day == 'понедельник' and group == 'бвт2103' and '15-25' in print_group:
+                    
+                        print_group += 'Пары нет' + '\n' + '\n'
+                        boolean_2 = False
 
-                    print_group += stroka[i][1] + '\n'
+                    else:
+                        print_group += stroka[i][1] + '\n'
 
             if boolean:
+                
+                if boolean_2:
 
-                print_group += 'Кабинет: ' + stroka[i][2] + '\n' + '\n'
+                    print_group += 'Кабинет: ' + stroka[i][2] + '\n' + '\n'
             
             else:
                 print_group += 'Кабинет: ' + 'дистанционно' + '\n' + '\n'
         else:
 
-            print_group += 'Пары нет' + '\n' + '\n'
+            if day == 'вторник' and group == 'бвт2103' and '09-30' in print_group:
+                
+                        print_group += 'Философия пр.з.' + '\n' + 'Кабинет: ' + 'дистанционно' + '\n' + '\n'
+
+            else:
+                
+                print_group += 'Пары нет' + '\n' + '\n'
 
     print_group += '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n'
 
@@ -246,7 +249,7 @@ def table_ui(stroka1):
 
 def get_schedule(day_of_week, group_input):
 
-    global sheet, time, k, stroka, groups, group, day
+    global sheet, time, k, stroka, groups, group, day 
     group = group_input
     day = day_of_week
     stroka = []
