@@ -15,21 +15,35 @@ vk_session = vk_api.VkApi(token=config.Token)
 
 def InitializeComponent():
 
-    global keyboardStart, keyboardChooseGroup, keyboardChooseDayOfWeek, start, groups, daysofweek
+    global keyboardStart, keyboardChooseGroup, keyboardChooseDayOfWeek, start, groups, daysofweek, commands
     # Создание экземпляров клавиатуры
 
-    keyboardStart = VkKeyboard()
-    keyboardChooseGroup = VkKeyboard()
-    keyboardChooseDayOfWeek = VkKeyboard()
+    keyboardStart: VkKeyboard = VkKeyboard()
+    keyboardChooseGroup: VkKeyboard = VkKeyboard()
+    keyboardChooseDayOfWeek: VkKeyboard = VkKeyboard()
 
     # Названия кнопок
-    start = ['Расписание', 'Анекдот', 'Рулетка', 'Помощь']
-    groups = ['бфи2101', 'бфи2102', 'бвт2101', 'бвт2102', 'бвт2103', 'бвт2104', 'бвт2105', 'бвт2106',
-              'бвт2107', 'бвт2108', 'бст2101', 'бст2102', 'бст2103', 'бст2104', 'бст2105', 'бст2106']
-    daysofweek = ['понедельник', 'вторник',
-                  'среда', 'четверг', 'пятница', 'суббота']
+    start: list = ['Расписание', 'Анекдот', 'Рулетка', 'Помощь']
+    groups: list = ['бфи2101', 'бфи2102', 'бвт2101', 'бвт2102', 'бвт2103', 'бвт2104', 'бвт2105', 'бвт2106',
+                    'бвт2107', 'бвт2108', 'бст2101', 'бст2102', 'бст2103', 'бст2104', 'бст2105', 'бст2106']
+    daysofweek: list = ['понедельник', 'вторник',
+                        'среда', 'четверг', 'пятница', 'суббота']
+    # Создание и заполнение списка команд
+    commands_labels: list = ['привет', 'меню', 'начать',
+                             'начало', 'анекдот', 'помощь', 'рулетка', 'расписание']
+    commands_functions: list = [[do_start, keyboardStart], [do_start, keyboardStart], [do_start, keyboardStart], [do_start, keyboardStart], [
+        do_joke, keyboardStart], [do_help, keyboardStart], [do_roulette, keyboardStart], [do_schedule_choose_group, keyboardChooseGroup]]
+    for i in range(len(groups)):
+        commands_labels += [groups[i]]
+        commands_functions += [[do_schedule_choose_day_of_week,
+                                keyboardChooseDayOfWeek]]
+    for i in range(len(daysofweek)):
+        commands_labels += [daysofweek[i]]
+        commands_functions += [[do_schedule_get_schedule,
+                                keyboardStart]]
+    commands: dict = dict(zip(commands_labels, commands_functions))
 
-    # Добавление кнопок
+    # Генерация кнопок
     for i in range(len(start)):
         keyboardStart.add_button(start[i], VkKeyboardColor.SECONDARY)
         if i == 0:
@@ -39,21 +53,22 @@ def InitializeComponent():
             groups[i-1].upper(), VkKeyboardColor.SECONDARY)
         if i % 3 == 0:
             keyboardChooseGroup.add_line()
-        elif i == len(groups):
+        if i == len(groups):
             keyboardChooseGroup.add_line()
             keyboardChooseGroup.add_button('Меню', VkKeyboardColor.PRIMARY)
     for i in range(1, len(daysofweek)+1):
-        keyboardChooseGroup.add_button(
+        keyboardChooseDayOfWeek.add_button(
             daysofweek[i-1].capitalize(), VkKeyboardColor.SECONDARY)
         if i % 3 == 0:
-            keyboardChooseGroup.add_line()
-        elif i == len(daysofweek):
-            keyboardChooseGroup.add_line()
+            keyboardChooseDayOfWeek.add_line()
+        if i == len(daysofweek):
             keyboardChooseDayOfWeek.add_button('Меню', VkKeyboardColor.PRIMARY)
 
 
 def dispatch(msg, event):
     global keyboardStart, keyboardChooseGroup, keyboardChooseDayOfWeek, groups, daysofweek, request
+    if 'msg' in list(commands.keys()):
+        commands[msg](event, keyboard_type)
     if msg == "начать" or msg == "меню":
         sender(event.user_id, 'Выберите команду.', keyboardStart)
         request = []

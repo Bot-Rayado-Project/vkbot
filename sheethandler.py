@@ -207,6 +207,7 @@ def get_schedule(day_of_week, group_input):
         'суббота': 111,
     }
 
-    for i in range(5): stroka.append(pred_print(days_of_week[day], i))
+    for i in range(5):
+        stroka.append(pred_print(days_of_week[day], i))
 
     return table_ui(stroka)
