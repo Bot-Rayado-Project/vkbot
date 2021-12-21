@@ -5,6 +5,7 @@ import threading
 from commands import *
 from vk_api.longpoll import VkLongPoll, VkEventType
 from vk_api.keyboard import VkKeyboard, VkKeyboardColor
+import asyncio
 
 
 listening_thread, controls_thread, command = None, None, None
@@ -13,7 +14,7 @@ request = []
 vk_session = vk_api.VkApi(token=config.Token)
 
 
-def InitializeComponent():
+async def InitializeComponent():
 
     global keyboardStart, keyboardChooseGroup, keyboardChooseDayOfWeek, start, groups, daysofweek, commands
     # Создание экземпляров клавиатуры
@@ -90,48 +91,20 @@ def dispatch(msg, event):
         request = []
 
 
-def main():
-    InitializeComponent()
+async def main():
+    Initialize_task = asyncio.create_task(InitializeComponent())
+    listening_thread.start()
     global listening_thread, controls_thread, vk_session
     listening_thread = threading.Thread(target=listening, args=(vk_session,))
-    controls_thread = threading.Thread(target=controls)
-    controls_thread.start()
-    listening_thread.start()
 
 
-def listening(vk_session):
-    global command, listening_flag
+async def listening(vk_session):
     longpoll = VkLongPoll(vk_session)
     for event in longpoll.listen():
-        if event.to_me:
-            if command == 'stop':
-                listening_flag = "isStopped"
-                break
-            if event.type == VkEventType.MESSAGE_NEW:
-                dispatch(event.text.lower(), event)
-
-
-def controls():
-    global listening_thread, command, listening_flag
-    print('Control utils are working.')
-    while True:
-        command = str(input()).lower()
-        if command == 'stop':
-            print('Stop command detected. Waiting for event to exit...')
-            while True:
-                if listening_flag == "isStopped":
-                    controls_flag = "isStopped"
-                    exiting(controls_flag)
-                    break
-
-
-def exiting(controls_flag):
-    global listening_thread, controls_thread
-    if listening_flag == 'isStopped':
-        if controls_flag == 'isStopped':
-            threading._shutdown()
-            sys.exit()
+        if event.to_me and event.type == VkEventType.MESSAGE_NEW:
+            print(event.user_id)
+            dispatch(event.text.lower(), event)
 
 
 if __name__ == '__main__':
-    main()
+    asyncio.run(main())
