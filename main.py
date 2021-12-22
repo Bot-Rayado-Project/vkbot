@@ -1,110 +1,109 @@
-import vk_api
-import sys
 import config
-import threading
-from commands import *
-from vk_api.longpoll import VkLongPoll, VkEventType
-from vk_api.keyboard import VkKeyboard, VkKeyboardColor
-import asyncio
+import sheethandler
+import random
+import requests
+from bs4 import BeautifulSoup
+from vkwave.bots import SimpleLongPollBot, SimpleBotEvent
+from vkwave.bots.utils.keyboards import Keyboard
+from vkwave.bots.utils.keyboards.keyboard import ButtonColor
+from vkwave.bots.utils.uploaders import PhotoUploader
+
+bot = SimpleLongPollBot(tokens=config.TOKEN, group_id=config.GROUP_ID)
+
+# OMG MANDARINA HI
+
+photo = None
+
+# Создание экземпляров клавиатуры
+
+keyboardStart = Keyboard(one_time=False)
+keyboardChooseGroup = Keyboard(one_time=False)
+keyboardChooseDayOfWeek = Keyboard(one_time=False)
+
+# Названия кнопок
+start: list = ['Расписание', 'Анекдот', 'Рулетка', 'Помощь']
+groups: list = ['бфи2101', 'бфи2102', 'бвт2101', 'бвт2102', 'бвт2103', 'бвт2104', 'бвт2105', 'бвт2106',
+                'бвт2107', 'бвт2108', 'бст2101', 'бст2102', 'бст2103', 'бст2104', 'бст2105', 'бст2106']
+daysofweek: list = ['понедельник', 'вторник',
+                    'среда', 'четверг', 'пятница', 'суббота']
+users: dict = {}
+# Генерация кнопок
+for i in range(len(start)):
+    keyboardStart.add_text_button(start[i], ButtonColor.SECONDARY)
+    if i == 0:
+        keyboardStart.add_row()
+for i in range(1, len(groups)+1):
+    keyboardChooseGroup.add_text_button(
+        groups[i-1].upper(), ButtonColor.SECONDARY)
+    if i % 3 == 0:
+        keyboardChooseGroup.add_row()
+    if i == len(groups):
+        keyboardChooseGroup.add_row()
+        keyboardChooseGroup.add_text_button('Меню', ButtonColor.PRIMARY)
+for i in range(1, len(daysofweek)+1):
+    keyboardChooseDayOfWeek.add_text_button(
+        daysofweek[i-1].capitalize(), ButtonColor.SECONDARY)
+    if i % 3 == 0:
+        keyboardChooseDayOfWeek.add_row()
+    if i == len(daysofweek):
+        keyboardChooseDayOfWeek.add_text_button('Меню', ButtonColor.PRIMARY)
 
 
-listening_thread, controls_thread, command = None, None, None
-listening_flag = "isRunning"
-request = []
-vk_session = vk_api.VkApi(token=config.Token)
+@bot.message_handler(bot.text_filter(["привет", "начать", "начало", "старт", "меню"]))
+async def greet(event: SimpleBotEvent) -> str:
+    global keyboardStart, users, photo
+    if photo == None:
+        photo = await PhotoUploader(bot.api_context).get_attachment_from_link(peer_id=event.object.object.message.peer_id, link="https://preview.redd.it/1azakjoq2k181.jpg?auto=webp&s=cc7d0fe98322bc63a556c92e218b19d2d9336408")
+    print(event.from_id, event.user_data,
+          event.user_id, 'MESSAGE EVENT')  # УДАЛИТЬ
+    users[event.from_id] = None
+    await event.answer(message='omg mandarina hii!!!', keyboard=keyboardStart.get_keyboard(), attachment=photo)
 
 
-async def InitializeComponent():
-
-    global keyboardStart, keyboardChooseGroup, keyboardChooseDayOfWeek, start, groups, daysofweek, commands
-    # Создание экземпляров клавиатуры
-
-    keyboardStart: VkKeyboard = VkKeyboard()
-    keyboardChooseGroup: VkKeyboard = VkKeyboard()
-    keyboardChooseDayOfWeek: VkKeyboard = VkKeyboard()
-
-    # Названия кнопок
-    start: list = ['Расписание', 'Анекдот', 'Рулетка', 'Помощь']
-    groups: list = ['бфи2101', 'бфи2102', 'бвт2101', 'бвт2102', 'бвт2103', 'бвт2104', 'бвт2105', 'бвт2106',
-                    'бвт2107', 'бвт2108', 'бст2101', 'бст2102', 'бст2103', 'бст2104', 'бст2105', 'бст2106']
-    daysofweek: list = ['понедельник', 'вторник',
-                        'среда', 'четверг', 'пятница', 'суббота']
-    # Создание и заполнение списка команд
-    commands_labels: list = ['привет', 'меню', 'начать',
-                             'начало', 'анекдот', 'помощь', 'рулетка', 'расписание']
-    commands_functions: list = [[do_start, keyboardStart], [do_start, keyboardStart], [do_start, keyboardStart], [do_start, keyboardStart], [
-        do_joke, keyboardStart], [do_help, keyboardStart], [do_roulette, keyboardStart], [do_schedule_choose_group, keyboardChooseGroup]]
-    for i in range(len(groups)):
-        commands_labels += [groups[i]]
-        commands_functions += [[do_schedule_choose_day_of_week,
-                                keyboardChooseDayOfWeek]]
-    for i in range(len(daysofweek)):
-        commands_labels += [daysofweek[i]]
-        commands_functions += [[do_schedule_get_schedule,
-                                keyboardStart]]
-    commands: dict = dict(zip(commands_labels, commands_functions))
-
-    # Генерация кнопок
-    for i in range(len(start)):
-        keyboardStart.add_button(start[i], VkKeyboardColor.SECONDARY)
-        if i == 0:
-            keyboardStart.add_line()
-    for i in range(1, len(groups)+1):
-        keyboardChooseGroup.add_button(
-            groups[i-1].upper(), VkKeyboardColor.SECONDARY)
-        if i % 3 == 0:
-            keyboardChooseGroup.add_line()
-        if i == len(groups):
-            keyboardChooseGroup.add_line()
-            keyboardChooseGroup.add_button('Меню', VkKeyboardColor.PRIMARY)
-    for i in range(1, len(daysofweek)+1):
-        keyboardChooseDayOfWeek.add_button(
-            daysofweek[i-1].capitalize(), VkKeyboardColor.SECONDARY)
-        if i % 3 == 0:
-            keyboardChooseDayOfWeek.add_line()
-        if i == len(daysofweek):
-            keyboardChooseDayOfWeek.add_button('Меню', VkKeyboardColor.PRIMARY)
+@bot.message_handler(bot.text_filter("рулетка"))
+async def roulette(event: SimpleBotEvent) -> str:
+    global keyboardStart, users
+    users[event.from_id] = None
+    await event.answer(message='MI AMOR LA VINO!!! CASILLERO DEL DIABLO!!!!', keyboard=keyboardStart.get_keyboard())
 
 
-def dispatch(msg, event):
-    global keyboardStart, keyboardChooseGroup, keyboardChooseDayOfWeek, groups, daysofweek, request
-    if 'msg' in list(commands.keys()):
-        commands[msg](event, keyboard_type)
-    if msg == "начать" or msg == "меню":
-        sender(event.user_id, 'Выберите команду.', keyboardStart)
-        request = []
-    if msg == "анекдот":
-        sender(event.user_id, joke.get_joke(), keyboardStart)
-    if msg == "рулетка":
-        sender(event.user_id, russian_roulette.roulette(), keyboardStart)
-    if msg == "помощь":
-        sender(event.user_id,
-               "Иван - vk.com/crymother\nАлександр - vk.com/lamabot2000", keyboardStart)
-    if msg == "расписание":
-        choose_group(event, keyboardChooseGroup)
-    if msg in groups:
-        request += [msg]
-        choose_dayofweek(event, keyboardChooseDayOfWeek)
-    if msg in daysofweek:
-        request += [msg]
-        do_get_schedule(event, request, keyboardStart)
-        request = []
+@bot.message_handler(bot.text_filter("анекдот"))
+async def get_joke(event: SimpleBotEvent) -> str:
+    global keyboardStart
+    url = 'https://baneks.ru/{}'.format(str(random.randint(1, 832+1)))
+    responce = requests.get(url)
+    soup = BeautifulSoup(responce.text, 'lxml')
+    msg = ((str(soup.p).replace("<p>", "")).replace(
+        "</p>", "")).replace("<br/>", "")
+    await event.answer(message=msg, keyboard=keyboardStart.get_keyboard())
 
 
-async def main():
-    Initialize_task = asyncio.create_task(InitializeComponent())
-    listening_thread.start()
-    global listening_thread, controls_thread, vk_session
-    listening_thread = threading.Thread(target=listening, args=(vk_session,))
+@bot.message_handler(bot.text_filter("расписание"))
+async def get_schedule(event: SimpleBotEvent) -> str:
+    global keyboardChooseDayOfWeek, users
+    if users.get(event.from_id) == None or users.get(event.from_id) == [False]:
+        users[event.from_id] = [True]
+        await event.answer(message='Выберите день недели', keyboard=keyboardChooseDayOfWeek.get_keyboard())
 
 
-async def listening(vk_session):
-    longpoll = VkLongPoll(vk_session)
-    for event in longpoll.listen():
-        if event.to_me and event.type == VkEventType.MESSAGE_NEW:
-            print(event.user_id)
-            dispatch(event.text.lower(), event)
+@bot.message_handler(bot.text_filter(daysofweek))
+async def get_day_of_week(event: SimpleBotEvent) -> str:
+    global keyboardChooseDayOfWeek, users
+    if users.get(event.from_id) == [True]:
+        users[event.from_id] = [False, event.text]  # день недели
+        print(users[event.from_id])
+        await event.answer(message='Выберите группу.', keyboard=keyboardChooseGroup.get_keyboard())
 
 
-if __name__ == '__main__':
-    asyncio.run(main())
+@bot.message_handler(bot.text_filter(groups))
+async def get_group(event: SimpleBotEvent) -> str:
+    global keyboardChooseDayOfWeek, users
+    if users.get(event.from_id)[0] == False:
+        users[event.from_id] += [event.text]  # группа
+        schedule = sheethandler.get_schedule(
+            users[event.from_id][1].lower(), users[event.from_id][2].lower())
+        await event.answer(message=schedule, keyboard=keyboardStart.get_keyboard())
+        users[event.from_id] = None
+
+
+bot.run_forever()

@@ -2,8 +2,9 @@ from bs4 import BeautifulSoup
 import requests
 import os
 import shutil
+import re
 
-is_xsl, is_downloaded = None, None
+is_xls, is_downloaded = None, None
 
 
 def download_sheet():
@@ -16,19 +17,26 @@ def download_sheet():
         os.mkdir("temp")
     else:
         os.mkdir("temp")
-    for link in soup.find_all('a'):
-        if "ф-т ИТ -  02.03.02, 09.03.01, 09.03.02 - 1, 2 курс - семестр 1,3 " in str(link.get('href')):
-            if ".xlsx" in str(link.get('href')):
+    print('Entry point')
+    for line in soup.find_all('span'):
+        __line__ = (((str(line).replace(' ', '')).lower()).replace(
+            '<span>', '')).replace('</span>', '')
+        if 'расписаниезанятий' in __line__ and '09.03.01' in __line__ and '2курс' in __line__:
+            print((str(line).replace('<span>', '')).replace('</span>', ''))
+            if '.xlsx' in (str(line).replace('<span>', '')).replace('</span>', ''):
                 file = open('temp/table_xlsx.xlsx', 'wb')
                 is_xls = False
-            elif ".xls" in str(link.get('href')):
+                print('XLSX')
+            else:
                 file = open('temp/table_xls.xls', 'wb')
                 is_xls = True
-            ufr = requests.get(
-                "https://mtuci.ru/time-table/files/{}".format(link.get('href')[6:]))
+                print('XLS')
+            ufr = requests.get("https://mtuci.ru/time-table/files/{0}".format(re.sub(
+                "^\s+|\n|\r|\s+$", '', (str(line).replace('<span>', '')).replace('</span>', ''))))
             file.write(ufr.content)
             file.close()
             is_downloaded = True
+            print('FILE WRITTEN!')
             break
 
 
