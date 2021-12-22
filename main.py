@@ -10,9 +10,10 @@ from vkwave.bots.utils.uploaders import PhotoUploader
 
 bot = SimpleLongPollBot(tokens=config.TOKEN, group_id=config.GROUP_ID)
 
-# OMG MANDARINA HI
+# OMG MANDARINA HI & THE ROCK
 
 photo = None
+gif = None
 
 # Создание экземпляров клавиатуры
 
@@ -21,7 +22,7 @@ keyboardChooseGroup = Keyboard(one_time=False)
 keyboardChooseDayOfWeek = Keyboard(one_time=False)
 
 # Названия кнопок
-start: list = ['Расписание', 'Анекдот', 'Рулетка', 'Помощь']
+start: list = ['Расписание', 'Анекдот', 'MI AMOR?', 'Помощь']
 groups: list = ['бфи2101', 'бфи2102', 'бвт2101', 'бвт2102', 'бвт2103', 'бвт2104', 'бвт2105', 'бвт2106',
                 'бвт2107', 'бвт2108', 'бст2101', 'бст2102', 'бст2103', 'бст2104', 'бст2105', 'бст2106']
 daysofweek: list = ['понедельник', 'вторник',
@@ -51,26 +52,40 @@ for i in range(1, len(daysofweek)+1):
 
 @bot.message_handler(bot.text_filter(["привет", "начать", "начало", "старт", "меню"]))
 async def greet(event: SimpleBotEvent) -> str:
-    global keyboardStart, users, photo
-    if photo == None:
-        photo = await PhotoUploader(bot.api_context).get_attachment_from_link(peer_id=event.object.object.message.peer_id, link="https://preview.redd.it/1azakjoq2k181.jpg?auto=webp&s=cc7d0fe98322bc63a556c92e218b19d2d9336408")
-    print(event.from_id, event.user_data,
-          event.user_id, 'MESSAGE EVENT')  # УДАЛИТЬ
+    global keyboardStart, users
     users[event.from_id] = None
-    await event.answer(message='omg mandarina hii!!!', keyboard=keyboardStart.get_keyboard(), attachment=photo)
+    await event.answer(message='omg mandarina hii!!!', keyboard=keyboardStart.get_keyboard())
 
 
-@bot.message_handler(bot.text_filter("рулетка"))
+@bot.message_handler(bot.text_filter("mi amor?"))
 async def roulette(event: SimpleBotEvent) -> str:
     global keyboardStart, users
     users[event.from_id] = None
     await event.answer(message='MI AMOR LA VINO!!! CASILLERO DEL DIABLO!!!!', keyboard=keyboardStart.get_keyboard())
 
 
+@bot.message_handler(bot.text_filter("помощь"))
+async def roulette(event: SimpleBotEvent) -> str:
+    global keyboardStart, users, photo
+    users[event.from_id] = None
+    if photo == None:
+        photo = await PhotoUploader(bot.api_context).get_attachment_from_link(peer_id=event.object.object.message.peer_id, link="https://preview.redd.it/1azakjoq2k181.jpg?auto=webp&s=cc7d0fe98322bc63a556c92e218b19d2d9336408")
+    await event.answer(message='omg mandarina hii\n@lamabot2000\n@crymother', keyboard=keyboardStart.get_keyboard(), attachment=photo)
+
+
+@bot.message_handler(bot.text_filter("дима"))
+async def roulette(event: SimpleBotEvent) -> str:
+    global keyboardStart, users, gif
+    users[event.from_id] = None
+    if gif == None:
+        gif = await PhotoUploader(bot.api_context).get_attachment_from_link(peer_id=event.object.object.message.peer_id, link="https://memes.co.in/memes/update/uploads/2021/12/InShot_20211209_222013681-1024x1024.jpg")
+    await event.answer(message='?', keyboard=keyboardStart.get_keyboard(), attachment=gif)
+
+
 @bot.message_handler(bot.text_filter("анекдот"))
 async def get_joke(event: SimpleBotEvent) -> str:
     global keyboardStart
-    url = 'https://baneks.ru/{}'.format(str(random.randint(1, 832+1)))
+    url = 'https://baneks.ru/{}'.format(str(random.randint(1, 1142+1)))
     responce = requests.get(url)
     soup = BeautifulSoup(responce.text, 'lxml')
     msg = ((str(soup.p).replace("<p>", "")).replace(
