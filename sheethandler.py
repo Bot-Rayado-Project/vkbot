@@ -1,14 +1,18 @@
-import download
 import openpyxl
 from pathlib import Path
-import glob
 import whataweek
+import download
 
 def get_sheet():
-    download.download_sheet()
+    download.download_sheet(group_number)
     sheet_file = Path('table.xlsx')
     wb_obj = openpyxl.load_workbook(sheet_file)
-    wb_obj.active = group_number
+    if 'бвт' in group_text:
+        wb_obj.active = group_number
+    if 'бфи' in group_text:
+        wb_obj.active = group_number - 8
+    if 'бст' in group_text:
+        wb_obj.active = group_number - 10
     sheet = wb_obj.active
     return sheet
 
@@ -21,6 +25,7 @@ def print_schedule():
         + '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n'
     for i in range(day_number, day_number+ 5):
         dobavka, dobavka_2 = '', ''
+
         if str(schedule[format_pari + str(i)].value) == 'лек':
             dobavka = 'ция'
         else:
@@ -58,7 +63,15 @@ def get_schedule(day_of_week, group_input):
         'бвт2105' : 4,
         'бвт2106' : 5,
         'бвт2107' : 6,
-        'бвт2108' : 7
+        'бвт2108' : 7,
+        'бфи2101' : 8,
+        'бфи2102' : 9,
+        'бст2101' : 10,
+        'бст2102' : 11,
+        'бст2103' : 12,
+        'бст2104' : 13,
+        'бст2105' : 14,
+        'бст2106' : 15
     }
     time = {
         1 : '9-30',
