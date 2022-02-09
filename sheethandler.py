@@ -31,7 +31,8 @@ def print_schedule():
         if str(schedule[kab + str(i)].value) == 'дист':
             dobavka_2 = 'ант'
         if schedule[nedelya + str(i)].value != None:
-            schedule_2 += str(schedule[nedelya + str(i)].value) + '\n'\
+            schedule_2 += str(time[i - day_number + 1]) + '\n' \
+            + str(schedule[nedelya + str(i)].value) + '\n'\
             + str(schedule[format_pari  + str(i)].value) + dobavka + '\n' \
             + str(schedule[kab + str(i)].value) + dobavka_2 + '\n' \
             + '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n'
@@ -40,7 +41,7 @@ def print_schedule():
     return schedule_2
 
 def get_schedule(day_of_week, group_input):
-    global day_number, day_text, nedelya, groups,group_text,group_number, kab, format_pari
+    global day_number, day_text, nedelya, groups,group_text,group_number, kab, format_pari,time
     days_of_week = {
         'понедельник': 14,
         'вторник': 20,
@@ -58,6 +59,13 @@ def get_schedule(day_of_week, group_input):
         'бвт2106' : 5,
         'бвт2107' : 6,
         'бвт2108' : 7
+    }
+    time = {
+        1 : '9-30',
+        2 : '11-20',
+        3 : '13-10',
+        4 : '15-25',
+        5 : '17-15'
     }
     day_text = day_of_week
     day_number = days_of_week[day_of_week]
