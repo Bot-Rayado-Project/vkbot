@@ -20,14 +20,27 @@ def print_schedule():
         + 'День недели: ' + day_text.capitalize() + '\n' + 'Неделя: ' + whataweek.get_week().capitalize() + '\n' \
         + '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n'
     for i in range(day_number, day_number+ 5):
+        dobavka, dobavka_2 = '', ''
+        if str(schedule[format_pari + str(i)].value) == 'лек':
+            dobavka = 'ция'
+        else:
+            if str(schedule[format_pari + str(i)].value) == 'лаб':
+                dobavka = 'ораторная'
+            else:
+                dobavka = 'актика'
+        if str(schedule[kab + str(i)].value) == 'дист':
+            dobavka_2 = 'ант'
         if schedule[nedelya + str(i)].value != None:
-            schedule_2 += str(schedule[nedelya + str(i)].value) + '\n' + '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n'
+            schedule_2 += str(schedule[nedelya + str(i)].value) + '\n'\
+            + str(schedule[format_pari  + str(i)].value) + dobavka + '\n' \
+            + str(schedule[kab + str(i)].value) + dobavka_2 + '\n' \
+            + '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n'
         else:
             schedule_2 += 'Пары нет\n' + '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n'
     return schedule_2
 
 def get_schedule(day_of_week, group_input):
-    global day_number, day_text, nedelya, groups,group_text,group_number
+    global day_number, day_text, nedelya, groups,group_text,group_number, kab, format_pari
     days_of_week = {
         'понедельник': 14,
         'вторник': 20,
@@ -50,8 +63,12 @@ def get_schedule(day_of_week, group_input):
     day_number = days_of_week[day_of_week]
     if whataweek.get_week() == "четная":
         nedelya = 'H'
+        kab = 'K'
+        format_pari = 'J'
     else:
         nedelya = 'G'
+        kab = 'D'
+        format_pari = 'E'
 
     group_number = groups[group_input]
     group_text = group_input
