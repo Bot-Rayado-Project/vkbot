@@ -20,6 +20,3 @@ def download_sheet(group_number):
         link_2 = 'https://mtuci.ru/' + code_timetable[a - 29: a + 51]
     file = open('table.xlsx', 'wb')
     file.write(requests.get(link_2).content)
-
-if __name__ == '__main__':
-    download_sheet(p)
