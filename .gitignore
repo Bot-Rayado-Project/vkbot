@@ -11,6 +11,7 @@ workspace/
 # C extensions
 *.so
 .idea/
+*.txt
 
 # Distribution / packaging
 .Python
