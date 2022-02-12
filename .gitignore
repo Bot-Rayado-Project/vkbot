@@ -8,6 +8,8 @@ stuff/
 *.xlsx
 temp/
 workspace/
+*.sh
+*.ps1
 # C extensions
 *.so
 .idea/
