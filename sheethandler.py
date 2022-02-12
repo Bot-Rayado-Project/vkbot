@@ -5,19 +5,19 @@ from recieve import recieve_time_table
 
 
 async def get_sheet(group: str) -> openpyxl.Workbook:
-    await recieve_time_table(group)
-    sheet_file = Path('table.xlsx')
-    wb_obj = openpyxl.load_workbook(sheet_file)
-    if 'бвт' in group_text:
-        wb_obj.active = group_number
-    if 'бфи' in group_text:
-        wb_obj.active = group_number - 8
-    if 'бст' in group_text:
-        wb_obj.active = group_number - 10
-    sheet = wb_obj.active
-    return sheet
+    data = await recieve_time_table(group)
+    wb_obj = openpyxl.load_workbook(Path('table.xlsx'))
+    match data:
+        case "бвт":
+            wb_obj.active = group_number
+        case "бфи":
+            wb_obj.active = group_number - 8
+        case "бст":
+            wb_obj.active = group_number - 10
+    return wb_obj.active
 
 
+# пиздец я сюда даже лезть не буду это ваще что
 async def print_schedule(group: str) -> str:
     schedule = await get_sheet(group)
     global schedule_2
@@ -47,7 +47,7 @@ async def print_schedule(group: str) -> str:
     return schedule_2
 
 
-async def get_schedule(day_of_week, group_input):
+async def get_schedule(day_of_week, group_input):  # тоже пиздец
     global day_number, day_text, nedelya, groups, group_text, group_number, kab, format_pari, time
     days_of_week = {
         'понедельник': 14,
@@ -84,7 +84,7 @@ async def get_schedule(day_of_week, group_input):
     }
     day_text = day_of_week
     day_number = days_of_week[day_of_week]
-    if whataweek.get_week() == "четная":
+    if await whataweek.get_week() == "четная":
         nedelya = 'H'
         kab = 'K'
         format_pari = 'J'
