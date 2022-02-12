@@ -15,12 +15,12 @@ print("WARNING: DEVELOPMENT MODE") if STATE == "dev" else print()
 try:
     bot = SimpleLongPollBot(tokens=API_TOKEN, group_id=GROUP_ID)
     print(
-        f'\nTOKEN: {API_TOKEN}\nGROUP_ID: {GROUP_ID}\nSuccessfully accepted!'
+        f'\nTOKEN: {API_TOKEN}\nGROUP_ID: {GROUP_ID}\nSuccessfully connected to VK API!'
     )
     try:
         sqlite_connection = sqlite3.connect('users.db')
         cursor = sqlite_connection.cursor()
-        print("База данных успешно подключена к SQLite")
+        print("\nБаза данных успешно подключена к SQLite")
     except sqlite3.Error as error:
         print("Ошибка при подключении к SQlite", error)
         exit()
@@ -52,8 +52,8 @@ keyboardChooseDayOfWeek = Keyboard(one_time=False)
 start: list = ['Расписание', 'Анекдот', 'MI AMOR?', 'Помощь']
 groups: list = ['бфи2101', 'бфи2102', 'бвт2101', 'бвт2102', 'бвт2103', 'бвт2104', 'бвт2105', 'бвт2106',
                 'бвт2107', 'бвт2108', 'бст2101', 'бст2102', 'бст2103', 'бст2104', 'бст2105', 'бст2106']
-daysofweek: list = ['понедельник', 'вторник',
-                    'среда', 'четверг', 'пятница', 'суббота']
+daysofweek: list = ['понедельник', 'вторник', 'среда',
+                    'четверг', 'пятница', 'суббота']
 # Генерация кнопок
 for i in range(len(start)):
     keyboardStart.add_text_button(start[i], ButtonColor.SECONDARY)
@@ -88,7 +88,7 @@ async def sqlite_fetch(from_id: int, text: str, ret: bool = False) -> str:
 async def aiohttp_fetch(url: str) -> str:
     async with aiohttp.ClientSession() as session:
         async with session.get(url) as response:
-            return (await response.text())[12:-2]
+            return await response.text()
 
 
 @bot.message_handler(bot.text_filter(["привет", "начать", "начало", "старт", "меню"]))
@@ -121,7 +121,7 @@ async def easteregg(event: SimpleBotEvent) -> str:
 @bot.message_handler(bot.text_filter("анекдот"))
 async def get_joke(event: SimpleBotEvent) -> str:
     await sqlite_fetch(event.from_id, event.text)
-    msg = await aiohttp_fetch(url='http://rzhunemogu.ru/RandJSON.aspx?CType=11')
+    msg = (await aiohttp_fetch(url='http://rzhunemogu.ru/RandJSON.aspx?CType=11'))[12:-2]
     await event.answer(message=msg, keyboard=keyboardStart.get_keyboard())
 
 
@@ -147,8 +147,7 @@ async def get_day_of_week(event: SimpleBotEvent) -> str:
 async def get_group(event: SimpleBotEvent) -> str:
     fetch = await sqlite_fetch(event.from_id, event.text, True)
     if all((any(cmd.lower() in [fetch[0][0].lower()] for cmd in groups), any(cmd.lower() in [fetch[1][0].lower()] for cmd in daysofweek), fetch[2][0].lower() == 'расписание')):
-        schedule = sheethandler.get_schedule(fetch[1][0].lower(),
-                                             fetch[0][0].lower())
+        schedule = await sheethandler.get_schedule(fetch[1][0].lower(), fetch[0][0].lower())
         await event.answer(message=schedule, keyboard=keyboardStart.get_keyboard())
 
 
