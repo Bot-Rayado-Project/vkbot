@@ -1,9 +1,7 @@
 import sheethandler
-import random
-import requests
 import os
 import sqlite3
-from bs4 import BeautifulSoup
+import aiohttp
 from vkwave.bots import SimpleLongPollBot, SimpleBotEvent
 from vkwave.bots.utils.keyboards import Keyboard
 from vkwave.bots.utils.keyboards.keyboard import ButtonColor
@@ -78,7 +76,7 @@ for i in range(1, len(daysofweek)+1):
         keyboardChooseDayOfWeek.add_text_button('Меню', ButtonColor.PRIMARY)
 
 
-async def sqlite_send(from_id: int, text: str, ret: bool = False) -> str:
+async def sqlite_fetch(from_id: int, text: str, ret: bool = False) -> str:
     cursor.execute(sqlite_add_command.format(from_id, text))
     sqlite_connection.commit()
     if ret:
@@ -87,46 +85,49 @@ async def sqlite_send(from_id: int, text: str, ret: bool = False) -> str:
     return
 
 
+async def aiohttp_fetch(url: str) -> str:
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as response:
+            return (await response.text())[12:-2]
+
+
 @bot.message_handler(bot.text_filter(["привет", "начать", "начало", "старт", "меню"]))
 async def greet(event: SimpleBotEvent) -> str:
-    await sqlite_send(event.from_id, event.text)
-    await event.answer(message='omg mandarina hii!!!', keyboard=keyboardStart.get_keyboard())
+    await sqlite_fetch(event.from_id, event.text)
+    await event.answer(message='Выберите команду из списка.', keyboard=keyboardStart.get_keyboard())
 
 
 @bot.message_handler(bot.text_filter("mi amor?"))
 async def miamor(event: SimpleBotEvent) -> str:
-    await sqlite_send(event.from_id, event.text)
+    await sqlite_fetch(event.from_id, event.text)
     await event.answer(message='MI AMOR LA VINO!!! CASILLERO DEL DIABLO!!!!', keyboard=keyboardStart.get_keyboard())
 
 
 @bot.message_handler(bot.text_filter("помощь"))
 async def help(event: SimpleBotEvent) -> str:
-    await sqlite_send(event.from_id, event.text)
-    photo = await PhotoUploader(bot.api_context).get_attachment_from_link(peer_id=event.object.object.message.peer_id, link="https://preview.redd.it/1azakjoq2k181.jpg?auto=webp&s=cc7d0fe98322bc63a556c92e218b19d2d9336408")
-    await event.answer(message='omg mandarina hii\n@lamabot2000\n@crymother', keyboard=keyboardStart.get_keyboard(), attachment=photo)
+    await sqlite_fetch(event.from_id, event.text)
+    photo_lamabot = await PhotoUploader(bot.api_context).get_attachment_from_link(peer_id=event.object.object.message.peer_id, link="https://sun9-83.userapi.com/impg/bVoWiYTwRgQ4ThlsaJNHMUKh_-nGIZM9IOID0Q/LVt87ogMi4g.jpg?size=591x556&quality=95&sign=30bf84a7dae605fb9ed4050a4c0e93dc&type=album")
+    photo_crymother = await PhotoUploader(bot.api_context).get_attachment_from_link(peer_id=event.object.object.message.peer_id, link="https://sun9-63.userapi.com/impg/BpR7pnTl6CWAw0ud7ph8Qy1eZoWl0aD4qlJpgg/YLkSB-8Tib8.jpg?size=595x560&quality=95&sign=ecf377f818c46e7c8cf634fab5957d02&type=album")
+    await event.answer(message='Помощи нет и не будет. \n@lamabot2000\n@crymother', keyboard=keyboardStart.get_keyboard(), attachment=[photo_lamabot, photo_crymother])
 
 
 @bot.message_handler(bot.text_filter("дима"))
 async def easteregg(event: SimpleBotEvent) -> str:
-    await sqlite_send(event.from_id, event.text)
+    await sqlite_fetch(event.from_id, event.text)
     gif = await PhotoUploader(bot.api_context).get_attachment_from_link(peer_id=event.object.object.message.peer_id, link="https://memes.co.in/memes/update/uploads/2021/12/InShot_20211209_222013681-1024x1024.jpg")
     await event.answer(message='?', keyboard=keyboardStart.get_keyboard(), attachment=gif)
 
 
 @bot.message_handler(bot.text_filter("анекдот"))
 async def get_joke(event: SimpleBotEvent) -> str:
-    await sqlite_send(event.from_id, event.text)
-    url = 'https://baneks.ru/{}'.format(str(random.randint(1, 1142+1)))
-    responce = requests.get(url)
-    soup = BeautifulSoup(responce.text, 'lxml')
-    msg = ((str(soup.p).replace("<p>", "")).replace(
-        "</p>", "")).replace("<br/>", "")
+    await sqlite_fetch(event.from_id, event.text)
+    msg = await aiohttp_fetch(url='http://rzhunemogu.ru/RandJSON.aspx?CType=11')
     await event.answer(message=msg, keyboard=keyboardStart.get_keyboard())
 
 
 @bot.message_handler(bot.text_filter("расписание"))
 async def get_schedule(event: SimpleBotEvent) -> str:
-    fetch = await sqlite_send(event.from_id, event.text, True)
+    fetch = await sqlite_fetch(event.from_id, event.text, True)
     if fetch[0][0].lower() not in commands:
         await event.answer(message='Выберите день недели.', keyboard=keyboardChooseDayOfWeek.get_keyboard())
     else:
@@ -135,7 +136,7 @@ async def get_schedule(event: SimpleBotEvent) -> str:
 
 @bot.message_handler(bot.text_filter(daysofweek))
 async def get_day_of_week(event: SimpleBotEvent) -> str:
-    fetch = await sqlite_send(event.from_id, event.text, True)
+    fetch = await sqlite_fetch(event.from_id, event.text, True)
     if all((any(cmd.lower() in [fetch[0][0].lower()] for cmd in daysofweek), fetch[1][0].lower() == 'расписание')):
         await event.answer(message='Выберите группу.', keyboard=keyboardChooseGroup.get_keyboard())
     else:
@@ -144,7 +145,7 @@ async def get_day_of_week(event: SimpleBotEvent) -> str:
 
 @bot.message_handler(bot.text_filter(groups))
 async def get_group(event: SimpleBotEvent) -> str:
-    fetch = await sqlite_send(event.from_id, event.text, True)
+    fetch = await sqlite_fetch(event.from_id, event.text, True)
     if all((any(cmd.lower() in [fetch[0][0].lower()] for cmd in groups), any(cmd.lower() in [fetch[1][0].lower()] for cmd in daysofweek), fetch[2][0].lower() == 'расписание')):
         schedule = sheethandler.get_schedule(fetch[1][0].lower(),
                                              fetch[0][0].lower())
