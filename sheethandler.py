@@ -108,9 +108,3 @@ async def print_schedule(day_of_week, group_input, week_type_input):  # тоже
     group_text = group_input
 
     return await get_schedule(group_input)
-
-async def main():
-    s = await print_schedule('понедельник', 'бвт2103', 'следующая неделя')
-    print(s)
-
-asyncio.run(main())
