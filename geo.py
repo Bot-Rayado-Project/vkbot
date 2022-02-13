@@ -1,9 +1,9 @@
 import random
 import math
+import json
+# import asyncio
 from geopy import distance
 from datetime import datetime, timedelta
-import asyncio
-import json
 
 
 async def set_time() -> tuple:
@@ -123,7 +123,7 @@ async def write_gpx(finaldistance: int, devider: int) -> None:
         print('Генерация завершена.')
 
 
-async def main() -> None:
-    await write_gpx(finaldistance=0, devider=5)
+# async def main() -> None:
+#     await write_gpx(finaldistance=0, devider=5)
 
-asyncio.run(main())
+# asyncio.run(main())

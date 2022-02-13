@@ -2,15 +2,23 @@ import sheethandler
 import os
 import sqlite3
 import aiohttp
+import geo
+from pathlib import Path
 from vkwave.bots import SimpleLongPollBot, SimpleBotEvent
 from vkwave.bots.utils.keyboards import Keyboard
 from vkwave.bots.utils.keyboards.keyboard import ButtonColor
-from vkwave.bots.utils.uploaders import PhotoUploader
+from vkwave.bots.utils.uploaders import PhotoUploader, DocUploader
 
-ALLOWED_USERS_IDS = (os.getenv('ALLOWED_USERS_IDS')).split()
-API_TOKEN = os.getenv('API_TOKEN')
-GROUP_ID = os.getenv('GROUP_ID')
-STATE = os.getenv('STATE')
+try:
+    ALLOWED_USERS_IDS = (os.getenv('ALLOWED_USERS_IDS')).split()
+    API_TOKEN = os.getenv('API_TOKEN')
+    GROUP_ID = os.getenv('GROUP_ID')
+    STATE = os.getenv('STATE')
+except AttributeError:
+    print(
+        '\nTOKEN: None\nGROUP_ID: None\nEmpty value error.'
+    )
+    exit()
 
 print("WARNING: DEVELOPMENT MODE") if STATE == "dev" else print()
 try:
@@ -26,9 +34,7 @@ try:
         print("Ошибка при подключении к SQlite", error)
         exit()
 except:
-    print(
-        f'\nTOKEN: {API_TOKEN}\nGROUP_ID: {GROUP_ID}\nEmpty value error.'
-    )
+    print('Internal error.')
     exit()
 
 # Команды БД
@@ -113,6 +119,9 @@ async def miamor(event: SimpleBotEvent) -> str:
     await sqlite_fetch(event.from_id, event.text)
     if str(event.from_id) in ALLOWED_USERS_IDS:
         await event.answer(message='ACCESS GRANTED.', keyboard=keyboardStart.get_keyboard())
+        await geo.write_gpx(0, 5)
+        gpx = await DocUploader(bot.api_context).get_attachment_from_path(peer_id=event.object.object.message.peer_id, file_path=Path("test.gpx"), title="Map")
+        await event.answer(message='Карта:', keyboard=keyboardStart.get_keyboard(), attachment=gpx)
     else:
         await event.answer(message='MI AMOR LA VINO!!! CASILLERO DEL DIABLO!!!!', keyboard=keyboardStart.get_keyboard())
 
