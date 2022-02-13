@@ -15,6 +15,7 @@ workspace/
 .idea/
 *.txt
 test.py
+*.gpx
 
 # Distribution / packaging
 .Python
@@ -113,6 +114,7 @@ celerybeat.pid
 *.sage.py
 
 # Environments
+env310/
 .env
 .venv
 env/
