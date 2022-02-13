@@ -2,7 +2,7 @@ import openpyxl
 import whataweek
 from pathlib import Path
 from recieve import recieve_time_table
-
+import asyncio
 
 async def get_sheet(group: str) -> openpyxl.Workbook:
     data = await recieve_time_table(group)
@@ -84,7 +84,7 @@ async def get_schedule(day_of_week, group_input, week_type):  # тоже пиз�
     }
     day_text = day_of_week
     day_number = days_of_week[day_of_week]
-    if await whataweek.get_week() == "четная":
+    if (await whataweek.get_week() == "четная" and week_type == 'текущая неделя') or (week_type == 'следующая неделя' and await whataweek.get_week() == "нечетная"):
         nedelya = 'H'
         kab = 'K'
         format_pari = 'J'
@@ -96,3 +96,5 @@ async def get_schedule(day_of_week, group_input, week_type):  # тоже пиз�
     group_number = groups[group_input]
     group_text = group_input
     return await print_schedule(group_input)
+
+
