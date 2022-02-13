@@ -41,13 +41,13 @@ async def get_schedule(group: str) -> str:
         + '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n'
 
     for i in range(days_of_week[day], days_of_week[day] + 5):
-
+        
         if schedule[week_column + str(i)].value != None:
             schedule_output += str(time[i - days_of_week[day] + 1]) + '  ' \
                 + str(schedule[week_column + str(i)].value) + '\n\n' \
-                + 'Преподаватель: ' + str(schedule[chr(ord(week_column) + 1) + str(i)].value) + '\n'\
-                + 'Вид занятия: ' + supplements[str(schedule[chr(ord(week_column) + 2) + str(i)].value)] + '\n' \
-                + 'Форма проведения: ' + supplements[str(schedule[chr(ord(week_column) + 3) + str(i)].value)] + '\n' \
+                + 'Преподаватель: ' + str(schedule[chr(ord(week_column) + const) + str(i)].value) + '\n'\
+                + 'Вид занятия: ' + str(supplements[str(schedule[chr(ord(week_column) + const2) + str(i)].value)]) + '\n' \
+                + 'Форма проведения: ' + str(supplements[str(schedule[chr(ord(week_column) + const3) + str(i)].value)]) + '\n' \
                 + '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n'
         else:
             schedule_output += 'Пары нет\n' + '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n'
@@ -56,7 +56,7 @@ async def get_schedule(group: str) -> str:
 
 async def print_schedule(day_input, group_input, week_type_input):  # тоже пиздец
     global days_of_week, day, week_column, groups, group_text, \
-        time, week_type, supplements
+        time, week_type, supplements, week_checked, const, const2, const3 
 
     week_type = week_type_input
     days_of_week = {
@@ -103,6 +103,15 @@ async def print_schedule(day_input, group_input, week_type_input):  # тоже �
     group_text = group_input
 
     week_checked = await week_check()
+    if week_checked == 'четная':
+        const, const2, const3 = 1, 2, 3 
+    else:
+        const, const2, const3 = -1, -2, -3
     week_column = 'H' if week_checked == 'четная' else 'G'
 
     return await get_schedule(group_text)
+async def main():
+    s = await print_schedule('понедельник', 'бвт2103', 'текущая неделя')
+    print(s)
+
+asyncio.run(main())
