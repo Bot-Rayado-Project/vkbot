@@ -47,7 +47,7 @@ async def print_schedule(group: str) -> str:
     return schedule_2
 
 
-async def get_schedule(day_of_week: str, group_input: str, week_type: str) -> str:  # тоже пиздец
+async def get_schedule(day_of_week, group_input, week_type):  # тоже пиздец
     global day_number, day_text, nedelya, groups, group_text, group_number, kab, format_pari, time
     days_of_week = {
         'понедельник': 14,
