@@ -3,7 +3,6 @@ import whataweek
 from pathlib import Path
 from recieve import recieve_time_table
 
-
 async def get_sheet(group: str) -> openpyxl.Workbook:
     data = await recieve_time_table(group)
     wb_obj = openpyxl.load_workbook(Path('table.xlsx'))
@@ -44,9 +43,9 @@ async def get_schedule(group: str) -> str:
         if schedule[week_column + str(i)].value != None:
             schedule_output += str(time[i - days_of_week[day] + 1]) + '  ' \
                 + str(schedule[week_column + str(i)].value) + '\n\n' \
-                + 'Преподаватель: ' + str(schedule[chr(ord(week_column) + const) + str(i)].value) + '\n'\
-                + 'Вид занятия: ' + str(supplements[str(schedule[chr(ord(week_column) + const2) + str(i)].value)]) + '\n' \
-                + 'Форма проведения: ' + str(supplements[str(schedule[chr(ord(week_column) + const3) + str(i)].value)]) + '\n' \
+                + 'Преподаватель: ' + str(schedule[chr(ord(week_column) + 1 * const) + str(i)].value) + '\n'\
+                + 'Вид занятия: ' + str(supplements[str(schedule[chr(ord(week_column) + 2 * const) + str(i)].value)]) + '\n' \
+                + 'Форма проведения: ' + str(supplements[str(schedule[chr(ord(week_column) + 3 * const) + str(i)].value)]) + '\n' \
                 + '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n'
         else:
             schedule_output += 'Пары нет\n' + '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n'
@@ -55,7 +54,7 @@ async def get_schedule(group: str) -> str:
 
 async def print_schedule(day_input, group_input, week_type_input):  # тоже пиздец
     global days_of_week, day, week_column, groups, group_text, \
-        time, week_type, supplements, week_checked, const, const2, const3
+        time, week_type, supplements, week_checked, const
 
     week_type = week_type_input
     days_of_week = {
@@ -102,10 +101,8 @@ async def print_schedule(day_input, group_input, week_type_input):  # тоже �
     group_text = group_input
 
     week_checked = await week_check()
-    if week_checked == 'четная':
-        const, const2, const3 = 1, 2, 3
-    else:
-        const, const2, const3 = -1, -2, -3
+    const = 1 if week_checked == 'четная' else -1
     week_column = 'H' if week_checked == 'четная' else 'G'
 
     return await get_schedule(group_text)
+
