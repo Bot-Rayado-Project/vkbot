@@ -2,8 +2,7 @@ import openpyxl
 import whataweek
 from pathlib import Path
 from recieve import recieve_time_table
-import asyncio
-import re
+
 
 
 async def get_sheet(group: str) -> openpyxl.Workbook:
