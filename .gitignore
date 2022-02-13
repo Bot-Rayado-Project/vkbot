@@ -15,6 +15,7 @@ workspace/
 .idea/
 *.txt
 test.py
+*.gpx
 
 # Distribution / packaging
 .Python
