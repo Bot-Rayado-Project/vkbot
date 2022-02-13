@@ -2,7 +2,6 @@ import openpyxl
 import whataweek
 from pathlib import Path
 from recieve import recieve_time_table
-import asyncio
 
 
 async def get_sheet(group: str) -> openpyxl.Workbook:
@@ -41,7 +40,7 @@ async def get_schedule(group: str) -> str:
         + '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n'
 
     for i in range(days_of_week[day], days_of_week[day] + 5):
-        
+
         if schedule[week_column + str(i)].value != None:
             schedule_output += str(time[i - days_of_week[day] + 1]) + '  ' \
                 + str(schedule[week_column + str(i)].value) + '\n\n' \
@@ -56,7 +55,7 @@ async def get_schedule(group: str) -> str:
 
 async def print_schedule(day_input, group_input, week_type_input):  # тоже пиздец
     global days_of_week, day, week_column, groups, group_text, \
-        time, week_type, supplements, week_checked, const, const2, const3 
+        time, week_type, supplements, week_checked, const, const2, const3
 
     week_type = week_type_input
     days_of_week = {
@@ -104,14 +103,9 @@ async def print_schedule(day_input, group_input, week_type_input):  # тоже �
 
     week_checked = await week_check()
     if week_checked == 'четная':
-        const, const2, const3 = 1, 2, 3 
+        const, const2, const3 = 1, 2, 3
     else:
         const, const2, const3 = -1, -2, -3
     week_column = 'H' if week_checked == 'четная' else 'G'
 
     return await get_schedule(group_text)
-async def main():
-    s = await print_schedule('понедельник', 'бвт2103', 'текущая неделя')
-    print(s)
-
-asyncio.run(main())
