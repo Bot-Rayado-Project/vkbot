@@ -104,9 +104,3 @@ async def print_schedule(day_input, group_input, week_type_input):  # тоже �
     week_column = 'H' if week_checked=='четная' else 'G'
 
     return await get_schedule(group_text)
-
-async def main():
-    s = await print_schedule('понедельник', 'бвт2103', 'следующая неделя')
-    print(s)
-
-asyncio.run(main())
