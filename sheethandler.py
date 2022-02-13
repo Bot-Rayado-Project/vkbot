@@ -2,19 +2,21 @@ import openpyxl
 import whataweek
 from pathlib import Path
 from recieve import recieve_time_table
-import asyncio
+
 
 async def get_sheet(group: str) -> openpyxl.Workbook:
     data = await recieve_time_table(group)
     wb_obj = openpyxl.load_workbook(Path('table.xlsx'))
     match data:
-        case "бвт":
+        case "бвт", number:
             wb_obj.active = group_number
-        case "бфи":
+        case "бфи", number:
             wb_obj.active = group_number - 8
-        case "бст":
+        case "бст", number:
             wb_obj.active = group_number - 10
-    return wb_obj.active
+    sheet = wb_obj.active
+    print(group_number, group, wb_obj.active, sheet)
+    return sheet
 
 
 # пиздец я сюда даже лезть не буду это ваще что
@@ -96,5 +98,3 @@ async def get_schedule(day_of_week, group_input, week_type):  # тоже пиз�
     group_number = groups[group_input]
     group_text = group_input
     return await print_schedule(group_input)
-
-
