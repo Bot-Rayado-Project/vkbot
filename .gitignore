@@ -8,10 +8,13 @@ stuff/
 *.xlsx
 temp/
 workspace/
+*.sh
+*.ps1
 # C extensions
 *.so
 .idea/
 *.txt
+test.py
 
 # Distribution / packaging
 .Python
