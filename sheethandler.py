@@ -2,7 +2,7 @@ import openpyxl
 import whataweek
 from pathlib import Path
 from recieve import recieve_time_table
-
+import asyncio
 
 
 async def get_sheet(group: str) -> openpyxl.Workbook:
@@ -10,13 +10,13 @@ async def get_sheet(group: str) -> openpyxl.Workbook:
     wb_obj = openpyxl.load_workbook(Path('table.xlsx'))
     match data:
         case "бвт", number:
-            wb_obj.active = group_number
+            wb_obj.active = groups[group_text]
         case "бфи", number:
-            wb_obj.active = group_number - 8
+            wb_obj.active = groups[group_text] - 8
         case "бст", number:
-            wb_obj.active = group_number - 10
+            wb_obj.active = groups[group_text] - 10
     sheet = wb_obj.active
-    print(group_number, group, wb_obj.active, sheet)
+    print(groups[group_text], group, wb_obj.active, sheet)
     return sheet
 
 async def week_check():
@@ -35,13 +35,13 @@ async def get_schedule(group: str) -> str:
 
     schedule = await get_sheet(group)
     schedule_output = '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n' + 'Группа: ' + group_text.upper() + '\n' \
-        + 'День недели: ' + day_text.capitalize() + '\n' + 'Неделя: ' + (await week_check()).capitalize() + '\n' \
+        + 'День недели: ' + day.capitalize() + '\n' + 'Неделя: ' + (await week_check()).capitalize() + '\n' \
         + '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n'
     
-    for i in range(day_number, day_number + 5):
+    for i in range(days_of_week[day], days_of_week[day] + 5):
 
         if schedule[week_column + str(i)].value != None:
-            schedule_output += str(time[i - day_number + 1]) + '  ' \
+            schedule_output += str(time[i - days_of_week[day] + 1]) + '  ' \
                 + str(schedule[week_column + str(i)].value) + '\n\n' \
                 + 'Преподаватель: ' + str(schedule[chr(ord(week_column) + 1) + str(i)].value)+ '\n'\
                 + 'Вид занятия: ' + supplements[str(schedule[chr(ord(week_column) + 2) + str(i)].value)] + '\n' \
@@ -52,9 +52,9 @@ async def get_schedule(group: str) -> str:
     return schedule_output
 
 
-async def print_schedule(day_of_week, group_input, week_type_input):  # тоже пиздец
-    global day_number, day_text, week_column, groups, group_text, \
-    group_number, time, week_type, supplements
+async def print_schedule(day_input, group_input, week_type_input):  # тоже пиздец
+    global days_of_week, day, week_column, groups, group_text, \
+    time, week_type, supplements
 
     week_type = week_type_input
     days_of_week = {
@@ -97,13 +97,16 @@ async def print_schedule(day_of_week, group_input, week_type_input):  # тоже
         'дист': 'дистанционно'
 
     }
-    day_text = day_of_week
-    day_number = days_of_week[day_of_week]
+    day= day_input
+    group_text = group_input
 
     week_checked = await week_check()
     week_column = 'H' if week_checked=='четная' else 'G'
 
-    group_number = groups[group_input]
-    group_text = group_input
+    return await get_schedule(group_text)
 
-    return await get_schedule(group_input)
+async def main():
+    s = await print_schedule('понедельник', 'бвт2103', 'следующая неделя')
+    print(s)
+
+asyncio.run(main())
