@@ -2,6 +2,8 @@ import openpyxl
 import whataweek
 from pathlib import Path
 from recieve import recieve_time_table
+import asyncio
+import re
 
 
 async def get_sheet(group: str) -> openpyxl.Workbook:
@@ -18,39 +20,44 @@ async def get_sheet(group: str) -> openpyxl.Workbook:
     print(group_number, group, wb_obj.active, sheet)
     return sheet
 
+async def week_check():
 
-# пиздец я сюда даже лезть не буду это ваще что
-async def print_schedule(group: str) -> str:
-    schedule = await get_sheet(group)
-    global schedule_2
-    schedule_2 = '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n' + 'Группа: ' + group_text.upper() + '\n' \
-        + 'День недели: ' + day_text.capitalize() + '\n' + 'Неделя: ' + (await whataweek.get_week()).capitalize() + '\n' \
-        + '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n'
-    for i in range(day_number, day_number + 5):
-        dobavka, dobavka_2 = '', ''
-
-        if str(schedule[format_pari + str(i)].value) == 'лек':
-            dobavka = 'ция'
+    if week_type == 'текущая неделя':
+        week = await whataweek.get_week()
+    else:
+        if await whataweek.get_week() == 'четная':
+            week = 'нечетная'
         else:
-            if str(schedule[format_pari + str(i)].value) == 'лаб':
-                dobavka = 'ораторная'
-            else:
-                dobavka = 'актика'
-        if str(schedule[kab + str(i)].value) == 'дист':
-            dobavka_2 = 'ант'
-        if schedule[nedelya + str(i)].value != None:
-            schedule_2 += str(time[i - day_number + 1]) + '\n' \
-                + str(schedule[nedelya + str(i)].value) + '\n'\
-                + str(schedule[format_pari + str(i)].value) + dobavka + '\n' \
-                + str(schedule[kab + str(i)].value) + dobavka_2 + '\n' \
+            week = 'четная'
+    return week
+    
+async def get_schedule(group: str) -> str:
+    global schedule_output,schedule
+
+    schedule = await get_sheet(group)
+    schedule_output = '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n' + 'Группа: ' + group_text.upper() + '\n' \
+        + 'День недели: ' + day_text.capitalize() + '\n' + 'Неделя: ' + (await week_check()).capitalize() + '\n' \
+        + '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n'
+    
+    for i in range(day_number, day_number + 5):
+
+        if schedule[week_column + str(i)].value != None:
+            schedule_output += str(time[i - day_number + 1]) + '  ' \
+                + str(schedule[week_column + str(i)].value) + '\n\n' \
+                + 'Преподаватель: ' + str(schedule[chr(ord(week_column) + 1) + str(i)].value)+ '\n'\
+                + 'Вид занятия: ' + supplements[str(schedule[chr(ord(week_column) + 2) + str(i)].value)] + '\n' \
+                + 'Форма проведения: ' + supplements[str(schedule[chr(ord(week_column) + 3) + str(i)].value)] + '\n' \
                 + '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n'
         else:
-            schedule_2 += 'Пары нет\n' + '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n'
-    return schedule_2
+            schedule_output += 'Пары нет\n' + '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n'
+    return schedule_output
 
 
-async def get_schedule(day_of_week, group_input, week_type):  # тоже пиздец
-    global day_number, day_text, nedelya, groups, group_text, group_number, kab, format_pari, time
+async def print_schedule(day_of_week, group_input, week_type_input):  # тоже пиздец
+    global day_number, day_text, week_column, groups, group_text, \
+    group_number, time, week_type, supplements
+
+    week_type = week_type_input
     days_of_week = {
         'понедельник': 14,
         'вторник': 20,
@@ -84,17 +91,26 @@ async def get_schedule(day_of_week, group_input, week_type):  # тоже пиз�
         4: '15-25',
         5: '17-15'
     }
+    supplements = {
+        'лек': 'лекция',
+        'лаб': 'лабораторная',
+        'пр' : 'практика',
+        'дист': 'дистанционно'
+
+    }
     day_text = day_of_week
     day_number = days_of_week[day_of_week]
-    if (await whataweek.get_week() == "четная" and week_type == 'текущая неделя') or (week_type == 'следующая неделя' and await whataweek.get_week() == "нечетная"):
-        nedelya = 'H'
-        kab = 'K'
-        format_pari = 'J'
-    else:
-        nedelya = 'G'
-        kab = 'D'
-        format_pari = 'E'
+
+    week_checked = await week_check()
+    week_column = 'H' if week_checked=='четная' else 'G'
 
     group_number = groups[group_input]
     group_text = group_input
-    return await print_schedule(group_input)
+
+    return await get_schedule(group_input)
+
+async def main():
+    s = await print_schedule('понедельник', 'бвт2103', 'следующая неделя')
+    print(s)
+
+asyncio.run(main())
