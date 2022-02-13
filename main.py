@@ -179,7 +179,7 @@ async def get_group(event: SimpleBotEvent) -> str:
 async def get_week(event: SimpleBotEvent) -> str:
     fetch = await sqlite_fetch(event.from_id, event.text, True)
     if all((any(cmd.lower() in [fetch[0][0].lower()] for cmd in currentornextweek), any(cmd.lower() in [fetch[1][0].lower()] for cmd in groups), any(cmd.lower() in [fetch[2][0].lower()] for cmd in daysofweek), fetch[3][0].lower() == 'расписание')):
-        schedule = await sheethandler.get_schedule(day_of_week=fetch[2][0].lower(), group_input=fetch[1][0].lower(), week_type=fetch[0][0].lower())
+        schedule = await sheethandler.get_schedule(fetch[2][0].lower(), fetch[1][0].lower(), fetch[0][0].lower())
         await event.answer(message=schedule, keyboard=keyboardStart.get_keyboard())
 
 

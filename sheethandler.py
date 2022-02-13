@@ -19,6 +19,7 @@ async def get_sheet(group: str) -> openpyxl.Workbook:
     print(groups[group_text], group, wb_obj.active, sheet)
     return sheet
 
+
 async def week_check():
 
     if week_type == 'текущая неделя':
@@ -29,21 +30,22 @@ async def week_check():
         else:
             week = 'четная'
     return week
-    
+
+
 async def get_schedule(group: str) -> str:
-    global schedule_output,schedule
+    global schedule_output, schedule
 
     schedule = await get_sheet(group)
     schedule_output = '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n' + 'Группа: ' + group_text.upper() + '\n' \
         + 'День недели: ' + day.capitalize() + '\n' + 'Неделя: ' + (await week_check()).capitalize() + '\n' \
         + '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n'
-    
+
     for i in range(days_of_week[day], days_of_week[day] + 5):
 
         if schedule[week_column + str(i)].value != None:
             schedule_output += str(time[i - days_of_week[day] + 1]) + '  ' \
                 + str(schedule[week_column + str(i)].value) + '\n\n' \
-                + 'Преподаватель: ' + str(schedule[chr(ord(week_column) + 1) + str(i)].value)+ '\n'\
+                + 'Преподаватель: ' + str(schedule[chr(ord(week_column) + 1) + str(i)].value) + '\n'\
                 + 'Вид занятия: ' + supplements[str(schedule[chr(ord(week_column) + 2) + str(i)].value)] + '\n' \
                 + 'Форма проведения: ' + supplements[str(schedule[chr(ord(week_column) + 3) + str(i)].value)] + '\n' \
                 + '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n'
@@ -54,7 +56,7 @@ async def get_schedule(group: str) -> str:
 
 async def print_schedule(day_input, group_input, week_type_input):  # тоже пиздец
     global days_of_week, day, week_column, groups, group_text, \
-    time, week_type, supplements
+        time, week_type, supplements
 
     week_type = week_type_input
     days_of_week = {
@@ -93,14 +95,14 @@ async def print_schedule(day_input, group_input, week_type_input):  # тоже �
     supplements = {
         'лек': 'лекция',
         'лаб': 'лабораторная',
-        'пр' : 'практика',
+        'пр': 'практика',
         'дист': 'дистанционно'
 
     }
-    day= day_input
+    day = day_input
     group_text = group_input
 
     week_checked = await week_check()
-    week_column = 'H' if week_checked=='четная' else 'G'
+    week_column = 'H' if week_checked == 'четная' else 'G'
 
     return await get_schedule(group_text)
