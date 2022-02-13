@@ -22,7 +22,7 @@ async def print_schedule(group: str) -> str:
     schedule = await get_sheet(group)
     global schedule_2
     schedule_2 = '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n' + 'Группа: ' + group_text.upper() + '\n' \
-        + 'День недели: ' + day_text.capitalize() + '\n' + 'Неделя: ' + whataweek.get_week().capitalize() + '\n' \
+        + 'День недели: ' + day_text.capitalize() + '\n' + 'Неделя: ' + (await whataweek.get_week()).capitalize() + '\n' \
         + '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n'
     for i in range(day_number, day_number + 5):
         dobavka, dobavka_2 = '', ''
