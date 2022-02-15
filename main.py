@@ -181,7 +181,11 @@ async def get_week(event: SimpleBotEvent) -> str:
     fetch = await sqlite_fetch(event.from_id, event.text, True)
     if all((any(cmd.lower() in [fetch[0][0].lower()] for cmd in currentornextweek), any(cmd.lower() in [fetch[1][0].lower()] for cmd in groups), any(cmd.lower() in [fetch[2][0].lower()] for cmd in daysofweek), fetch[3][0].lower() == 'расписание')):
         schedule = await sheethandler.print_schedule(fetch[2][0].lower(), fetch[1][0].lower(), fetch[0][0].lower())
-        await event.answer(message=schedule, keyboard=keyboardStart.get_keyboard())
+        if fetch[2][0].lower() == 'вся неделя':
+            for i in range(len(schedule)):
+                await event.answer(message=schedule[i], keyboard=keyboardStart.get_keyboard())
+        else:
+            await event.answer(message=schedule, keyboard=keyboardStart.get_keyboard())
 
 
 bot.run_forever()
