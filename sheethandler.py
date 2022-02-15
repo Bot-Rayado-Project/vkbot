@@ -58,11 +58,13 @@ async def get_full_schedule():
     full_schedule = '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n' + 'Группа: ' + group_text.upper() + '\n' \
         + 'Неделя: ' + (await week_check()).capitalize() + '\n' \
         + '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n'
+    full_schedule_cortesh = ()
+    full_schedule_list = []
 
     for k in range(14, 49, 6):
 
         current_day_column = 0
-        full_schedule += str(schedule['A' + str(k - 1)
+        full_schedule = str(schedule['A' + str(k - 1)
                                       ].value) + '\n' + '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n'
 
         for i in range(k + current_day_column, k + current_day_column + 5):
@@ -77,8 +79,12 @@ async def get_full_schedule():
                     ' ' + 'Пары нет\n' + '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n'
 
             current_day_column += 1
+        
+        full_schedule_list.append(full_schedule)
 
-    return full_schedule
+    full_schedule_cortesh = tuple(full_schedule_list)
+
+    return full_schedule_cortesh
 
 
 async def print_schedule(day_input, group_input, week_type_input):  # тоже пиздец
