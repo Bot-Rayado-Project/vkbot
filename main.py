@@ -62,7 +62,7 @@ start: list = ['Расписание', 'Анекдот', 'MI AMOR?', 'Помощ
 groups: list = ['бфи2101', 'бфи2102', 'бвт2101', 'бвт2102', 'бвт2103', 'бвт2104', 'бвт2105', 'бвт2106',
                 'бвт2107', 'бвт2108', 'бст2101', 'бст2102', 'бст2103', 'бст2104', 'бст2105', 'бст2106']
 daysofweek: list = ['понедельник', 'вторник', 'среда',
-                    'четверг', 'пятница', 'суббота']
+                    'четверг', 'пятница', 'суббота', 'вся неделя']
 currentornextweek: list = ['текущая неделя', 'следующая неделя']
 # Генерация кнопок
 for i in range(len(start)):
@@ -83,6 +83,7 @@ for i in range(1, len(daysofweek)+1):
     if i % 3 == 0:
         keyboardChooseDayOfWeek.add_row()
     if i == len(daysofweek):
+        keyboardChooseDayOfWeek.add_row()
         keyboardChooseDayOfWeek.add_text_button('Меню', ButtonColor.PRIMARY)
 for i in range(len(currentornextweek)):
     keyboardChooseCurrentOrNextWeek.add_text_button(

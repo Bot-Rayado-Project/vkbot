@@ -4,6 +4,7 @@ from pathlib import Path
 from recieve import recieve_time_table
 import asyncio
 
+
 async def get_sheet(group: str) -> openpyxl.Workbook:
     data = await recieve_time_table(group)
     wb_obj = openpyxl.load_workbook(Path('table.xlsx'))
@@ -51,37 +52,38 @@ async def get_schedule():
             schedule_output += 'Пары нет\n' + '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n'
     return schedule_output
 
+
 async def get_full_schedule():
 
     full_schedule = '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n' + 'Группа: ' + group_text.upper() + '\n' \
         + 'Неделя: ' + (await week_check()).capitalize() + '\n' \
         + '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n'
 
-
     for k in range(14, 49, 6):
 
         current_day_column = 0
-        full_schedule += str(schedule['A' + str(k - 1)].value) + '\n' + '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n'
+        full_schedule += str(schedule['A' + str(k - 1)
+                                      ].value) + '\n' + '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n'
 
         for i in range(k + current_day_column, k + current_day_column + 5):
-            
+
             if schedule[week_column + str(i)].value != None:
                 full_schedule += str(current_day_column + 1) + ' ' \
                     + str(schedule[week_column + str(i)].value) + '(' + str(str(schedule[chr(ord(week_column) + 3 * const) + str(i)].value)) \
                     + ' ' + str(str(schedule[chr(ord(week_column) + 2 * const) + str(i)].value)) + ')' + '\n'\
                     + '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n'
             else:
-                full_schedule += str(current_day_column + 1) + ' ' + 'Пары нет\n' + '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n'
-            
+                full_schedule += str(current_day_column + 1) + \
+                    ' ' + 'Пары нет\n' + '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n'
+
             current_day_column += 1
-        
 
     return full_schedule
 
-async def print_schedule(day_input, group_input, week_type_input,if_full_schedule):  # тоже пиздец
+
+async def print_schedule(day_input, group_input, week_type_input):  # тоже пиздец
     global days_of_week, day, week_column, groups, group_text, \
         time, week_type, supplements, week_checked, const, schedule
-    
 
     week_type = week_type_input
     days_of_week = {
@@ -124,20 +126,22 @@ async def print_schedule(day_input, group_input, week_type_input,if_full_schedul
         'дист': 'дистанционно'
 
     }
-    day = day_input
     group_text = group_input
     schedule = await get_sheet(group_input)
 
     week_checked = await week_check()
     const = 1 if week_checked == 'четная' else -1
     week_column = 'H' if week_checked == 'четная' else 'G'
-    if if_full_schedule == 'True':
+    if day_input == 'вся неделя':
         return await get_full_schedule()
     else:
+        day = day_input
         return await get_schedule()
 
-async def main():
-    s = await print_schedule('понедельник', 'бвт2103', 'текущая неделя', 'True')
-    print(s)
 
-asyncio.run(main())
+if __name__ == '__main__':
+    async def main():
+        s = await print_schedule('вся неделя', 'бвт2103', 'текущая неделя')
+        print(s)
+
+    asyncio.run(main())
