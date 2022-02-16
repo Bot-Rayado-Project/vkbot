@@ -129,9 +129,8 @@ async def print_schedule(day_input, group_input, week_type_input):  # тоже �
         'лек': 'лекция',
         'лаб': 'лабораторная',
         'пр': 'практика',
-        'дист': 'дистанционно'
-
-    }
+        'дист': 'дистанционно',
+        'очно': ''}
     group_text = group_input
     schedule = await get_sheet(group_input)
 
