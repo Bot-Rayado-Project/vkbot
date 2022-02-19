@@ -13,6 +13,7 @@ async def set_time() -> tuple:
     starttime = datetime.utcnow().strftime(
         "%Y-%m-%dT%H:%M:%S.%f")[:-3]+"Z"  # Время создания
     start_time = datetime.utcnow()
+    start_time_ = datetime.utcnow()
     return currenttime, starttime, start_time
 
 
@@ -23,9 +24,9 @@ async def get_route_points_length_duration() -> list:
                             for j in [data["routes"][i] for i in data["routes"]]]
         # Вместо 0 номер маршрута -----------------------------------------------------------v
         points = [[float(j[0]), float(j[1])]
-                  for j in [i.split(", ") for i in routecoordinates[1]]]
+                  for j in [i.split(", ") for i in routecoordinates[0]]]
         length = random.uniform(3000.0, 3020.0)
-        duration = random.randint(1750000, 1800000)
+        duration = random.randint(1790000, 1800000)
         return points, length, duration
 
 
@@ -33,7 +34,7 @@ async def set_coordinates_shift(points: list, devider: int) -> tuple:
     # Считывание с файла координат, расчет расстояния м/д точками, средняя сокрость, тайминги и сдвиг в координатах
     distances = [distance.geodesic(points[i], points[i+1], ellipsoid='WGS-84').m for i in range(len(points)-1)]+[
         distance.geodesic(points[0], points[-1], ellipsoid='WGS-84').m]  # Расстояние между точками
-    avgspeed = 5.8/float(3.6)  # Средняя скорость в м/с
+    avgspeed = 5.5/float(3.6)  # Средняя скорость в м/с
     timings = [float(i/avgspeed) for i in distances]
     counters = [math.floor(i/devider) for i in timings]
     for i in range(len(counters)):
