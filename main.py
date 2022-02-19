@@ -2,8 +2,8 @@ import sheethandler
 import os
 import sqlite3
 import aiohttp
-import geo
-from pathlib import Path
+import geobot
+from datetime import datetime
 from vkwave.bots import SimpleLongPollBot, SimpleBotEvent
 from vkwave.bots.utils.keyboards import Keyboard
 from vkwave.bots.utils.keyboards.keyboard import ButtonColor
@@ -120,8 +120,8 @@ async def miamor(event: SimpleBotEvent) -> str:
     await sqlite_fetch(event.from_id, event.text)
     if str(event.from_id) in ALLOWED_USERS_IDS:
         await event.answer(message='ACCESS GRANTED.', keyboard=keyboardStart.get_keyboard())
-        await geo.write_gpx(0, 5)
-        gpx = await DocUploader(bot.api_context).get_attachment_from_path(peer_id=event.object.object.message.peer_id, file_path=Path("test.gpx"), title="Map")
+        await geobot.write_gpx(0, 5)
+        gpx = await DocUploader(bot.api_context).get_attachment_from_path(peer_id=event.object.object.message.peer_id, file_path="geobot/test.gpx", title=f"Route {datetime.now()}")
         await event.answer(message='Карта:', keyboard=keyboardStart.get_keyboard(), attachment=gpx)
     else:
         await event.answer(message='MI AMOR LA VINO!!! CASILLERO DEL DIABLO!!!!', keyboard=keyboardStart.get_keyboard())

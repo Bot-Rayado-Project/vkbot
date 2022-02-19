@@ -1,6 +1,7 @@
 import random
 import math
 import json
+import pathlib
 # import asyncio
 from geopy import distance
 from datetime import datetime, timedelta
@@ -18,13 +19,13 @@ async def set_time() -> tuple:
 
 
 async def get_route_points_length_duration() -> list:
-    with open("config.json", encoding='UTF-8') as json_data_file:
+    with open("geobot/config.json", encoding='UTF-8') as json_data_file:
         data = json.load(json_data_file)
         routecoordinates = [j["coordinates"]
                             for j in [data["routes"][i] for i in data["routes"]]]
-        # Вместо 0 номер маршрута -----------------------------------------------------------v
+        # Вместо 0 номер маршрута ----------------------------------v
         points = [[float(j[0]), float(j[1])]
-                  for j in [i.split(", ") for i in routecoordinates[0]]]
+                  for j in [i.split(", ") for i in routecoordinates[3]]]
         length = random.uniform(3000.0, 3020.0)
         duration = random.randint(1790000, 1800000)
         return points, length, duration
@@ -47,7 +48,7 @@ async def set_coordinates_shift(points: list, devider: int) -> tuple:
 
 async def set_blueprints() -> tuple:
     # Blueprints
-    with open("blueprint", "r", encoding="UTF-8") as tracing:
+    with open("geobot/blueprint", "r", encoding="UTF-8") as tracing:
         entrypoint = tracing.read(1200)  # MAIN1
         movement = tracing.read(209)  # MAIN2
         closingbracket = tracing.read(29)  # MAIN3
@@ -63,7 +64,7 @@ async def write_gpx(finaldistance: int, devider: int) -> None:
     points, length, duration = await get_route_points_length_duration()
     # Сдвиг координат
     distances, counters, coordshift = await set_coordinates_shift(points=points, devider=devider)
-    with open("test.gpx", "w+", encoding="UTF-8") as output:
+    with open("geobot/test.gpx", "w+", encoding="UTF-8") as output:
         output.write(entrypoint.format(
             currenttime, starttime, length, duration))
         # Главный цикл
