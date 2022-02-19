@@ -1,12 +1,12 @@
 import openpyxl
-import whataweek
+import schedule.whataweek as whataweek
 from pathlib import Path
-from recieve import recieve_time_table
+from schedule.recieve import recieve_time_table
 import asyncio
 
 
 async def get_sheet(group: str) -> openpyxl.Workbook:
-    data = await recieve_time_table(group,user_id)
+    data = await recieve_time_table(group)
     wb_obj = openpyxl.load_workbook(Path('table.xlsx'))
     match data:
         case "бвт", number:
@@ -16,7 +16,6 @@ async def get_sheet(group: str) -> openpyxl.Workbook:
         case "бст", number:
             wb_obj.active = groups[group_text] - 10
     sheet = wb_obj.active
-    print(groups[group_text], group, wb_obj.active, sheet)
     return sheet
 
 
@@ -64,7 +63,8 @@ async def get_full_schedule():
     for k in range(14, 49, 6):
 
         current_day_column = 0
-        full_schedule = str(schedule['A' + str(k - 1)].value) + '\n' + '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n'
+        full_schedule = str(
+            schedule['A' + str(k - 1)].value) + '\n' + '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n'
 
         for i in range(k + current_day_column, k + current_day_column + 5):
 
@@ -86,7 +86,7 @@ async def get_full_schedule():
     return full_schedule_tuple
 
 
-async def print_schedule(day_input, group_input, week_type_input,id):  # тоже пиздец
+async def print_schedule(day_input, group_input, week_type_input, id):  # тоже пиздец
     global days_of_week, day, week_column, groups, group_text, \
         time, week_type, supplements, week_checked, const, schedule, user_id
 
