@@ -86,7 +86,7 @@ async def get_full_schedule():
     return full_schedule_tuple
 
 
-async def print_schedule(day_input, group_input, week_type_input):  # тоже пиздец
+async def print_schedule(day_input, group_input, week_type_input,id_user):  # тоже пиздец
     global days_of_week, day, week_column, groups, group_text, \
         time, week_type, supplements, week_checked, const, schedule
 
