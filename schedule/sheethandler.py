@@ -1,13 +1,18 @@
 import openpyxl
+import os
 import schedule.whataweek as whataweek
+#import whataweek
 from pathlib import Path
 from schedule.recieve import recieve_time_table
-import asyncio
+#from recieve import recieve_time_table
+#import asyncio
 
 
 async def get_sheet(group: str) -> openpyxl.Workbook:
-    data = await recieve_time_table(group)
-    wb_obj = openpyxl.load_workbook(Path('table.xlsx'))
+    if not os.path.isdir("tables"): os.mkdir("tables") 
+    os.chdir("tables")
+    data = await recieve_time_table(group,user_id)
+    wb_obj = openpyxl.load_workbook(Path('table_{}.xlsx'.format(user_id)))
     match data:
         case "бвт", number:
             wb_obj.active = groups[group_text]
@@ -144,9 +149,9 @@ async def print_schedule(day_input, group_input, week_type_input, id):  # тож
         return await get_schedule()
 
 
-if __name__ == '__main__':
-    async def main():
-        s = await print_schedule('вся неделя', 'бвт2103', 'текущая неделя')
-        print(s)
+#if __name__ == '__main__':
+#    async def main():
+#      s = await print_schedule('вся неделя', 'бвт2103', 'текущая неделя', '1234142')
+#        print(s)
 
-    asyncio.run(main())
+#    asyncio.run(main())
