@@ -64,8 +64,7 @@ async def get_full_schedule():
     for k in range(14, 49, 6):
 
         current_day_column = 0
-        full_schedule = str(schedule['A' + str(k - 1)
-                                     ].value) + '\n' + '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n'
+        full_schedule = str(schedule['A' + str(k - 1)].value) + '\n' + '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n'
 
         for i in range(k + current_day_column, k + current_day_column + 5):
 
@@ -133,8 +132,8 @@ async def print_schedule(day_input, group_input, week_type_input):  # тоже �
         'очно': 'очно'}
     group_text = group_input
     schedule = await get_sheet(group_input)
-
     week_checked = await week_check()
+
     const = 1 if week_checked == 'четная' else -1
     week_column = 'H' if week_checked == 'четная' else 'G'
     if day_input == 'вся неделя':
