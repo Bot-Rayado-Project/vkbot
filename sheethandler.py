@@ -6,7 +6,7 @@ import asyncio
 
 
 async def get_sheet(group: str) -> openpyxl.Workbook:
-    data = await recieve_time_table(group)
+    data = await recieve_time_table(group,user_id)
     wb_obj = openpyxl.load_workbook(Path('table.xlsx'))
     match data:
         case "бвт", number:
@@ -86,10 +86,11 @@ async def get_full_schedule():
     return full_schedule_tuple
 
 
-async def print_schedule(day_input, group_input, week_type_input,id_user):  # тоже пиздец
+async def print_schedule(day_input, group_input, week_type_input,id):  # тоже пиздец
     global days_of_week, day, week_column, groups, group_text, \
-        time, week_type, supplements, week_checked, const, schedule
+        time, week_type, supplements, week_checked, const, schedule, user_id
 
+    user_id = id
     week_type = week_type_input
     days_of_week = {
         'понедельник': 14,
