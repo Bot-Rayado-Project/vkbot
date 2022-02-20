@@ -5,8 +5,11 @@ import sqlite3
 
 def get_env_vars() -> None:
     '''Функция выводит локальные переменные при певой загрузке'''
-    vars = tuple(settings.GET_ALLOWED_USER_IDS(), settings.GET_API_TOKEN(
-    ), settings.GET_GROUP_ID(), settings.GET_STATE())
+    vars: tuple = settings.GET_ALL_VARIABLES()
+    print(vars)
+    match vars:
+        case [*allowed_user_ids], [*api_tokens], group_id, state:
+            print(allowed_user_ids, api_tokens, group_id, state)
 
 
 def set_up_connection_with_db() -> tuple:  # Точка входа в программу

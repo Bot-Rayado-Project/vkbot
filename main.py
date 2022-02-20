@@ -2,6 +2,7 @@ import entry
 import routers
 from utils.settings import settings
 
+entry.get_env_vars()
 bot = entry.set_bot(settings.GET_API_TOKEN(), settings.GET_GROUP_ID())
 
 bot.dispatcher.add_router(routers.schedule_router)
