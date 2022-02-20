@@ -4,7 +4,7 @@ import entry
 sqlite_connection, cursor = entry.set_up_connection_with_db()
 
 
-async def sqlite_fetch(from_id: int, text: str, ret: bool = False) -> str:
+def sqlite_fetch(from_id: int, text: str, ret: bool = False) -> str:
     cursor.execute(C_SQLITE_ADD_COMMAND.format(from_id, text))
     sqlite_connection.commit()
     if ret:

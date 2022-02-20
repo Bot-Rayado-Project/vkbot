@@ -5,16 +5,29 @@ from types import NoneType
 class Settings():
     def __init__(self) -> None:
         try:
-            self.__ALLOWED_USER_IDS = os.getenv('ALLOWED_USER_IDS').split()
-            self.__API_TOKEN = os.getenv('API_TOKEN').split()
-            self.__GROUP_ID = os.getenv('GROUP_ID').split()
-            self.__STATE = os.getenv('STATE').split()
+            try:
+                self.__ALLOWED_USER_IDS = os.getenv('ALLOWED_USER_IDS').split()
+            except:
+                self.__ALLOWED_USER_IDS = None
+            try:
+                self.__API_TOKEN = os.getenv('API_TOKEN').split()
+            except:
+                self.__API_TOKEN = None
+            try:
+                self.__GROUP_ID = os.getenv('GROUP_ID').split()
+            except:
+                self.__GROUP_ID = None
+            try:
+                self.__STATE = os.getenv('STATE').split()
+            except:
+                self.__STATE = None
         except:
             print("Empty variable error.\n")
-            print("ALLOWED_USER_IDS: ", os.getenv('ALLOWED_USER_IDS'))
-            print("API_TOKEN: ", os.getenv('API_TOKEN'))
-            print("GROUP_ID: ", os.getenv('GROUP_ID'))
-            print("STATE: ", os.getenv('STATE'))
+            print("ALLOWED_USER_IDS: ", self.__ALLOWED_USER_IDS)
+            print("API_TOKEN: ", self.__API_TOKEN)
+            print("GROUP_ID: ", self.__GROUP_ID)
+            print("STATE: ", self.__STATE)
+            exit()
 
     def GET_ALLOWED_USER_IDS(self) -> list:
         return self.__ALLOWED_USER_IDS

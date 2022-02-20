@@ -11,7 +11,7 @@ geobot_router = DefaultRouter()
 
 @simple_bot_message_handler(geobot_router, TextFilter("mi amor?"))
 async def miamor(event: SimpleBotEvent) -> str:
-    await sqlite_fetch(event.from_id, event.text)
+    sqlite_fetch(event.from_id, event.text)
     if str(event.from_id) in settings.GET_ALLOWED_USER_IDS():
         await event.answer(message='ACCESS GRANTED.', keyboard=START_KB.get_keyboard())
         await geobot.write_gpx(0, 5)
