@@ -35,7 +35,7 @@ async def week_check(week_type):
             week = 'четная'
     return week
 
-async def get_schedule(group_text, week_column, const, day):
+async def get_schedule(group_text, week_column, const, day, id):
 
     time = {
         1: '9:30 - 11:05\n',
@@ -95,7 +95,7 @@ async def get_schedule(group_text, week_column, const, day):
     return schedule_output
 
 
-async def get_full_schedule(group_text,week_column,const,week_type):
+async def get_full_schedule(group_text,week_column,const,week_type, id):
 
     full_schedule = '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n' + 'Группа: ' + group_text.upper() + '\n' \
         + 'Неделя: ' + (await week_check(week_type)).capitalize() + '\n' \
@@ -155,9 +155,9 @@ async def print_schedule(day_input, group_input, week_type_input, id):  # тож
     const = 1 if week_checked == 'четная' else -1
     week_column = 'H' if week_checked == 'четная' else 'G'
     if day_input == 'вся неделя':
-        return await get_full_schedule(group_input,week_column,const, week_type_input)
+        return await get_full_schedule(group_input,week_column,const, week_type_input, id)
     else:
-        return await get_schedule(group_input,week_column,const, day_input)
+        return await get_schedule(group_input,week_column,const, day_input, id)
 
 
 #if __name__ == '__main__':
