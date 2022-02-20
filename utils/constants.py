@@ -1,30 +1,6 @@
 from vkwave.bots import Keyboard, ButtonColor
 import os
 
-
-class Settings():
-    def __init__(self) -> None:
-        self.__ALLOWED_USER_IDS = (os.getenv('ALLOWED_USER_IDS')).split()
-        self.__API_TOKEN = os.getenv('API_TOKEN')
-        self.__GROUP_ID = os.getenv('GROUP_ID')
-        self.__STATE = os.getenv('STATE')
-
-    def GET_ALLOWED_USER_IDS(self) -> list:
-        return self.__ALLOWED_USER_IDS
-
-    def GET_API_TOKEN(self) -> str:
-        return self.__API_TOKEN
-
-    def GET_GROUP_ID(self) -> str:
-        return self.__GROUP_ID
-
-    def GET_STATE(self) -> str:
-        return self.__STATE
-
-
-settings = Settings()
-
-
 # Команды SQLITE
 C_SQLITE_ADD_COMMAND: str = 'INSERT INTO users VALUES({0}, current_timestamp, "{1}");'
 C_SQLITE_SELECT_COMMAND: str = "SELECT command, max(date), user_id FROM users GROUP BY user_id HAVING user_id={0};"

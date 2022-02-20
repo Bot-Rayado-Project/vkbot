@@ -1,6 +1,6 @@
 import entry
 import routers
-from utils.constants import settings
+from utils.settings import settings
 
 bot = entry.set_bot(settings.GET_API_TOKEN(), settings.GET_GROUP_ID())
 
