@@ -1,6 +1,6 @@
 from vkwave.bots import DefaultRouter, SimpleBotEvent, simple_bot_message_handler, TextFilter, PhotoUploader
 from utils.sqlite_requests import sqlite_fetch
-from utils.constants import START_KB
+from utils.keyboards import START_KB
 
 
 easter_egg_router = DefaultRouter()

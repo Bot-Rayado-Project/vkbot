@@ -1,7 +1,7 @@
 from vkwave.bots import DefaultRouter, SimpleBotEvent, simple_bot_message_handler, TextFilter
 from utils.sqlite_requests import sqlite_fetch
 from utils.aiohttp_requests import aiohttp_fetch
-from utils.constants import START_KB
+from utils.keyboards import START_KB
 
 
 joke_router = DefaultRouter()
