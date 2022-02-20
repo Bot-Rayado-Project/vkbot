@@ -1,9 +1,9 @@
 from aiofile import async_open
-#from utils.aiohttp_requests import aiohttp_fetch_schedule
-import os
-import sys
-sys.path.append(os.path.abspath('../utils'))
-from aiohttp_requests import aiohttp_fetch_schedule
+from utils.aiohttp_requests import aiohttp_fetch_schedule
+#import os
+#import sys
+#sys.path.append(os.path.abspath('../utils'))
+#from aiohttp_requests import aiohttp_fetch_schedule
 
 
 async def recieve_time_table(group: str, user_id: str) -> None:

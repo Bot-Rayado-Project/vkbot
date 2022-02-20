@@ -1,10 +1,10 @@
 import openpyxl
 import os
-#import schedule.whataweek as whataweek
-import whataweek
+import schedule.whataweek as whataweek
+#import whataweek
 from pathlib import Path
-#from schedule.recieve import recieve_time_table
-from recieve import recieve_time_table
+from schedule.recieve import recieve_time_table
+#from recieve import recieve_time_table
 import asyncio
 
 
@@ -160,9 +160,9 @@ async def print_schedule(day_input, group_input, week_type_input, id):  # тож
         return await get_schedule(group_input,week_column,const, day_input)
 
 
-if __name__ == '__main__':
-    async def main():
-        s = await print_schedule('вся неделя', 'бвт2103', 'текущая неделя', '1234142')
-        print(s)
-
-    asyncio.run(main())
+#if __name__ == '__main__':
+#    async def main():
+#        s = await print_schedule('вся неделя', 'бвт2103', 'текущая неделя', '1234142')
+#        print(s)
+#
+#    asyncio.run(main())
