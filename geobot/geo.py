@@ -7,7 +7,7 @@ from geopy import distance
 from datetime import datetime, timedelta
 
 
-async def set_time() -> tuple:
+def set_time() -> tuple:
     # Задание времени
     currenttime = datetime.today().strftime("%d февр. %Y г. %H:%M:%S").replace("0", "", 1) if datetime.today().strftime(
         "%d февр. %Y г. %H:%M:%S")[0] == "0" else datetime.today().strftime("%d февр. %Y г. %H:%M:%S")  # Название файла
@@ -17,7 +17,7 @@ async def set_time() -> tuple:
     return currenttime, start_time_output, start_time
 
 
-async def get_route_points_length_duration() -> list:
+def get_route_points_length_duration() -> list:
     with open("geobot/config.json", encoding='UTF-8') as json_data_file:
         data = json.load(json_data_file)
         routecoordinates = [j["coordinates"]
@@ -30,7 +30,7 @@ async def get_route_points_length_duration() -> list:
         return points, length, duration
 
 
-async def set_coordinates_shift(points: list, devider: int) -> tuple:
+def set_coordinates_shift(points: list, devider: int) -> tuple:
     # Считывание с файла координат, расчет расстояния м/д точками, средняя сокрость, тайминги и сдвиг в координатах
     distances = [distance.geodesic(points[i], points[i+1], ellipsoid='WGS-84').m for i in range(len(points)-1)]+[
         distance.geodesic(points[0], points[-1], ellipsoid='WGS-84').m]  # Расстояние между точками
@@ -46,7 +46,7 @@ async def set_coordinates_shift(points: list, devider: int) -> tuple:
     return distances, counters, coordshift
 
 
-async def set_blueprints() -> tuple:
+def set_blueprints() -> tuple:
     # Blueprints
     with open("geobot/blueprint", "r", encoding="UTF-8") as tracing:
         entrypoint = tracing.read(1200)  # MAIN1
@@ -56,7 +56,7 @@ async def set_blueprints() -> tuple:
 
 
 async def write_gpx(finaldistance: int, devider: int) -> None:
-    # 0 - entrypoint #1 - movement #2 - closingbracket
+    # 0 - entrypoint #1 - movement #2 - clo singbracket
     entrypoint, movement, closingbracket = await set_blueprints()
     # 0 - currenttime #1 - start_time_output #2 - start_time_outputoutput #3 - start_time
     currenttime, start_time_output, start_time = await set_time()
