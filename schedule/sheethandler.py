@@ -35,7 +35,7 @@ async def week_check(week_type):
             week = 'четная'
     return week
 
-async def get_schedule(group_text, week_column, const, day, id):
+async def get_schedule(group_text, week_column, const, day, id,week_type):
 
     time = {
         1: '9:30 - 11:05\n',
@@ -78,7 +78,7 @@ async def get_schedule(group_text, week_column, const, day, id):
     }
     schedule = await get_sheet(group_text, id, groups[group_text])
     schedule_output = '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n' + 'Группа: ' + group_text.upper() + '\n' \
-        + 'День недели: ' + day.capitalize() + '\n' + 'Неделя: ' + (await week_check()).capitalize() + '\n' \
+        + 'День недели: ' + day.capitalize() + '\n' + 'Неделя: ' + (await week_check(week_type)).capitalize() + '\n' \
         + '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n'
 
     for i in range(days_of_week[day], days_of_week[day] + 5):
@@ -157,12 +157,12 @@ async def print_schedule(day_input, group_input, week_type_input, id):  # тож
     if day_input == 'вся неделя':
         return await get_full_schedule(group_input,week_column,const, week_type_input, id)
     else:
-        return await get_schedule(group_input,week_column,const, day_input, id)
+        return await get_schedule(group_input,week_column,const, day_input, id, week_type_input)
 
 
 #if __name__ == '__main__':
 #    async def main():
-#        s = await print_schedule('вся неделя', 'бвт2103', 'текущая неделя', '1234142')
+#        s = await print_schedule('понедельник', 'бвт2103', 'текущая неделя', '1234142')
 #        print(s)
 #
 #    asyncio.run(main())
