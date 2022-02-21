@@ -1,12 +1,10 @@
 from bs4 import BeautifulSoup
+from utils.aiohttp_requests import aiohttp_fetch
+#import os
+#import sys
+#sys.path.append(os.path.abspath('../utils'))
+#from aiohttp_requests import aiohttp_fetch
 import re
-import aiohttp
-
-
-async def aiohttp_fetch(url: str) -> str:
-    async with aiohttp.ClientSession() as session:
-        async with session.get(url) as response:
-            return await response.text()
 
 
 async def get_week() -> str:

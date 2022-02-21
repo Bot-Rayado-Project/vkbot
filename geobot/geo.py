@@ -1,39 +1,41 @@
 import random
 import math
 import json
+import pathlib
 # import asyncio
 from geopy import distance
 from datetime import datetime, timedelta
 
 
-async def set_time() -> tuple:
+def set_time() -> tuple:
     # Задание времени
     currenttime = datetime.today().strftime("%d февр. %Y г. %H:%M:%S").replace("0", "", 1) if datetime.today().strftime(
         "%d февр. %Y г. %H:%M:%S")[0] == "0" else datetime.today().strftime("%d февр. %Y г. %H:%M:%S")  # Название файла
-    starttime = datetime.utcnow().strftime(
+    start_time_output = datetime.utcnow().strftime(
         "%Y-%m-%dT%H:%M:%S.%f")[:-3]+"Z"  # Время создания
     start_time = datetime.utcnow()
-    return currenttime, starttime, start_time
+    return currenttime, start_time_output, start_time
 
 
-async def get_route_points_length_duration() -> list:
-    with open("config.json", encoding='UTF-8') as json_data_file:
+def get_route_points_length_duration() -> list:
+    with open("geobot/config.json", encoding='UTF-8') as json_data_file:
         data = json.load(json_data_file)
         routecoordinates = [j["coordinates"]
                             for j in [data["routes"][i] for i in data["routes"]]]
-        # Вместо 0 номер маршрута -----------------------------------------------------------v
+        # Вместо 0 номер маршрута ----------------------------------v
         points = [[float(j[0]), float(j[1])]
-                  for j in [i.split(", ") for i in routecoordinates[1]]]
+                  for j in [i.split(", ") for i in routecoordinates[3]]]
         length = random.uniform(3000.0, 3020.0)
-        duration = random.randint(1750000, 1800000)
+        duration = random.randint(1790000, 1800000)
         return points, length, duration
 
 
-async def set_coordinates_shift(points: list, devider: int) -> tuple:
+def set_coordinates_shift(points: list, devider: int) -> tuple:
     # Считывание с файла координат, расчет расстояния м/д точками, средняя сокрость, тайминги и сдвиг в координатах
     distances = [distance.geodesic(points[i], points[i+1], ellipsoid='WGS-84').m for i in range(len(points)-1)]+[
         distance.geodesic(points[0], points[-1], ellipsoid='WGS-84').m]  # Расстояние между точками
-    avgspeed = 5.8/float(3.6)  # Средняя скорость в м/с
+    # Средняя скорость в м/с - САМЫЙ ВАЖНЫЙ ПАРАМЕТР МОДУЛЯ
+    avgspeed = 5.5/float(3.6)
     timings = [float(i/avgspeed) for i in distances]
     counters = [math.floor(i/devider) for i in timings]
     for i in range(len(counters)):
@@ -44,9 +46,9 @@ async def set_coordinates_shift(points: list, devider: int) -> tuple:
     return distances, counters, coordshift
 
 
-async def set_blueprints() -> tuple:
+def set_blueprints() -> tuple:
     # Blueprints
-    with open("blueprint", "r", encoding="UTF-8") as tracing:
+    with open("geobot/blueprint", "r", encoding="UTF-8") as tracing:
         entrypoint = tracing.read(1200)  # MAIN1
         movement = tracing.read(209)  # MAIN2
         closingbracket = tracing.read(29)  # MAIN3
@@ -54,17 +56,18 @@ async def set_blueprints() -> tuple:
 
 
 async def write_gpx(finaldistance: int, devider: int) -> None:
-    # 0 - entrypoint #1 - movement #2 - closingbracket
-    entrypoint, movement, closingbracket = await set_blueprints()
-    # 0 - currenttime #1 - starttime #2 - starttimeoutput #3 - start_time
-    currenttime, starttime, start_time = await set_time()
+    # 0 - entrypoint #1 - movement #2 - clo singbracket
+    entrypoint, movement, closingbracket = set_blueprints()
+    # 0 - currenttime #1 - start_time_output #2 - start_time_outputoutput #3 - start_time
+    currenttime, start_time_output, start_time = set_time()
     # 0 - points #1 - length #2 - duration
-    points, length, duration = await get_route_points_length_duration()
+    points, length, duration = get_route_points_length_duration()
     # Сдвиг координат
-    distances, counters, coordshift = await set_coordinates_shift(points=points, devider=devider)
-    with open("test.gpx", "w+", encoding="UTF-8") as output:
+    distances, counters, coordshift = set_coordinates_shift(
+        points=points, devider=devider)
+    with open("geobot/test.gpx", "w+", encoding="UTF-8") as output:
         output.write(entrypoint.format(
-            currenttime, starttime, length, duration))
+            currenttime, start_time_output, length, duration))
         # Главный цикл
         lat, lon = points[0][0], points[0][1]
         latestpoint = [lat, lon]

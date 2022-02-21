@@ -1,5 +1,6 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
+tables/
 *.py[cod]
 *$py.class
 workspace.code-workspace
@@ -16,7 +17,7 @@ workspace/
 *.txt
 test.py
 *.gpx
-
+*.log
 # Distribution / packaging
 .Python
 *.ipynb
