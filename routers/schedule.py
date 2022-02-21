@@ -45,9 +45,8 @@ async def get_stream(event: SimpleBotEvent) -> str:
     last_command = fetch[0][0].lower()  # Последняя команда
     penultimate_command = fetch[1][0].lower()  # Предпоследняя команда
     pre_penultimate_command = fetch[2][0].lower()  # Пред предпоследняя команда
-    # Пред пред предпоследняя команда
-    pre_pre_penultimate_command = fetch[3][0].lower()
     if any(cmd.lower() in [penultimate_command] for cmd in CURRENT_OR_NEXT_WEEK_BUTTONS):
+        pre_pre_penultimate_command = fetch[3][0].lower()
         if pre_pre_penultimate_command == 'расписание' and any(cmd.lower() in [pre_penultimate_command] for cmd in DAYS_OF_WEEK_BUTTONS):
             if last_command == 'бфи':
                 await event.answer(message='Выберите группу.', keyboard=GROUP_BUTTONS_BFI_KB.get_keyboard())
