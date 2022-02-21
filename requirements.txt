@@ -1,4 +1,5 @@
 aiohttp
+aiofile
 aiofiles
 beautifulsoup4
 vkwave
