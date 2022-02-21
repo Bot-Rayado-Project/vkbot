@@ -1,6 +1,9 @@
 import entry
+import logging
 import routers
 from utils.settings import settings
+
+logging.basicConfig(filename="logs.log", level=logging.ERROR)
 
 bot = entry.InitializeComponent(settings.GET_ALL_VARIABLES())
 

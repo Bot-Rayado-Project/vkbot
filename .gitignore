@@ -17,7 +17,7 @@ workspace/
 *.txt
 test.py
 *.gpx
-
+*.log
 # Distribution / packaging
 .Python
 *.ipynb

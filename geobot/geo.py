@@ -57,13 +57,14 @@ def set_blueprints() -> tuple:
 
 async def write_gpx(finaldistance: int, devider: int) -> None:
     # 0 - entrypoint #1 - movement #2 - clo singbracket
-    entrypoint, movement, closingbracket = await set_blueprints()
+    entrypoint, movement, closingbracket = set_blueprints()
     # 0 - currenttime #1 - start_time_output #2 - start_time_outputoutput #3 - start_time
-    currenttime, start_time_output, start_time = await set_time()
+    currenttime, start_time_output, start_time = set_time()
     # 0 - points #1 - length #2 - duration
-    points, length, duration = await get_route_points_length_duration()
+    points, length, duration = get_route_points_length_duration()
     # Сдвиг координат
-    distances, counters, coordshift = await set_coordinates_shift(points=points, devider=devider)
+    distances, counters, coordshift = set_coordinates_shift(
+        points=points, devider=devider)
     with open("geobot/test.gpx", "w+", encoding="UTF-8") as output:
         output.write(entrypoint.format(
             currenttime, start_time_output, length, duration))

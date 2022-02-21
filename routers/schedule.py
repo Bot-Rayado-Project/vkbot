@@ -40,7 +40,7 @@ async def get_current_or_next_week(event: SimpleBotEvent) -> str:
 
 
 @simple_bot_message_handler(schedule_router, TextFilter(STREAM_BUTTONS))
-async def get_group(event: SimpleBotEvent) -> str:
+async def get_stream(event: SimpleBotEvent) -> str:
     fetch = sqlite_fetch(event.from_id, event.text, True)
     last_command = fetch[0][0].lower()  # Последняя команда
     penultimate_command = fetch[1][0].lower()  # Предпоследняя команда
@@ -65,20 +65,25 @@ async def get_group(event: SimpleBotEvent) -> str:
 
 
 @simple_bot_message_handler(schedule_router, TextFilter(GROUP_BUTTONS))
-async def get_week(event: SimpleBotEvent) -> str:
+async def get_group(event: SimpleBotEvent) -> str:
     fetch = sqlite_fetch(event.from_id, event.text, True)
-    last_command = fetch[0][0].lower()  # Последняя команда
+    last_command = fetch[0][0].lower()  # Последняя команда # ГРУППА
     penultimate_command = fetch[1][0].lower()  # Предпоследняя команда
     pre_penultimate_command = fetch[2][0].lower()  # Пред предпоследняя команда
-    if (pre_penultimate_command == 'сегодня' and datetime.weekday(datetime.today()) == 6) or (pre_penultimate_command == 'завтра' and datetime.weekday(datetime.today()) == 5):
-        await event.answer(message=str(pre_penultimate_command + ' нет занятий.'), keyboard=START_KB.get_keyboard())
-    else:
-        if pre_penultimate_command == 'завтра' and datetime.weekday(datetime.today()) == 6:
-            schedule = await sheethandler.print_schedule(pre_penultimate_command, last_command, event.from_id, 'следующая неделя')
-        else:
-            schedule = await sheethandler.print_schedule(pre_penultimate_command, last_command, event.from_id, 'текущая неделя')
-        if pre_penultimate_command == 'вся неделя':
+    pre_pre_penultimate_command = fetch[3][0].lower()
+    if any(cmd.lower() in [penultimate_command] for cmd in STREAM_BUTTONS):
+        if any(cmd.lower() in [pre_penultimate_command] for cmd in CURRENT_OR_NEXT_WEEK_BUTTONS) and pre_pre_penultimate_command == DAYS_OF_WEEK_BUTTONS[2]:
+            schedule = await sheethandler.print_schedule('вся неделя', last_command, event.from_id, pre_penultimate_command)
             for i in range(len(schedule)):
                 await event.answer(message=schedule[i], keyboard=START_KB.get_keyboard())
+        elif any(cmd.lower() in [pre_penultimate_command] for cmd in DAYS_OF_WEEK_BUTTONS):
+            if (pre_penultimate_command == 'сегодня' and datetime.weekday(datetime.today()) == 6) or (pre_penultimate_command == 'завтра' and datetime.weekday(datetime.today()) == 5):
+                await event.answer(message=str(pre_penultimate_command + ' нет занятий.'), keyboard=START_KB.get_keyboard())
+            else:
+                if pre_penultimate_command == 'завтра' and datetime.weekday(datetime.today()) == 6:
+                    schedule = await sheethandler.print_schedule(pre_penultimate_command, last_command, event.from_id, 'следующая неделя')
+                else:
+                    schedule = await sheethandler.print_schedule(pre_penultimate_command, last_command, event.from_id, 'текущая неделя')
+                await event.answer(message=schedule, keyboard=START_KB.get_keyboard())
         else:
-            await event.answer(message=schedule, keyboard=START_KB.get_keyboard())
+            await event.answer(message="Непредвиденная ошибка.", keyboard=START_KB.get_keyboard())
