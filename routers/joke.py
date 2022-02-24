@@ -9,6 +9,6 @@ joke_router = DefaultRouter()
 
 @simple_bot_message_handler(joke_router, TextFilter("анекдот"))
 async def get_joke(event: SimpleBotEvent) -> str:
-    sqlite_fetch(event.from_id, event.text)
+    await sqlite_fetch(event)
     msg = (await aiohttp_fetch(url='http://rzhunemogu.ru/RandJSON.aspx?CType=11'))[12:-2]
     await event.answer(message=msg, keyboard=START_KB.get_keyboard())

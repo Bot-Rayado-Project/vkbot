@@ -11,13 +11,13 @@ schedule_router = DefaultRouter()
 
 @simple_bot_message_handler(schedule_router, TextFilter("расписание"))
 async def get_schedule(event: SimpleBotEvent) -> str:
-    fetch = sqlite_fetch(event.from_id, event.text, True)
+    await sqlite_fetch(event)
     await event.answer(message='Выберите день.', keyboard=DAYS_OF_WEEK_KB.get_keyboard())
 
 
 @simple_bot_message_handler(schedule_router, TextFilter(DAYS_OF_WEEK_BUTTONS))
 async def get_day_of_week(event: SimpleBotEvent) -> str:
-    fetch = sqlite_fetch(event.from_id, event.text, True)
+    fetch = await sqlite_fetch(event, True)
     last_command = fetch[0][0].lower()  # Последняя команда
     penultimate_command = fetch[1][0].lower()  # Предпоследняя команда
     if penultimate_command == 'расписание':
@@ -31,7 +31,7 @@ async def get_day_of_week(event: SimpleBotEvent) -> str:
 
 @simple_bot_message_handler(schedule_router, TextFilter(CURRENT_OR_NEXT_WEEK_BUTTONS))
 async def get_current_or_next_week(event: SimpleBotEvent) -> str:
-    fetch = sqlite_fetch(event.from_id, event.text, True)
+    fetch = await sqlite_fetch(event, True)
     penultimate_command = fetch[1][0].lower()  # Предпоследняя команда
     pre_penultimate_command = fetch[2][0].lower()  # Пред предпоследняя команда
     if pre_penultimate_command == 'расписание' and any(cmd.lower() in [penultimate_command] for cmd in DAYS_OF_WEEK_BUTTONS):
@@ -42,7 +42,7 @@ async def get_current_or_next_week(event: SimpleBotEvent) -> str:
 
 @simple_bot_message_handler(schedule_router, TextFilter(STREAM_BUTTONS))
 async def get_stream(event: SimpleBotEvent) -> str:
-    fetch = sqlite_fetch(event.from_id, event.text, True)
+    fetch = await sqlite_fetch(event, True)
     last_command = fetch[0][0].lower()  # Последняя команда
     penultimate_command = fetch[1][0].lower()  # Предпоследняя команда
     pre_penultimate_command = fetch[2][0].lower()  # Пред предпоследняя команда
@@ -66,7 +66,7 @@ async def get_stream(event: SimpleBotEvent) -> str:
 
 @simple_bot_message_handler(schedule_router, TextFilter(GROUP_BUTTONS))
 async def get_group(event: SimpleBotEvent) -> str:
-    fetch = sqlite_fetch(event.from_id, event.text, True)
+    fetch = await sqlite_fetch(event, True)
     last_command = fetch[0][0].lower()  # Последняя команда # ГРУППА
     penultimate_command = fetch[1][0].lower()  # Предпоследняя команда
     pre_penultimate_command = fetch[2][0].lower()  # Пред предпоследняя команда

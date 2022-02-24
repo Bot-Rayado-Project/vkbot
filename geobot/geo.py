@@ -2,6 +2,7 @@ import random
 import math
 import json
 import pathlib
+from utils.terminal_codes import print_info
 # import asyncio
 from geopy import distance
 from datetime import datetime, timedelta
@@ -122,8 +123,9 @@ async def write_gpx(finaldistance: int, devider: int) -> None:
                                 height,
                                 start_time.strftime("%Y-%m-%dT%H:%M:%S")+"Z", c, s))
                     start_time += timedelta(seconds=devider)
+        print_info("Generation of route " +
+                   str(datetime.now()) + " completed.")
         output.write(closingbracket)
-        print('Генерация завершена.')
 
 
 # async def main() -> None:

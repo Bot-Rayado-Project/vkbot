@@ -3,10 +3,10 @@ import os
 from datetime import datetime
 import schedule.whataweek as whataweek
 #import whataweek
-from pathlib import Path
 from schedule.recieve import recieve_time_table
 #from recieve import recieve_time_table
 #import asyncio
+
 
 async def week_check(week_type):
     if week_type == 'текущая неделя':
@@ -19,10 +19,10 @@ async def week_check(week_type):
 
 
 async def get_sheet(group: str, user_id, temp_number) -> openpyxl.Workbook:
-    if not os.path.isdir("tables"): os.mkdir("tables") 
-    os.chdir("tables")
-    data = await recieve_time_table(group,user_id)
-    wb_obj = openpyxl.load_workbook(Path('table_{}.xlsx'.format(user_id)))
+    if not os.path.isdir("tables"):
+        os.mkdir("tables")
+    data = await recieve_time_table(group, user_id)
+    wb_obj = openpyxl.load_workbook('tables/table_{}.xlsx'.format(user_id))
     match data:
         case "бвт", number:
             wb_obj.active = temp_number
@@ -97,7 +97,7 @@ async def get_schedule(group_text, week_column, const, day_type, id, week_type):
     return schedule_output
 
 
-async def get_full_schedule(group_text,week_column,const, id, week_type):
+async def get_full_schedule(group_text, week_column, const, id, week_type):
 
     full_schedule = '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n' + 'Группа: ' + group_text.upper() + '\n' \
         + 'Неделя: ' + (await week_check(week_type)).capitalize() + '\n' \
@@ -150,19 +150,19 @@ async def get_full_schedule(group_text,week_column,const, id, week_type):
     return full_schedule_tuple
 
 
-async def print_schedule(day_input, group_input, id,week_type):  # тоже пиздец
+async def print_schedule(day_input, group_input, id, week_type):  # тоже пиздец
 
     week_checked = await week_check(week_type)
 
     const = 1 if week_checked == 'четная' else -1
     week_column = 'H' if week_checked == 'четная' else 'G'
     if day_input == 'вся неделя':
-        return await get_full_schedule(group_input,week_column,const, id, week_type)
+        return await get_full_schedule(group_input, week_column, const, id, week_type)
     else:
-        return await get_schedule(group_input,week_column,const, day_input, id, week_type)
+        return await get_schedule(group_input, week_column, const, day_input, id, week_type)
 
 
-#if __name__ == '__main__':
+# if __name__ == '__main__':
 #    async def main():
 #        s = await print_schedule('завтра', 'бфи2102', '1234142')
 #        print(s)
