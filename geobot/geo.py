@@ -24,9 +24,9 @@ def get_route_points_length_duration() -> list:
                             for j in [data["routes"][i] for i in data["routes"]]]
         # Вместо 0 номер маршрута ----------------------------------v
         points = [[float(j[0]), float(j[1])]
-                  for j in [i.split(", ") for i in routecoordinates[3]]]
-        length = random.uniform(3000.0, 3020.0)
-        duration = random.randint(1790000, 1800000)
+                  for j in [i.split(", ") for i in routecoordinates[4]]]
+        length = random.uniform(4020.0, 4050.0)
+        duration = random.randint(2590000, 2600000)
         return points, length, duration
 
 

@@ -1,5 +1,6 @@
 from vkwave.bots import DefaultRouter, SimpleBotEvent, simple_bot_message_handler, TextFilter
-from utils.keyboards import *
+from keyboards.schedule_kb import *
+from keyboards.menu_kb import *
 from utils.sqlite_requests import sqlite_fetch
 import schedule.sheethandler as sheethandler
 from datetime import datetime

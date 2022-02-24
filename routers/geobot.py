@@ -1,6 +1,6 @@
 from vkwave.bots import DefaultRouter, SimpleBotEvent, simple_bot_message_handler, TextFilter, DocUploader
 from utils.sqlite_requests import sqlite_fetch
-from utils.keyboards import START_KB
+from keyboards.menu_kb import START_KB
 from utils.settings import settings
 from datetime import datetime
 import geobot
