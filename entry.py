@@ -14,12 +14,12 @@ def set_up_connection_with_db(data_base_name: str) -> tuple | None:
         sqlite_connection: sqlite3.Connection = sqlite3.connect(data_base_name)
         print_info("Successfully connected to database.")
         return sqlite_connection, sqlite_connection.cursor()
-    except sqlite3.Error as error:
+    except sqlite3.Error:
         print_error("Database connection failure.")
         exit()
 
 
-def my_except_hook(exctype, value, traceback):
+def keyboard_interrupt(exctype, value, traceback):
     if exctype == KeyboardInterrupt:
         print_info("Keyboard interrupt has been detected.")
         print_info("Shutting down.")
@@ -33,5 +33,5 @@ def InitializeComponent() -> SimpleLongPollBot:
     # Установка логирования
     logging.basicConfig(filename="logs.log", level=logging.ERROR)
     # Установка обработчика ошибок
-    sys.excepthook = my_except_hook
+    sys.excepthook = keyboard_interrupt
     return SimpleLongPollBot(API_TOKEN, GROUP_ID)

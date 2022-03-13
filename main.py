@@ -2,14 +2,15 @@ from entry import InitializeComponent
 import routers
 from utils.terminal_codes import print_info
 
+routers_list: list = [routers.schedule_router, routers.joke_router,
+                      routers.easter_egg_router, routers.geobot_router,
+                      routers.help_router, routers.menu_router]
+
 print_info("Waiting for application startup.")
 bot = InitializeComponent()
-bot.dispatcher.add_router(routers.schedule_router)
-bot.dispatcher.add_router(routers.joke_router)
-bot.dispatcher.add_router(routers.easter_egg_router)
-bot.dispatcher.add_router(routers.geobot_router)
-bot.dispatcher.add_router(routers.help_router)
-bot.dispatcher.add_router(routers.menu_router)
+
+for router in routers_list:
+    bot.dispatcher.add_router(router)
 print_info("Application startup complete.")
 print_info("Started listening for messages...")
 

@@ -7,8 +7,7 @@ import entry
 sqlite_connection, cursor = entry.set_up_connection_with_db("users.db")
 
 
-async def sqlite_fetch(event: SimpleBotEvent, ret: bool = False) -> str:
-    user = await event.get_user()
+def sqlite_fetch(event: SimpleBotEvent, user: dict, ret: bool = False) -> str:
     print_info(
         f"({datetime.today().strftime('%H:%M:%S')}) \033[38;5;80m{user.first_name} {user.last_name} \033[38;5;254m(ID: {event.from_id}): \033[38;5;80m{event.text}\033[0;0m"
     )
