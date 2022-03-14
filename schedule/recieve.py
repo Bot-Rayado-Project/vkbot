@@ -4,7 +4,7 @@ from utils.aiohttp_requests import aiohttp_fetch_schedule
 #import sys
 #import asyncio
 #sys.path.append(os.path.abspath('../utils'))
-from aiohttp_requests import aiohttp_fetch_schedule
+#from aiohttp_requests import aiohttp_fetch_schedule
 
 
 async def recieve_time_table(group: str, user_id: str) -> None:
