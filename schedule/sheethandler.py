@@ -5,7 +5,7 @@ import schedule.whataweek as whataweek
 #import whataweek
 from schedule.recieve import recieve_time_table
 #from recieve import recieve_time_table
-#import asyncio
+import asyncio
 
 
 async def week_check(week_type):
@@ -324,9 +324,9 @@ async def print_schedule(day_input, group_input, id, week_type):
     else:
         return await get_schedule(group_input, group_column, day_input, id, week_type)
 
-# if __name__ == '__main__':
-#     async def main():
-#         s = await print_schedule('завтра', 'бвт2103', '1234142', 'следующая неделя')
-#         print(s)
-
-# asyncio.run(main())
+#if __name__ == '__main__':
+#    async def main():
+#        s = await print_schedule('завтра', 'бфи2102', '1234142', 'следующая неделя')
+#        print(s)
+#
+#asyncio.run(main())
