@@ -2,7 +2,7 @@ from bs4 import BeautifulSoup
 from utils.aiohttp_requests import aiohttp_fetch
 #import os
 #import sys
-#sys.path.append(os.path.abspath('../utils'))
+# sys.path.append(os.path.abspath('../utils'))
 #from aiohttp_requests import aiohttp_fetch
 import re
 
