@@ -161,7 +161,7 @@ async def get_schedule(group_text, group_column, day_type, id, week_type):
         if day_time_utc == 6:
             return 'занятий нет'
         else:
-            day = days_num[day_time_utc]
+            day = days_num[str(day_time_utc)]
             day_print = day_time_utc
     schedule = await get_sheet(group_text, id, groups[group_text])
     schedule_output = '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n' + 'Группа: ' + group_text.upper() + '\n' \
