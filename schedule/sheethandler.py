@@ -322,8 +322,8 @@ async def print_schedule(day_input, group_input, id, week_type):
     else:
         return await get_schedule(group_input, group_column, day_input, id, week_type)
 
-if __name__ == '__main__':
+'''if __name__ == '__main__':
     async def main():
         s = await print_schedule('завтра', 'бвт2108', '1234142', 'следующая неделя')
         print(s)
-asyncio.run(main())
+asyncio.run(main())'''
