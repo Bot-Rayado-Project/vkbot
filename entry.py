@@ -1,7 +1,6 @@
 import sqlite3
 import sys
 import logging
-import shutil
 from vkwave.bots import SimpleLongPollBot
 from utils.terminal_codes import print_info, print_error
 from utils.settings import Settings

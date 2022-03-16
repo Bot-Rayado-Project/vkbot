@@ -1,7 +1,7 @@
 from vkwave.bots import DefaultRouter, SimpleBotEvent, simple_bot_message_handler, PayloadFilter, PayloadContainsFilter
 from keyboards.schedule_kb import *
 from keyboards.menu_kb import *
-from utils.sqlite_requests import sqlite_fetch
+from utils.sqlite_requests import database_handler
 import schedule.sheethandler as sheethandler
 from datetime import datetime, timedelta
 
@@ -10,16 +10,14 @@ schedule_router = DefaultRouter()
 
 
 @simple_bot_message_handler(schedule_router, PayloadFilter({"button": "schedule"}))
+@database_handler()
 async def get_schedule(event: SimpleBotEvent) -> str:
-    user = await event.get_user()
-    sqlite_fetch(event, user)
     await event.answer(message='Выберите день.', keyboard=DAYS_OF_WEEK_KB.get_keyboard())
 
 
 @simple_bot_message_handler(schedule_router, PayloadContainsFilter("dow_button"))
-async def get_day_of_week(event: SimpleBotEvent) -> str:
-    user = await event.get_user()
-    fetch = sqlite_fetch(event, user, True)
+@database_handler(True)
+async def get_day_of_week(event: SimpleBotEvent, fetch: dict) -> str:
     last_command = fetch[0][0].lower()  # Последняя команда
     if last_command == DAYS_OF_WEEK_BUTTONS[2]:  # == вся неделя
         await event.answer(message='Выберите неделю.', keyboard=CURRENT_OR_NEXT_WEEK_KB.get_keyboard())
@@ -28,16 +26,14 @@ async def get_day_of_week(event: SimpleBotEvent) -> str:
 
 
 @simple_bot_message_handler(schedule_router, PayloadContainsFilter("conw_button"))
-async def get_current_or_next_week(event: SimpleBotEvent) -> str:
-    user = await event.get_user()
-    fetch = sqlite_fetch(event, user, True)
+@database_handler(True)
+async def get_current_or_next_week(event: SimpleBotEvent, fetch: dict) -> str:
     await event.answer(message='Выберите поток.', keyboard=STREAM_KB.get_keyboard())
 
 
 @simple_bot_message_handler(schedule_router, PayloadContainsFilter("stream_button"))
-async def get_stream(event: SimpleBotEvent) -> str:
-    user = await event.get_user()
-    fetch = sqlite_fetch(event, user, True)
+@database_handler(True)
+async def get_stream(event: SimpleBotEvent, fetch: dict) -> str:
     last_command = fetch[0][0].lower()  # Последняя команда
     if last_command == 'бфи':
         await event.answer(message='Выберите группу.', keyboard=GROUP_BUTTONS_BFI_KB.get_keyboard())
@@ -48,9 +44,8 @@ async def get_stream(event: SimpleBotEvent) -> str:
 
 
 @simple_bot_message_handler(schedule_router, PayloadContainsFilter("group_button"))
-async def get_group(event: SimpleBotEvent) -> str:
-    user = await event.get_user()
-    fetch = sqlite_fetch(event, user, True)
+@database_handler(True)
+async def get_group(event: SimpleBotEvent, fetch: dict) -> str:
     last_command = fetch[0][0].lower()  # Последняя команда # ГРУППА
     pre_penultimate_command = fetch[2][0].lower()  # Пред предпоследняя команда
     pre_pre_penultimate_command = fetch[3][0].lower()
