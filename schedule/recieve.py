@@ -4,14 +4,14 @@ import aiofile
 from typing import NamedTuple
 from bs4 import BeautifulSoup
 
-from utils.aiohttp_requests import aiohttp_fetch_schedule
-from utils.terminal_codes import print_error
+""" from utils.aiohttp_requests import aiohttp_fetch_schedule
+from utils.terminal_codes import print_error """
 
-# import os
-# import sys
-# sys.path.append(os.path.abspath('./utils'))
-# from aiohttp_requests import aiohttp_fetch_schedule
-# from terminal_codes import print_error
+import os
+import sys
+sys.path.append(os.path.abspath('./utils'))
+from aiohttp_requests import aiohttp_fetch_schedule
+from terminal_codes import print_error
 
 
 class GroupInfo(NamedTuple):
