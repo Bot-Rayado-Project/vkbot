@@ -1,10 +1,10 @@
 import openpyxl
 import os
 from datetime import datetime, timedelta
-#import schedule.whataweek as whataweek
-import whataweek
-#from schedule.recieve import recieve_time_table
-from recieve import recieve_time_table
+import schedule.whataweek as whataweek
+#import whataweek
+from schedule.recieve import recieve_time_table
+#from recieve import recieve_time_table
 import asyncio
 
 
