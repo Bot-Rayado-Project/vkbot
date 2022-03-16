@@ -294,8 +294,6 @@ async def get_full_schedule(group_text, week_column, id, week_type):
 
 async def print_schedule(day_input, group_input, id, week_type):
 
-    week_checked = await week_check(week_type)
-
     weeks_bvt_bfi = {
         '1': 'D',
         '2': 'E',
