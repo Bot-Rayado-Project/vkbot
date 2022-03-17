@@ -58,4 +58,4 @@ jobs:
           docker container stop vk_bot
           docker image rm vkbot -f
           docker build -t vkbot .
-          docker run -e API_TOKEN='${{ secrets.API_TOKEN }}' -e ALLOWED_USER_IDS="${{ secret.ALLOWED_USER_IDS }}" -e GROUP_ID='${{ GROUP_ID }}' -d --name vk_bot vkbot
+          docker run -e API_TOKEN='${{ secrets.API_TOKEN }}' -e ALLOWED_USER_IDS='${{ secrets.ALLOWED_USER_IDS }}' -e GROUP_ID='${{ secrets.GROUP_ID }}'' -d --name vk_bot vkbot
