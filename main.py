@@ -4,7 +4,8 @@ from utils.terminal_codes import print_info
 
 routers_list: list = [routers.schedule_router, routers.joke_router,
                       routers.easter_egg_router, routers.geobot_router,
-                      routers.help_router, routers.menu_router]
+                      routers.help_router, routers.menu_router,
+                      routers.aliases_router, routers.idiots_router]
 
 print_info("Waiting for application startup.")
 bot = InitializeComponent()

@@ -1,14 +1,16 @@
-from vkwave.bots import DefaultRouter, SimpleBotEvent, simple_bot_message_handler, TextFilter, PhotoUploader
-from utils.sqlite_requests import sqlite_fetch
-from keyboards.menu_kb import START_KB
+import keyboards.menu_kb as menu_kb
+
+from vkwave.bots import simple_bot_message_handler, DefaultRouter, SimpleBotEvent, TextFilter
+
+from utils.sqlite_requests import database_handler
+from utils.attachments import get_photo_from_link
 
 
 easter_egg_router = DefaultRouter()
 
 
 @simple_bot_message_handler(easter_egg_router, TextFilter("дима"))
-async def easteregg(event: SimpleBotEvent) -> str:
-    user = await event.get_user()
-    sqlite_fetch(event, user)
-    gif = await PhotoUploader(event.api_ctx).get_attachment_from_link(peer_id=event.object.object.message.peer_id, link="https://memes.co.in/memes/update/uploads/2021/12/InShot_20211209_222013681-1024x1024.jpg")
-    await event.answer(message='?', keyboard=START_KB.get_keyboard(), attachment=gif)
+@database_handler()
+async def easteregg(event: SimpleBotEvent) -> None:
+    photo = await get_photo_from_link(event, "https://memes.co.in/memes/update/uploads/2021/12/InShot_20211209_222013681-1024x1024.jpg")
+    await event.answer(message='?', keyboard=menu_kb.START_KB.get_keyboard(), attachment=photo)
