@@ -1,13 +1,13 @@
-from ast import Str
-from typing import Tuple
 import openpyxl
 import os
 from datetime import datetime, timedelta
 import schedule.whataweek as whataweek
 from schedule.recieve import recieve_time_table
+# Закомментировать для локального тестирования
 """ from recieve import recieve_time_table
 import whataweek
 import asyncio """
+# Раскоментить для локального тестирования
 
 
 async def week_check(week_type: str) -> str:
@@ -304,7 +304,15 @@ async def get_full_schedule(group_text, week_column, id, week_type, start_cell) 
         # Это выведет если в будет какая-то ошибка с ключём словаря а не со скачкой таблицы
         return ('Ошибка в выводе расписания #1')
     # Это определение константы для вывода дня недели, в зависимости от чётности
-    subject = 0 if await week_check(week_type) == 'нечетная' else 1
+    day_of_week = {
+        '1':'Понедельник',
+        '2':'Вторник',
+        '3':'Среда',
+        '4':'Четверг',
+        '5':'Пятница',
+        '6':'Суббота',
+    }
+    subject = 1
 
     if group_text not in ('бвт2105', 'бвт2106', 'бвт2107', 'бвт2108'):
         column = 'A'
@@ -312,8 +320,7 @@ async def get_full_schedule(group_text, week_column, id, week_type, start_cell) 
         column = 'B'  # Исключение для этих 4 групп, так как составители расписания решили что там начало с б
 
     for k in range(start_cell, 67, 11):
-        full_schedule = str(
-            schedule[column + str(k - subject)].value) + '\n\n'  # Добавление в конечный вывод дня недели то есть значения ячейки из таблицы
+        full_schedule = str(day_of_week[str(subject)]) + '\n\n'  # Добавление в конечный вывод дня недели то есть значения ячейки из таблицы
 
         for i in range(k, k + 10, 2):
 
@@ -327,6 +334,7 @@ async def get_full_schedule(group_text, week_column, id, week_type, start_cell) 
 
         # Добавляем полученный день в список
         full_schedule_list.append(full_schedule)
+        subject += 1
 
     # Из списка делаем кортеж и возвращаем
     full_schedule_tuple = tuple(full_schedule_list)
@@ -408,6 +416,7 @@ async def print_schedule(day_input: str, group_input: str, id: str, week_type: s
 
 """ if __name__ == '__main__':
     async def main():
-        s = await print_schedule('вся неделя', 'бвт2108', '1234142', 'следующая неделя')
-        print(s)
+        s = await print_schedule('вся неделя', 'бст2101', '123', 'следующая неделя')
+        for i in s:
+            print(i)
 asyncio.run(main()) """
