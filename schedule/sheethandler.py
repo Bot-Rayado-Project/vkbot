@@ -9,6 +9,7 @@ from schedule.recieve import recieve_time_table
 import whataweek
 import asyncio """
 # Раскоментить для локального тестирования
+#comment for pushs
 
 
 async def week_check(week_type: str) -> str:
