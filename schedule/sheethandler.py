@@ -429,7 +429,6 @@ async def print_schedule(day_input: str, group_input: str, id: str, week_type: s
 
 """ if __name__ == '__main__':
     async def main():
-        s = await print_schedule('завтра', 'бэи2101', '123', 'текущая неделя')
-        for i in s:
-            print(i)
+        s = await print_schedule('вся неделя', 'бфи2101', '123', 'текущая неделя')
+        print(s)
 asyncio.run(main()) """

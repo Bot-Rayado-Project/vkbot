@@ -1,14 +1,13 @@
 import asyncio
-from urllib import response
 import pytest
 
 
 from schedule import sheethandler
 # Закомментировать для локального тестирования
-""" import os
+import os
 import sys
 sys.path.append(os.path.abspath('../schedule'))
-import sheethandler """
+import sheethandler
 # Раскоментить для локального тестирования, также раскоментить соответсвующее во всех файлах schedule
 
 
