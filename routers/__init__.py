@@ -5,3 +5,4 @@ from routers.easter_egg import easter_egg_router
 from routers.geobot import geobot_router
 from routers.help import help_router
 from routers.aliases import aliases_router
+from routers.idiots import idiots_router
