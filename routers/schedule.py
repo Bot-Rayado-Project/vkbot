@@ -42,6 +42,8 @@ async def get_stream(event: SimpleBotEvent, fetch: dict) -> str:
         await event.answer(message='Выберите группу.', keyboard=schedule_kb.GROUP_BUTTONS_BVT_KB.get_keyboard())
     elif last_command == 'бст':
         await event.answer(message='Выберите группу.', keyboard=schedule_kb.GROUP_BUTTONS_BST_KB.get_keyboard())
+    elif last_command == 'бэи':
+        await event.answer(message='Выберите группу.', keyboard=schedule_kb.GROUP_BUTTONS_BEI_KB.get_keyboard())
 
 
 @simple_bot_message_handler(schedule_router, PayloadContainsFilter("group_button"))

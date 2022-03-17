@@ -1,6 +1,7 @@
 import openpyxl
 import os
 from datetime import datetime, timedelta
+
 import schedule.whataweek as whataweek
 from schedule.recieve import recieve_time_table
 # Закомментировать для локального тестирования
@@ -143,7 +144,10 @@ async def get_schedule(group_text: str, group_column: str, day_type: str, id: st
         'бст2103': 0,
         'бст2104': 1,
         'бст2105': 1,
-        'бст2106': 1
+        'бст2106': 1,
+        'бэи2101': 0,
+        'бэи2102': 0,
+        'бэи2103': 0
     }  # Список с группами для определения листа в файле
     days = ['понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота']
     days_num = {
@@ -180,9 +184,12 @@ async def get_schedule(group_text: str, group_column: str, day_type: str, id: st
                 return 'Ошибка в выводе расписания #1'
             day_print = day_time_utc  # Опять же, без плюс один, так как сегодняшний день
     # Скачиваем таблицу
-    schedule = await get_sheet(group_text, id, groups[group_text])
-    if 'Ошибка' in schedule:
-        return schedule  # Проверка на ошибку при скачке таблицы
+    try:
+        schedule = await get_sheet(group_text, id, groups[group_text])
+        if 'Ошибка' in schedule:
+            return schedule  # Проверка на ошибку при скачке таблицы
+    except KeyError:
+        return 'Ошибка в выводе расписания #1'
     try:
         schedule_output = '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n' + 'Группа: ' + group_text.upper() + '\n' \
             + 'День недели: ' + days[day_print].capitalize() + '\n' + 'Неделя: ' + (await week_check(week_type)).capitalize() + '\n' \
@@ -293,7 +300,10 @@ async def get_full_schedule(group_text, week_column, id, week_type, start_cell) 
         'бст2103': 0,
         'бст2104': 1,
         'бст2105': 1,
-        'бст2106': 1
+        'бст2106': 1,
+        'бэи2101': 0,
+        'бэи2102': 0,
+        'бэи2103': 0
     }  # Список с группами для определения листа в файле
     try:
         # Скачиваем таблицу изспользуя функцию
@@ -313,11 +323,6 @@ async def get_full_schedule(group_text, week_column, id, week_type, start_cell) 
         '6':'Суббота',
     }
     subject = 1
-
-    if group_text not in ('бвт2105', 'бвт2106', 'бвт2107', 'бвт2108'):
-        column = 'A'
-    else:
-        column = 'B'  # Исключение для этих 4 групп, так как составители расписания решили что там начало с б
 
     for k in range(start_cell, 67, 11):
         full_schedule = str(day_of_week[str(subject)]) + '\n\n'  # Добавление в конечный вывод дня недели то есть значения ячейки из таблицы
@@ -371,18 +376,19 @@ async def print_schedule(day_input: str, group_input: str, id: str, week_type: s
         '7': 'G',
         '8': 'H',
     }
-    weeks_bst = {
+    weeks_bst_bei = {
         '1': 'D',
         '2': 'E',
         '3': 'F',
         '4': 'D',
         '5': 'E',
         '6': 'F',
-    }  # Три словаря для определения столбца
+    } # Три словаря для определения столбца
+
     week_type_v2 = week_type  # Создаём вторую версию week_type для обработки воскресенья
     groups = ('бвт2101', 'бвт2102', 'бвт2103', 'бвт2104', 'бвт2105', 'бвт2106',
               'бвт2107', 'бвт2108', 'бфи2101', 'бфи2102', 'бст2101', 'бст2102', 'бст2103',
-              'бст2104', 'бст2105', 'бст2106')  # Все группы для проверки введённой группы
+              'бст2104', 'бст2105', 'бст2106', 'бэи2101', 'бэи2102', 'бэи2103')  # Все группы для проверки введённой группы
 
     if day_input not in ('завтра', 'сегодня', 'вся неделя') or group_input not in groups or week_type not in ('следующая неделя', 'текущая неделя'):
         return 'Ошибка ввода #1'  # Проверяем на ошибку ввода переменных
@@ -393,18 +399,25 @@ async def print_schedule(day_input: str, group_input: str, id: str, week_type: s
             # В данном куске кода мы делаем обработку исключения для завтра в воскресенье
             week_type_v2 = 'текущая неделя'
         # Определяем стартовую ячейку для вывода пар
-        start_cell = 2 if await week_check(week_type) == 'нечетная' else 3
         try:
             if group_input[1] == 'ф' or group_input[1] == 'в' and group_input[-1] not in ('5', '6', '7', '8'):
                 # Бвт 01-04 и бфи
                 group_column = weeks_bvt_01_04_bfi[group_input[-1]]
+                start_cell = 2 if await week_check(week_type) == 'нечетная' else 3 
+                # Определяем стартовую ячейку для вывода пар
             else:
                 if group_input[1] == 'в':
                     # Исключающиеся бвт(05-08)
                     group_column = weeks_bvt_05_08[group_input[-1]]
+                    start_cell = 2 if await week_check(week_type) == 'нечетная' else 3
+                    # Определяем стартовую ячейку для вывода пар
                 else:
-                    # То есть у нас номер колонки зависит от номера группы, в данном случае лист бст
-                    group_column = weeks_bst[group_input[-1]]
+                    if group_input[1] == 'с' or group_input[1] == 'э':
+                        # То есть у нас номер колонки зависит от номера группы, в данном случае лист бст
+                        group_column = weeks_bst_bei[group_input[-1]]
+                        start_cell = 2 if await week_check(week_type) == 'нечетная' else 3
+                        # Определяем стартовую ячейку для вывода пар
+
         except IndexError:
             # В данном случае, при ошибке вернёт пользователю эту строку.
             return 'Ошибка ввода #2'
@@ -416,7 +429,7 @@ async def print_schedule(day_input: str, group_input: str, id: str, week_type: s
 
 """ if __name__ == '__main__':
     async def main():
-        s = await print_schedule('вся неделя', 'бст2101', '123', 'следующая неделя')
+        s = await print_schedule('завтра', 'бэи2101', '123', 'текущая неделя')
         for i in s:
             print(i)
 asyncio.run(main()) """

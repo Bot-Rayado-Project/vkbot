@@ -26,7 +26,7 @@ async def recieve_time_table(group: str, user_id: str) -> None:
     responce = await aiohttp_fetch_schedule("https://mtuci.ru/time-table/")
     soup = BeautifulSoup(responce, 'lxml')
     data = GroupInfo(re.sub('[^а-я]', '', group), re.sub('[^0-9]', '', group))
-    STREAM_ID: dict = {'бвт': '09.03.01', 'бст': '09.03.02', 'бфи': '02.03.02', 'биб': '10.03.01'}
+    STREAM_ID: dict = {'бвт': '09.03.01', 'бст': '09.03.02', 'бфи': '02.03.02', 'биб': '10.03.01', 'бэи': '09.03.03'}
     for link in soup.find_all('a'):
         _link = link.get('href')
         try:
@@ -37,5 +37,5 @@ async def recieve_time_table(group: str, user_id: str) -> None:
         except AttributeError:
             pass
         except KeyError:
-            print_error("Ошибка скачмванмя таблицы.")
+            print_error("Ошибка скачмвания таблицы.")
             return None
