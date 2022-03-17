@@ -199,8 +199,8 @@ async def get_schedule(group_text, group_column, day_type, id, week_type, start_
 
             time_par += 1 # Счётчик пары плюс один
     except:
-        return 'Ошибка в выводе расписания #1'
-    return schedule_output
+        return 'Ошибка в выводе расписания #1' # Если же по каким-то причинам цикл не заработает, то выведет ошибку
+    return schedule_output 
 
 
 '''async def get_full_schedule(group_text, week_column, const, id, week_type):
