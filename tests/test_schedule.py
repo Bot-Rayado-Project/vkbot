@@ -1,4 +1,5 @@
 import asyncio
+from urllib import response
 import pytest
 
 
@@ -180,16 +181,16 @@ async def test_count_pars_schedule(day, group, week_type, excepted):
                              ('вся неделя', 'бэи2103', 'следующая неделя', 
                              ['Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота', 'None'])])
 async def test_full_schedule(day, group, week_type, excepted):
-
-    assert (excepted[0] in (await sheethandler.print_schedule(day, group, '123', week_type))[1]
-            and excepted[1] in (await sheethandler.print_schedule(day, group, '123', week_type))[2]
-            and excepted[2] in (await sheethandler.print_schedule(day, group, '123', week_type))[3]
-            and excepted[3] in (await sheethandler.print_schedule(day, group, '123', week_type))[4]
-            and excepted[4] in (await sheethandler.print_schedule(day, group, '123', week_type))[5]
-            and excepted[5] in (await sheethandler.print_schedule(day, group, '123', week_type))[6]
-            and excepted[6] not in (await sheethandler.print_schedule(day, group, '123', week_type))[1]
-            and excepted[6] not in (await sheethandler.print_schedule(day, group, '123', week_type))[2]
-            and excepted[6] not in (await sheethandler.print_schedule(day, group, '123', week_type))[3]
-            and excepted[6] not in (await sheethandler.print_schedule(day, group, '123', week_type))[4]
-            and excepted[6] not in (await sheethandler.print_schedule(day, group, '123', week_type))[5]
-            and excepted[6] not in (await sheethandler.print_schedule(day, group, '123', week_type))[6])
+    response = await sheethandler.print_schedule(day, group, '123', week_type)
+    assert (excepted[0] in response[1]
+            and excepted[1] in response[2]
+            and excepted[2] in response[3]
+            and excepted[3] in response[4]
+            and excepted[4] in response[5]
+            and excepted[5] in response[6]
+            and excepted[6] not in response[1]
+            and excepted[6] not in response[2]
+            and excepted[6] not in response[3]
+            and excepted[6] not in response[4]
+            and excepted[6] not in response[5]
+            and excepted[6] not in response[6])
