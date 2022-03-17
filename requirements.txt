@@ -6,3 +6,5 @@ vkwave
 openpyxl
 geopy
 lxml
+pytest
+pytest-asyncio
