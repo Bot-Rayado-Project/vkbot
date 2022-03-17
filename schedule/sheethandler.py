@@ -41,7 +41,8 @@ async def get_sheet(group: str, user_id, temp_number) -> openpyxl.Workbook:
     except:
         return 'Ошибка в скачке таблицы #3'
     data = await recieve_time_table(group, user_id)
-    if 'Ошибка' in data: return 'Ошибка в скачке таблицы #4'
+    if 'Ошибка' in data:
+        return 'Ошибка в скачке таблицы #4'
     try:
         wb_obj = openpyxl.load_workbook('tables/table_{}.xlsx'.format(user_id))
     except:
@@ -121,8 +122,8 @@ async def get_sheet(group: str, user_id, temp_number) -> openpyxl.Workbook:
 
 async def get_schedule(group_text, group_column, day_type, id, week_type, start_cell):
 
-    if 'Ошибка' in await week_check(week_type): return await week_check(week_type)
-    if 'Ошибка' in schedule: return schedule
+    if 'Ошибка' in await week_check(week_type):
+        return await week_check(week_type)
 
     time = {
         1: '9:30 - 11:05\n',
@@ -181,6 +182,7 @@ async def get_schedule(group_text, group_column, day_type, id, week_type, start_
                 return 'Ошибка в выводе расписания #1'
             day_print = day_time_utc
     schedule = await get_sheet(group_text, id, groups[group_text])
+    if 'Ошибка' in schedule: return schedule
     try:
         schedule_output = '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n' + 'Группа: ' + group_text.upper() + '\n' \
             + 'День недели: ' + days[day_print].capitalize() + '\n' + 'Неделя: ' + (await week_check(week_type)).capitalize() + '\n' \
@@ -267,8 +269,8 @@ async def get_full_schedule(group_text, week_column, id, week_type, start_cell):
 
     full_schedule_tuple = ()
     full_schedule_list = []
-    if 'Ошибка' in await week_check(week_type): return await week_check(week_type)
-    if 'Ошибка' in schedule: return schedule
+    if 'Ошибка' in await week_check(week_type):
+        return await week_check(week_type)
     full_schedule_list.append('⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n' + 'Группа: ' + group_text.upper() + '\n'
                               + 'Неделя: ' + (await week_check(week_type)).capitalize() + '\n'
                               + '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n')
@@ -292,6 +294,7 @@ async def get_full_schedule(group_text, week_column, id, week_type, start_cell):
     }
     try:
         schedule = await get_sheet(group_text, id, groups[group_text])
+        if 'Ошибка' in schedule: return schedule
     except KeyError:
         return ('Ошибка в выводе расписания #1')
     subject = 0 if await week_check(week_type) == 'нечетная' else 1
@@ -303,7 +306,8 @@ async def get_full_schedule(group_text, week_column, id, week_type, start_cell):
 
     for k in range(start_cell, 67, 11):
         try:
-            full_schedule = str(schedule[column + str(k - subject)].value) + '\n\n'
+            full_schedule = str(
+                schedule[column + str(k - subject)].value) + '\n\n'
         except:
             return ('Ошибка в считывании таблицы #1')
 
@@ -336,8 +340,9 @@ async def get_full_schedule(group_text, week_column, id, week_type, start_cell):
 
 async def print_schedule(day_input, group_input, id, week_type):
 
-    if 'Ошибка' in await week_check(week_type): return await week_check(week_type)
-    
+    if 'Ошибка' in await week_check(week_type):
+        return await week_check(week_type)
+
     weeks_bvt_01_04_bfi = {
         '1': 'D',
         '2': 'E',
@@ -359,8 +364,10 @@ async def print_schedule(day_input, group_input, id, week_type):
         '6': 'F',
     }
     week_type_2 = week_type
-    groups = ('бвт2101', 'бвт2102', 'бвт2103', 'бвт2104', 'бвт2105', 'бвт2106', 'бвт2107', 
-    'бвт2108', 'бфи2101', 'бфи2102', 'бст2101', 'бст2102', 'бст2103', 'бст2104', 'бст2105', 'бст2106')
+    groups = ('бвт2101', 'бвт2102', 'бвт2103', 'бвт2104', 'бвт2105', 'бвт2106',
+    'бвт2107', 'бвт2108', 'бфи2101', 'бфи2102', 'бст2101', 'бст2102', 'бст2103',
+    'бст2104', 'бст2105', 'бст2106')
+
     if day_input not in ('завтра', 'сегодня', 'вся неделя') or group_input not in groups or week_type not in ('следующая неделя', 'текущая неделя'):
         return 'Ошибка ввода #1'
     else:
@@ -376,10 +383,11 @@ async def print_schedule(day_input, group_input, id, week_type):
                 if group_input[1] == 'в':
                     group_column = weeks_bvt_05_08[group_input[-1]]
                 else:
-                    group_column = weeks_bst[group_input[-1]]
-        except KeyError:
-            return 'Ошибка ввода #2'
-        if day_input == 'вся неделя':
+                    group_column = weeks_bst[group_input[-1]] # То есть у нас номер колонки зависит от номера группы, в данном случае лист бст
+        except IndexError:
+            return 'Ошибка ввода #2' # В данном случае, при ошибке вернёт пользователю эту строку.
+        
+        if day_input == 'вся неделя': #В данном куске кода мы уже делаем отправку определённую фукнцию в зависимости от ввода данных
             return await get_full_schedule(group_input, group_column, id, week_type_2, start_cell)
         else:
             return await get_schedule(group_input, group_column, day_input, id, week_type_2, start_cell)
