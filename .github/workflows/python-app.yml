@@ -6,10 +6,10 @@ name: Python application
 on:
   push:
     branches:
-      - 'master'
+      - 'main'
   pull_request:
     branches:
-      - 'master'
+      - 'main'
 
 jobs:
   build:
@@ -33,9 +33,9 @@ jobs:
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-    #- name: Test with pytest
-    #  run: |
-    #    pytest
+    - name: Test with pytest
+      run: |
+        pytest
     - name: Install SSH Key
       uses: shimataro/ssh-key-action@v2
       with:
@@ -44,7 +44,7 @@ jobs:
     - name: Adding Known Hosts
       run: ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
     - name: Deploy with rsync
-      run: rsync -avz . ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/home/vkbot/
+      run: rsync -avz . ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/vkbot/
     - name: multiple command
       uses: appleboy/ssh-action@master
       with:
@@ -53,5 +53,10 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         port: ${{ secrets.SSH_PORT }}
         script: |
-          #Test change to check if it works
           docker container ls
+          docker container stop vk_bot
+          docker container rm vk_bot -f
+          docker image rm vkbot -f
+          docker build -t vkbot /vkbot/
+          docker run -e API_TOKEN='${{ secrets.API_TOKEN }}' -e ALLOWED_USER_IDS='${{ secrets.ALLOWED_USER_IDS }}' -e GROUP_ID='${{ secrets.GROUP_ID }}' -d --name vk_bot vkbot
+          echo Success

@@ -1,7 +1,6 @@
 from datetime import datetime, timedelta
 from calendar import month_name
 from operator import length_hint
-from turtle import speed
 from geopy import distance
 #from utils.terminal_codes import print_error
 import math
