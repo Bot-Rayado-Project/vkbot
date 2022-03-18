@@ -8,12 +8,12 @@ from utils.aiohttp_requests import aiohttp_fetch_schedule
 from utils.terminal_codes import print_error
 
 # Закомментировать для локального тестирования
-'''import os
+""" import os
 import asyncio
 import sys
-sys.path.append(os.path.abspath('./utils'))
+sys.path.append(os.path.abspath('../utils'))
 from aiohttp_requests import aiohttp_fetch_schedule
-from terminal_codes import print_error'''
+from terminal_codes import print_error """
 # Раскоментить для локального тестирования
 
 
@@ -32,15 +32,14 @@ async def recieve_time_table(group: str, user_id: str) -> None:
     for link in soup.find_all('a'):
         _link = link.get('href')
         try:
-            if _link.startswith('/upload/') and ("IT" in _link or "KiIB" in _link or 'SiSS') and "1-kurs" in _link and STREAM_ID[data.stream] in _link:
-                print(_link)
+            if _link.startswith('/upload/') and ("IT" in _link or "KiIB" in _link or 'SiSS' in _link) and "1-kurs" in _link and STREAM_ID[data.stream] in _link:
                 async with aiofile.async_open('tables/table_{}.xlsx'.format(user_id), 'wb') as table:
                     await table.write(await aiohttp_fetch_schedule('https://mtuci.ru' + _link, True))
                 return data
         except AttributeError:
             pass
         except KeyError:
-            print_error("Ошибка скачмвания таблицы.")
+            print_error("Ошибка скачивания таблицы.")
             return None
 
 # Раскоментировать для локального тестирования
