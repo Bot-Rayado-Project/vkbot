@@ -6,14 +6,16 @@ from bs4 import BeautifulSoup
 
 from utils.aiohttp_requests import aiohttp_fetch_schedule
 from utils.terminal_codes import print_error
-# Закомментировать для локального тестирования
 
-""" import os
+# Закомментировать для локального тестирования
+'''import os
+import asyncio
 import sys
-sys.path.append(os.path.abspath('../utils'))
+sys.path.append(os.path.abspath('./utils'))
 from aiohttp_requests import aiohttp_fetch_schedule
-from terminal_codes import print_error """
+from terminal_codes import print_error'''
 # Раскоментить для локального тестирования
+
 
 class GroupInfo(NamedTuple):
     stream: str
@@ -26,11 +28,12 @@ async def recieve_time_table(group: str, user_id: str) -> None:
     responce = await aiohttp_fetch_schedule("https://mtuci.ru/time-table/")
     soup = BeautifulSoup(responce, 'lxml')
     data = GroupInfo(re.sub('[^а-я]', '', group), re.sub('[^0-9]', '', group))
-    STREAM_ID: dict = {'бвт': '09.03.01', 'бст': '09.03.02', 'бфи': '02.03.02', 'биб': '10.03.01', 'бэи': '09.03.03'}
+    STREAM_ID: dict = {'бвт': '09.03.01', 'бст': '09.03.02', 'бфи': '02.03.02', 'биб': '10.03.01', 'бэи': '09.03.03', 'бин': '11.03.02'}
     for link in soup.find_all('a'):
         _link = link.get('href')
         try:
-            if _link.startswith('/upload/') and "IT" in _link and "1-kurs" in _link and STREAM_ID[data.stream] in _link:
+            if _link.startswith('/upload/') and ("IT" in _link or "KiIB" in _link or 'SiSS') and "1-kurs" in _link and STREAM_ID[data.stream] in _link:
+                print(_link)
                 async with aiofile.async_open('tables/table_{}.xlsx'.format(user_id), 'wb') as table:
                     await table.write(await aiohttp_fetch_schedule('https://mtuci.ru' + _link, True))
                 return data
@@ -39,3 +42,9 @@ async def recieve_time_table(group: str, user_id: str) -> None:
         except KeyError:
             print_error("Ошибка скачмвания таблицы.")
             return None
+
+# Раскоментировать для локального тестирования
+'''if __name__ == '__main__':
+    async def main():
+        await recieve_time_table('бин2101', '3123123')
+    asyncio.run(main())'''
