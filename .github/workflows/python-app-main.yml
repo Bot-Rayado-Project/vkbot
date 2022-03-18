@@ -27,9 +27,6 @@ jobs:
         python -m pip install --upgrade pip
         pip install flake8 pytest
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-  tests:
-    needs: build
-    steps: 
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
@@ -39,9 +36,6 @@ jobs:
     - name: Test with pytest
       run: |
         pytest
-  deploy:
-    needs: [build, tests]
-    steps:
     - name: Install SSH Key
       uses: shimataro/ssh-key-action@v2
       with:
