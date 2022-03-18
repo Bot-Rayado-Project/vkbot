@@ -1,4 +1,4 @@
-from tracemalloc import start
+from datetime import datetime,timedelta
 import openpyxl
 import os
 
@@ -299,7 +299,9 @@ async def print_schedule(day_input: str, group_input: str, id: str, week_type: s
 
     }
     # Список колонок для вывода определённой группы
-
+    if ((day_input == 'завтра' and datetime.weekday(datetime.today().utcnow() + timedelta(hours=3)) == 5)
+        or (day_input == 'сегодня' and datetime.weekday(datetime.today().utcnow() + timedelta(hours=3)) == 6)):
+        return 'Занятий нет'
     if check_right_input:
 
         week_checked = await week_check(week_type)

@@ -61,10 +61,7 @@ async def get_group(event: SimpleBotEvent, fetch: dict) -> str:
         for i in range(len(schedule)):
             await event.answer(message=schedule[i], keyboard=menu_kb.START_KB.get_keyboard())
     elif any(cmd.lower() in [pre_penultimate_command] for cmd in schedule_kb.DAYS_OF_WEEK_BUTTONS):
-        if (pre_penultimate_command == 'сегодня' and datetime.weekday(datetime.today().utcnow() + timedelta(hours=3)) == 6) or (pre_penultimate_command == 'завтра' and datetime.weekday(datetime.today().utcnow() + timedelta(hours=3)) == 5):
-            await event.answer(message=str(pre_penultimate_command + ' нет занятий.'), keyboard=menu_kb.START_KB.get_keyboard())
-        else:
-            schedule = await sheethandler.print_schedule(pre_penultimate_command, last_command, event.from_id, 'текущая неделя')
-            await event.answer(message=schedule, keyboard=menu_kb.START_KB.get_keyboard())
+        schedule = await sheethandler.print_schedule(pre_penultimate_command, last_command, event.from_id, 'текущая неделя')
+        await event.answer(message=schedule, keyboard=menu_kb.START_KB.get_keyboard())
     else:
         await event.answer(message="Непредвиденная ошибка.", keyboard=menu_kb.START_KB.get_keyboard())
