@@ -307,7 +307,8 @@ async def print_schedule(day_input: str, group_input: str, id: str, week_type: s
 
         if (day_input == 'завтра' and datetime.weekday(datetime.today().utcnow() + timedelta(hours=3)) == 6):
             week_checked = await week_check('следуюящая неделя')
-
+        else:
+            week_checked = await week_check(week_type)
         try:
             schedule = await get_sheet(group_input, id, groups[group_input])
         except KeyError:
