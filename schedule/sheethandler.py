@@ -3,18 +3,18 @@ import openpyxl
 import os
 
 
-import schedule.whataweek as whataweek
+""" import schedule.whataweek as whataweek
 from schedule.recieve import recieve_time_table
 from schedule.streams.bvt import get_full_schedule_bvt, get_schedule_bvt
 from schedule.streams.bst import get_full_schedule_bst, get_schedule_bst
 from schedule.streams.bei import get_full_schedule_bei, get_schedule_bei
 from schedule.streams.bfi import get_full_schedule_bfi, get_schedule_bfi
 from schedule.streams.bib import get_full_schedule_bib, get_schedule_bib
-from schedule.streams.bin import get_full_schedule_bin, get_schedule_bin
+from schedule.streams.bin import get_full_schedule_bin, get_schedule_bin """
 # Закомментировать для локального тестирования
-""" import os
+import os
 import sys
-sys.path.append(os.path.abspath('../streams'))
+sys.path.append(os.path.abspath('./streams'))
 from bvt import get_full_schedule_bvt, get_schedule_bvt
 from bst import get_full_schedule_bst, get_schedule_bst
 from bei import get_full_schedule_bei, get_schedule_bei
@@ -23,7 +23,7 @@ from bib import get_full_schedule_bib, get_schedule_bib
 from bin import get_full_schedule_bin, get_schedule_bin
 from recieve import recieve_time_table
 import whataweek
-import asyncio """
+import asyncio
 # Раскоментить для локального тестирования
 
 
@@ -304,7 +304,8 @@ async def print_schedule(day_input: str, group_input: str, id: str, week_type: s
         return 'Занятий нет'
     if check_right_input:
 
-        week_checked = await week_check(week_type)
+        if (day_input == 'завтра' and datetime.weekday(datetime.today().utcnow() + timedelta(hours=3)) == 6):
+            week_checked = await week_check('следуюящая неделя')
 
         try:
             schedule = await get_sheet(group_input, id, groups[group_input])
@@ -357,9 +358,9 @@ async def print_schedule(day_input: str, group_input: str, id: str, week_type: s
         return 'Ошибка ввода'
         
 
-""" if __name__ == '__main__':
+if __name__ == '__main__':
     async def main():
-        s = await print_schedule('завтра', 'бин2109', '123', 'текущая неделя')
+        s = await print_schedule('завтра', 'бвт2103', '123', 'текущая неделя')
         #for i in s: print(i)
         print(s)
-asyncio.run(main()) """
+asyncio.run(main())
