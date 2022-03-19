@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 
 
 async def get_schedule_bei(day_type: str, group_text: str, group_column: str, week_type: str, schedule) -> str:
-    
+
     time = {
         1: '9:30 - 11:05\n',
         2: '11:20 - 12:55\n',
@@ -19,6 +19,7 @@ async def get_schedule_bei(day_type: str, group_text: str, group_column: str, we
         if day_time_utc == 6:
             # Обрабатываем исключение воскресенья для вывода, то есть автоматом понедельник в day
             day = start_cell
+            day_time_utc = 0
         else:
             day_time_utc += 1
             day = int(day_time_utc) * 11 + start_cell
@@ -55,7 +56,7 @@ async def get_schedule_bei(day_type: str, group_text: str, group_column: str, we
         except:
             # Обрабатываем ошибку в считывании таблицы
             return 'Ошибка в считывании таблицы #1'
-        
+
         time_para += 1  # Счётчик пары плюс один
 
     return schedule_output
@@ -97,7 +98,7 @@ async def get_full_schedule_bei(group_text: str, week_type: str, schedule, week_
             else:
                 full_schedule += 'Пары нет\n' + '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n'
                 # Если же пустая, то пары нет
-        
+
         # Добавляем полученный день в список
         full_schedule_list.append(full_schedule)
         subject += 1

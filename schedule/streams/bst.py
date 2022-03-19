@@ -19,6 +19,7 @@ async def get_schedule_bst(day_type: str, group_text: str, group_column: str, we
         if day_time_utc == 6:
             # Обрабатываем исключение воскресенья для вывода, то есть автоматом понедельник в day
             day = start_cell
+            day_time_utc = 0
         else:
             day_time_utc += 1
             day = int(day_time_utc) * 11 + start_cell
