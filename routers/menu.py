@@ -9,7 +9,7 @@ menu_router = DefaultRouter()
 
 
 @simple_bot_message_handler(menu_router, TextFilter(["старт", "меню", "расписание"], PayloadFilter({"button": "menu"})))
-@database_handler()
+@database_handler(is_menu=True)
 async def menu(event: SimpleBotEvent) -> str:
     await event.answer(message='Выберите команду из списка.', keyboard=menu_kb.START_KB.get_keyboard())
 
