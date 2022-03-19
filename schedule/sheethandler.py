@@ -5,16 +5,16 @@ import os
 
 import schedule.whataweek as whataweek
 from schedule.recieve import recieve_time_table
-from schedule.potoks.bvt import get_full_schedule_bvt, get_schedule_bvt
-from schedule.potoks.bst import get_full_schedule_bst, get_schedule_bst
-from schedule.potoks.bei import get_full_schedule_bei, get_schedule_bei
-from schedule.potoks.bfi import get_full_schedule_bfi, get_schedule_bfi
-from schedule.potoks.bib import get_full_schedule_bib, get_schedule_bib
-from schedule.potoks.bin import get_full_schedule_bin, get_schedule_bin
+from schedule.streams.bvt import get_full_schedule_bvt, get_schedule_bvt
+from schedule.streams.bst import get_full_schedule_bst, get_schedule_bst
+from schedule.streams.bei import get_full_schedule_bei, get_schedule_bei
+from schedule.streams.bfi import get_full_schedule_bfi, get_schedule_bfi
+from schedule.streams.bib import get_full_schedule_bib, get_schedule_bib
+from schedule.streams.bin import get_full_schedule_bin, get_schedule_bin
 # Закомментировать для локального тестирования
 """ import os
 import sys
-sys.path.append(os.path.abspath('../potoks'))
+sys.path.append(os.path.abspath('../streams'))
 from bvt import get_full_schedule_bvt, get_schedule_bvt
 from bst import get_full_schedule_bst, get_schedule_bst
 from bei import get_full_schedule_bei, get_schedule_bei
