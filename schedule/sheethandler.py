@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 import openpyxl
 import os
-
+import glob
 
 import schedule.whataweek as whataweek
 from schedule.recieve import recieve_time_table
@@ -87,7 +87,8 @@ async def get_sheet(group: str, user_id: str, temp_number: str) -> openpyxl.Work
         return 'Ошибка в скачке таблицы #4'  # Проверка, что скачалось без ошибки
 
     try:
-        wb_obj = openpyxl.load_workbook('tables/table_{}.xlsx'.format(user_id))
+        path = glob.glob('tables/table_{0}_*.xlsx'.format(user_id))[0]
+        wb_obj = openpyxl.load_workbook(path)
     except:
         # Проверка вторая так как иногда ссылки меняют, и ест ьвероятность простого парса еррор сайта
         return 'Ошибка в скачке таблицы #2'
