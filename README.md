@@ -11,6 +11,11 @@
 
 Bot Rayado was created to make students' lifes easier.
 
+## Tests
+
+![Dev tests](https://github.com/3xiced/vkbot/actions/workflows/python-app-dev.yml/badge.svg)
+![Main tests & deployment](https://github.com/3xiced/vkbot/actions/workflows/python-app-main.yml/badge.svg)
+
 ## Getting Started
 
 Install requirements.txt with
