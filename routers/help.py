@@ -12,4 +12,4 @@ help_router = DefaultRouter()
 @database_handler()
 async def help(event: SimpleBotEvent) -> str:
     photo_lamabot, photo_crymother = await get_photo_from_path(event, "img/sasha.jpg", "img/ivan.jpg")
-    await event.answer(message='Помощи нет и не будет. \n@lamabot2000\n@crymother', keyboard=menu_kb.START_KB.get_keyboard(), attachment=[photo_lamabot, photo_crymother])
+    await event.answer(message='В случае ошибки пишите: \n@lamabot2000\n@crymother', keyboard=menu_kb.START_KB.get_keyboard(), attachment=[photo_lamabot, photo_crymother])

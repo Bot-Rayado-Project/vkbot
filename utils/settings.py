@@ -22,7 +22,7 @@ class Settings():
                     "Only 1 API_TOKEN is given. For better performance use 3 or more.")
             self.__API_TOKEN_OUTPUT = []
             for i in self.__API_TOKEN:
-                self.__API_TOKEN_OUTPUT += [i[:8]+"..."]
+                self.__API_TOKEN_OUTPUT += [i[:8] + "..."]
             print_info("API_TOKENS: " +
                        ", ".join(self.__API_TOKEN_OUTPUT))
         except:
@@ -39,7 +39,6 @@ class Settings():
             error = True
         if error:
             print_error(f"Import error. {counter} arguments are not given.")
-            exit()
         else:
             print_info("Import complete.")
 

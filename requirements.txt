@@ -8,3 +8,4 @@ geopy
 lxml
 pytest
 pytest-asyncio
+requests

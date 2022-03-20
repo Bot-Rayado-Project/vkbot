@@ -6,3 +6,4 @@ from routers.geobot import geobot_router
 from routers.help import help_router
 from routers.aliases import aliases_router
 from routers.idiots import idiots_router
+from routers.config import config_router

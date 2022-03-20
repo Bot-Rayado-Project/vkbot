@@ -1,12 +1,26 @@
 import sqlite3
 import sys
 import logging
+import requests
+from bs4 import BeautifulSoup
 from utils.exceptions import keyboard_interrupt
 from vkwave.bots import SimpleLongPollBot
+from vkwave.bots.storage.storages import Storage
+from vkwave.bots.storage.types import Key
 from utils.terminal_codes import print_info, print_error
 from utils.settings import Settings
+import re
+import asyncio
+from typing import NamedTuple
 
 settings = Settings()
+storage = Storage()
+default_keys = {}
+
+
+class GroupInfo(NamedTuple):
+    stream: str
+    group: str
 
 
 class InitializeComponent:
@@ -28,6 +42,8 @@ class InitializeComponent:
         self.__set_keyboard_interrupt()
         # Установка логирования
         self.__set_logging()
+        # Установка стандартных ключей
+        get_default_keys()
         print_info("Application startup complete.")
         print_info("Started listening for messages...")
 
@@ -49,3 +65,33 @@ def set_up_connection_with_db(data_base_name: str) -> tuple | None:
     except sqlite3.Error:
         print_error("Database connection failure.")
         exit()
+
+
+def get_default_keys():
+    global default_keys
+    responce = requests.get("https://mtuci.ru/time-table/")
+    soup = BeautifulSoup(responce.text, 'lxml')
+    STREAM_ID: dict = {'бвт': '09.03.01', 'бст': '09.03.02', 'бфи': '02.03.02', 'биб': '10.03.01', 'бэи': '09.03.03', 'бин': '11.03.02'}
+    for link in soup.find_all('a'):
+        _link = link.get('href')
+        try:
+            if _link.startswith('/upload/') and ("IT" in _link or "KiIB" in _link or 'SiSS' in _link) and "1-kurs" in _link:
+                if STREAM_ID["бвт"] in _link:
+                    default_keys["бвт"] = _link[15:18]
+                elif STREAM_ID["бст"] in _link:
+                    default_keys["бст"] = _link[15:18]
+                elif STREAM_ID["бфи"] in _link:
+                    default_keys["бфи"] = _link[15:18]
+                elif STREAM_ID["биб"] in _link:
+                    default_keys["биб"] = _link[15:18]
+                elif STREAM_ID["бэи"] in _link:
+                    default_keys["бэи"] = _link[15:18]
+                elif STREAM_ID["бин"] in _link:
+                    default_keys["бин"] = _link[15:18]
+                else:
+                    pass
+        except AttributeError:
+            pass
+        except KeyError:
+            print_error("Ошибка задания стартовых ключей ключей.")
+            return None
