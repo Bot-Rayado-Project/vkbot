@@ -27,7 +27,7 @@ def database_handler(ret_cmd: bool = False, ret_cfg: bool = False, ret_flag: boo
                         cursor.execute(C_SQLITE_SET_IS_WRITING_FALSE.format(event.from_id))
                         sqlite_connection.commit()
                         return await func(event)
-                elif write_flag:
+                if write_flag:
                     cursor.execute(C_SQLITE_SET_IS_WRITING_TRUE.format(event.from_id))
                     sqlite_connection.commit()
                     cursor.execute(C_SQLITE_SET_BUTTON_TO_WRITE.format(event.payload["choose_cell"], event.from_id))

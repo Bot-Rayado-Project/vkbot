@@ -11,7 +11,7 @@ schedule_router = DefaultRouter()
 
 
 @simple_bot_message_handler(schedule_router, PayloadFilter({"button": "schedule"}))
-@database_handler()
+@database_handler(is_menu=True)
 async def get_schedule(event: SimpleBotEvent) -> str:
     await event.answer(message='Выберите день.', keyboard=schedule_kb.DAYS_OF_WEEK_KB.get_keyboard())
 
@@ -68,7 +68,7 @@ async def get_group(event: SimpleBotEvent, fetch: dict, flag: bool, btn: str) ->
             await event.answer(message="Непредвиденная ошибка.", keyboard=menu_kb.START_KB.get_keyboard())
     else:
         if any(cmd.lower() in [pre_penultimate_command] for cmd in schedule_kb.CURRENT_OR_NEXT_WEEK_BUTTONS) and pre_pre_penultimate_command == schedule_kb.DAYS_OF_WEEK_BUTTONS[2]:
-            result = pre_penultimate_command.split()[0] + ' ' + 'неделя' + ' ' + last_command
+            result = pre_penultimate_command.split()[0][0].upper() + 'Н' + ' ' + last_command.upper()
             if btn[0][0] == 'first_btn':
                 set_first(result, event)
                 await event.answer(message=f"Задан шаблон: {result}", keyboard=menu_kb.START_KB.get_keyboard())
@@ -81,7 +81,7 @@ async def get_group(event: SimpleBotEvent, fetch: dict, flag: bool, btn: str) ->
             else:
                 print("mistake")
         elif any(cmd.lower() in [pre_penultimate_command] for cmd in schedule_kb.DAYS_OF_WEEK_BUTTONS):
-            result = pre_penultimate_command + ' ' + last_command
+            result = pre_penultimate_command.capitalize() + ' ' + last_command.upper()
             if btn[0][0] == 'first_btn':
                 set_first(result, event)
                 await event.answer(message=f"Задан шаблон: {result}", keyboard=menu_kb.START_KB.get_keyboard())

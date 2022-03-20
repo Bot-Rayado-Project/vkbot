@@ -32,6 +32,8 @@ async def recieve_time_table(group: str, user_id: str) -> None:
     responce = await aiohttp_fetch_schedule("https://mtuci.ru/time-table/")
     soup = BeautifulSoup(responce, 'lxml')
     data = GroupInfo(re.sub('[^а-я]', '', group), re.sub('[^0-9]', '', group))
+    print_info(data)
+    print_info("Обработка скачки.")
     STREAM_ID: dict = {'бвт': '09.03.01', 'бст': '09.03.02', 'бфи': '02.03.02', 'биб': '10.03.01', 'бэи': '09.03.03', 'бин': '11.03.02'}
     for link in soup.find_all('a'):
         _link = link.get('href')
@@ -53,7 +55,7 @@ async def recieve_time_table(group: str, user_id: str) -> None:
                             return data
                         else:
                             print_info('Ключ на сайте изменился')
-                            default_keys.update({data.stream: _link[15:18]})
+                            default_keys.update({data.stream: _link})
                             async with aiofile.async_open('tables/table_{0}_{1}.xlsx'.format(user_id, data.stream), 'wb') as table:
                                 await table.write(await aiohttp_fetch_schedule('https://mtuci.ru' + _link, True))
                             return data
