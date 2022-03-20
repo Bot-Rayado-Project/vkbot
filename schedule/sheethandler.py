@@ -83,8 +83,8 @@ async def get_sheet(group: str, user_id: str, temp_number: str) -> openpyxl.Work
 
     data = await recieve_time_table(group, user_id)  # Запрос на скачку таблицы
 
-    if 'Ошибка' in data:
-        return 'Ошибка в скачке таблицы #4'  # Проверка, что скачалось без ошибки
+    # if 'Ошибка' in data:
+    #    return 'Ошибка в скачке таблицы #4'  # Проверка, что скачалось без ошибки
 
     try:
         path = glob.glob('tables/table_{0}_*.xlsx'.format(user_id))[0]
