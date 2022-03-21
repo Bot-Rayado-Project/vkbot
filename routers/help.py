@@ -3,12 +3,12 @@ import keyboards.menu_kb as menu_kb
 from utils.sqlite_requests import database_handler
 from utils.attachments import get_photo_from_path
 
-from vkwave.bots import simple_bot_message_handler, DefaultRouter, SimpleBotEvent, PayloadFilter
+from vkwave.bots import simple_bot_message_handler, DefaultRouter, SimpleBotEvent, PayloadFilter, TextFilter
 
 help_router = DefaultRouter()
 
 
-@simple_bot_message_handler(help_router, PayloadFilter({"button": "help"}))
+@simple_bot_message_handler(help_router, TextFilter("помощь"), PayloadFilter({"button": "help"}))
 @database_handler()
 async def help(event: SimpleBotEvent) -> str:
     photo_monkey = await get_photo_from_path(event, "img/monkey.jpg")
