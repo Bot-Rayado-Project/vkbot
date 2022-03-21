@@ -8,7 +8,7 @@ from vkwave.bots import simple_bot_message_handler, DefaultRouter, SimpleBotEven
 geobot_router = DefaultRouter()
 
 
-@simple_bot_message_handler(geobot_router, PayloadFilter({"button": "miamor"}))
+@simple_bot_message_handler(geobot_router, PayloadFilter({"button": "donate"}))
 @database_handler()
 async def miamor(event: SimpleBotEvent) -> str:
-    await event.answer(message='https://vk.cc/8U7VuC', keyboard=menu_kb.START_KB.get_keyboard())
+    await event.answer(message='Сколько не жалко <3\nhttps://www.tinkoff.ru/cf/67hbUB2jUpf', keyboard=menu_kb.START_KB.get_keyboard())

@@ -1,7 +1,7 @@
 from vkwave.bots import Keyboard, ButtonColor
 
-START_BUTTONS: list = ['расписание', 'шаблоны расписания', 'анекдот', 'mi amor?', 'помощь']
-START_BUTTONS_PAYLOAD: list = [{"button": "schedule"}, {"button": "config"}, {"button": "joke"}, {"button": "miamor"}, {"button": "help"}]
+START_BUTTONS: list = ['расписание', 'шаблоны расписания', 'анекдот', 'донат', 'помощь']
+START_BUTTONS_PAYLOAD: list = [{"button": "schedule"}, {"button": "config"}, {"button": "joke"}, {"button": "donate"}, {"button": "help"}]
 # Создание экземпляров клавиатуры
 
 START_KB: Keyboard = Keyboard(one_time=False)

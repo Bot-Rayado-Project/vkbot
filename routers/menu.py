@@ -11,8 +11,9 @@ menu_router = DefaultRouter()
 @simple_bot_message_handler(menu_router, TextFilter(["старт", "начать"], PayloadFilter({"button": "menu"})))
 @database_handler(is_menu=True)
 async def menu(event: SimpleBotEvent) -> str:
-    await event.answer(message='Добро пожаловать в Bot Rayado\n\nЕсли у вас не отобразилась клавиатура, нажмите на кнопку \
-                       слева от кнопки выбора эмодзи\n\n Наши преимущества:\n\n - Есть шаблоны для быстрого получения расписания\n - Всегда новое расписание, полученное с сайта\n - Большое количество потоков\n - Быстрая работа бота\n - Регулярные обновления', keyboard=menu_kb.START_KB.get_keyboard())
+    await event.answer(message='Добро пожаловать в Bot Rayado\n\nЕсли у вас не отобразилась клавиатура, нажмите на кнопку' +\
+        'слева от кнопки выбора эмодзи\n\n Наши преимущества:\n\n - Есть шаблоны для быстрого получения расписания\n' +\
+            ' - Всегда новое расписание, полученное с сайта\n - Большое количество потоков\n - Быстрая работа бота\n - Регулярные обновления', keyboard=menu_kb.START_KB.get_keyboard())
 
 
 @simple_bot_message_handler(menu_router, TextFilter(["меню", "расписание", ], PayloadFilter({"button": "menu"})))
