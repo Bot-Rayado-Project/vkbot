@@ -53,6 +53,7 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         port: ${{ secrets.SSH_PORT }}
         script: |
+          docker cp vk_bot:/vkbot/users.db /vkbot/users.db
           docker container ls
           docker container stop vk_bot
           docker container rm vk_bot -f

@@ -3,12 +3,6 @@ import pytest
 
 
 from schedule import sheethandler
-# Закомментировать для локального тестирования
-'''import os
-import sys
-sys.path.append(os.path.abspath('../schedule'))
-import sheethandler'''
-# Раскоментить для локального тестирования, также раскоментить соответсвующее во всех файлах schedule
 
 
 @pytest.mark.asyncio  # Общий тест для всех групп на сегодня или завтра, на просто вывод
@@ -154,7 +148,7 @@ async def test_schedule(day, group, week_type, excepted):
                              ('сегодня', 'бин2110', 'текущая неделя', '7'),])
 async def test_count_pars_schedule(day, group, week_type, excepted):
     response = await sheethandler.print_schedule(day, group, '123', week_type)
-    count_pars = response.count('⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n')
+    count_pars = response.count('⸻⸻⸻⸻⸻\n')
     assert count_pars <= int(excepted)
 
 

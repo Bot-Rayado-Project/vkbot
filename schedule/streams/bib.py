@@ -1,15 +1,8 @@
 from datetime import datetime, timedelta
+from utils.constants_schedule import time, day_of_week, days
 
 async def get_schedule_bib(day_type: str, group_text: str, group_column: str, week_type: str, schedule) -> str:
     
-    time = {
-        1: '9:30 - 11:05\n',
-        2: '11:20 - 12:55\n',
-        3: '13:10 - 14:45\n',
-        4: '15:25 - 17:00\n',
-        5: '17:15 - 18:50\n'
-    }  # Задача времени для вывода по номеру пары
-    days = ['понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота']
     day_time_utc = datetime.weekday(datetime.today().utcnow() + timedelta(hours=3))  # Получение нынешнего времени
     start_cell = 15 if week_type == 'четная' else 14
 
@@ -27,9 +20,9 @@ async def get_schedule_bib(day_type: str, group_text: str, group_column: str, we
         day = int(day_time_utc) * 11 + start_cell
 
     try:
-        schedule_output = '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n' + 'Группа: ' + group_text.upper() + '\n' \
+        schedule_output = '⸻⸻⸻⸻⸻\n' + 'Группа: ' + group_text.upper() + '\n' \
             + 'День недели: ' + days[day_time_utc].capitalize() + '\n' + 'Неделя: ' + week_type.capitalize() + '\n' \
-            + '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n'  # Добавляем заголовок вывода, группа и тд.
+            + '⸻⸻⸻⸻⸻\n'  # Добавляем заголовок вывода, группа и тд.
 
     except KeyError:
         return 'Ошибка в выводе расписания #1'
@@ -44,14 +37,14 @@ async def get_schedule_bib(day_type: str, group_text: str, group_column: str, we
                 try:
                     schedule_output += str(time[time_para]) + '  ' \
                         + str(schedule[group_column + str(para_cell)].value) + '\n\n' \
-                        + '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n'  # Добавляем пару, то есть ячейку если она не пустая
+                        + '⸻⸻⸻⸻⸻\n'  # Добавляем пару, то есть ячейку если она не пустая
 
                 except KeyError:
                     # Это обработка что ключ будет существовать во времени, то есть номер пары
                     return 'Ошибка в выводе расписания #1'
             else:
                 # Если же ячейка пустая, значит пары нет
-                schedule_output += 'Пары нет\n' + '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n'
+                schedule_output += 'Пары нет\n' + '⸻⸻⸻⸻⸻\n'
         except:
             # Обрабатываем ошибку в считывании таблицы
             return 'Ошибка в считывании таблицы #1'
@@ -63,23 +56,15 @@ async def get_schedule_bib(day_type: str, group_text: str, group_column: str, we
 
 async def get_full_schedule_bib(group_text: str, week_type: str, schedule, week_column: str) -> tuple:
 
-    day_of_week = {
-        '1': 'Понедельник',
-        '2': 'Вторник',
-        '3': 'Среда',
-        '4': 'Четверг',
-        '5': 'Пятница',
-        '6': 'Суббота',
-    }
     subject = 1
     full_schedule_tuple = ()
     full_schedule_list = []
     start_cell = 15 if week_type == 'четная' else 14
     # Формируем список и кортеж для будущего возврата в другой файл, чтобы вернуть пользователю
 
-    full_schedule_list.append('⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n' + 'Группа: ' + group_text.upper() + '\n'
+    full_schedule_list.append('⸻⸻⸻⸻⸻\n' + 'Группа: ' + group_text.upper() + '\n'
                               + 'Неделя: ' + (week_type.capitalize()) + '\n'
-                              + '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n')  # Добавляем заголовок вывода расписания с группой и тд.
+                              + '⸻⸻⸻⸻⸻\n')  # Добавляем заголовок вывода расписания с группой и тд.
 
     for day_of_week_cell in range(start_cell, 74, 11):
 
@@ -91,11 +76,11 @@ async def get_full_schedule_bib(group_text: str, week_type: str, schedule, week_
             if schedule[week_column + str(para_cell)].value != None:
 
                 full_schedule += str(schedule[week_column + str(para_cell)].value) + '\n'\
-                    + '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n'
+                    + '⸻⸻⸻⸻⸻\n'
                 # Если ячейка не пустая добавляем значение ячейки в конечный вывод
 
             else:
-                full_schedule += 'Пары нет\n' + '⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n'
+                full_schedule += 'Пары нет\n' + '⸻⸻⸻⸻⸻\n'
                 # Если же пустая, то пары нет
         
         # Добавляем полученный день в список
