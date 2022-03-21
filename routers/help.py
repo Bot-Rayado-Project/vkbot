@@ -11,5 +11,8 @@ help_router = DefaultRouter()
 @simple_bot_message_handler(help_router, PayloadFilter({"button": "help"}))
 @database_handler()
 async def help(event: SimpleBotEvent) -> str:
-    photo_lamabot, photo_crymother = await get_photo_from_path(event, "img/sasha.jpg", "img/ivan.jpg")
-    await event.answer(message='В случае ошибки пишите: \n@lamabot2000\n@crymother', keyboard=menu_kb.START_KB.get_keyboard(), attachment=[photo_lamabot, photo_crymother])
+    photo_monkey = await get_photo_from_path(event, "img/monkey.jpg")
+    await event.answer(message='В случае ошибок или вопросов пишите: \n@lamabot2000\n@crymother\n \
+    \nИспользование шаблонов:\n\nСоздаете шаблон, который будет выводить нужное вам расписание по одному клику. Шаблоны хранятся в кнопке "Шаблоны расписания".\n \
+    \nРасписание:\n\nДля вывода нужного вам расписания надо нажимать кнопки в нужной вам последовательности.\n \
+    \nКлавиатура:\n\nЕсли у вас не отображается клавиатура, нажмите на кнопку слева от вложения фотографий.', keyboard=menu_kb.START_KB.get_keyboard(), attachment=photo_monkey)
