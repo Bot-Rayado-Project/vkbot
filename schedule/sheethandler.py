@@ -3,28 +3,16 @@ import openpyxl
 import os
 import glob
 
+
 import schedule.whataweek as whataweek
 from schedule.recieve import recieve_time_table
+from utils.constants_schedule import week_columns_groups
 from schedule.streams.bvt import get_full_schedule_bvt, get_schedule_bvt
 from schedule.streams.bst import get_full_schedule_bst, get_schedule_bst
 from schedule.streams.bei import get_full_schedule_bei, get_schedule_bei
 from schedule.streams.bfi import get_full_schedule_bfi, get_schedule_bfi
 from schedule.streams.bib import get_full_schedule_bib, get_schedule_bib
 from schedule.streams.bin import get_full_schedule_bin, get_schedule_bin
-# Закомментировать для локального тестирования
-'''import os
-import sys
-sys.path.append(os.path.abspath('./streams'))
-from bvt import get_full_schedule_bvt, get_schedule_bvt
-from bst import get_full_schedule_bst, get_schedule_bst
-from bei import get_full_schedule_bei, get_schedule_bei
-from bfi import get_full_schedule_bfi, get_schedule_bfi
-from bib import get_full_schedule_bib, get_schedule_bib
-from bin import get_full_schedule_bin, get_schedule_bin
-from recieve import recieve_time_table
-import whataweek
-import asyncio'''
-# Раскоментить для локального тестирования
 
 
 async def check_right_input(day_input: str, group_input: str, week_type: str) -> bool:
@@ -228,92 +216,32 @@ async def get_sheet(group: str, user_id: str, temp_number: str) -> openpyxl.Work
 
 async def print_schedule(day_input: str, group_input: str, id: str, week_type: str) -> str | tuple:
 
-    groups = {
-        'бвт2101': 0,
-        'бвт2102': 0,
-        'бвт2103': 0,
-        'бвт2104': 0,
-        'бвт2105': 1,
-        'бвт2106': 1,
-        'бвт2107': 1,
-        'бвт2108': 1,
-        'бфи2101': 0,
-        'бфи2102': 0,
-        'бст2101': 0,
-        'бст2102': 0,
-        'бст2103': 0,
-        'бст2104': 1,
-        'бст2105': 1,
-        'бст2106': 1,
-        'бэи2101': 0,
-        'бэи2102': 0,
-        'бэи2103': 0,
-        'биб2101': 0,
-        'биб2102': 0,
-        'биб2103': 0,
-        'биб2104': 0,
-        'бин2101': 0,
-        'бин2102': 0,
-        'бин2103': 0,
-        'бин2104': 0,
-        'бин2105': 1,
-        'бин2106': 1,
-        'бин2107': 1,
-        'бин2108': 2,
-        'бин2109': 2,
-        'бин2110': 2,
-    }
-    # Список с группами для определения листа в файле
-    week_columns_groups = {
-        'бвт2101': 'D',
-        'бвт2102': 'E',
-        'бвт2103': 'F',
-        'бвт2104': 'G',
-        'бвт2105': 'E',
-        'бвт2106': 'F',
-        'бвт2107': 'G',
-        'бвт2108': 'H',
-        'бфи2101': 'D',
-        'бфи2102': 'E',
-        'бст2101': 'D',
-        'бст2102': 'E',
-        'бст2103': 'F',
-        'бст2104': 'D',
-        'бст2105': 'E',
-        'бст2106': 'F',
-        'бэи2101': 'D',
-        'бэи2102': 'E',
-        'бэи2103': 'F',
-        'биб2101': 'D',
-        'биб2102': 'J',
-        'биб2103': 'P',
-        'биб2104': 'V',
-        'бин2101': 'D',
-        'бин2102': 'E',
-        'бин2103': 'F',
-        'бин2104': 'G',
-        'бин2105': 'D',
-        'бин2106': 'E',
-        'бин2107': 'F',
-        'бин2108': 'D',
-        'бин2109': 'E',
-        'бин2110': 'F',
 
-    }
-    # Список колонок для вывода определённой группы
+    if (('бвт' in group_input and int(group_input[-1]) < 5) or ('бфи' in group_input) or ('бст' in group_input and int(group_input[-1]) < 4) 
+    or ('бэи' in group_input) or ('биб' in group_input) or ('бин' in group_input and int(group_input[-1]) < 5)):
+        group_list = 0
+    elif (('бвт' in group_input and int(group_input[-1]) > 4) or ('бст' in group_input and int(group_input[-1]) > 3) 
+    or ('бин' in group_input and int(group_input[-1]) > 4 and int(group_input[-1]) < 8)):
+        group_list = 1
+    else:
+        group_list = 2 # Выборка номера листа для каждой группы разный от условия
+
     if ((day_input == 'завтра' and datetime.weekday(datetime.today().utcnow() + timedelta(hours=3)) == 5)
             or (day_input == 'сегодня' and datetime.weekday(datetime.today().utcnow() + timedelta(hours=3)) == 6)):
         return 'Занятий нет'
+
     if check_right_input:
 
         if (day_input == 'завтра' and datetime.weekday(datetime.today().utcnow() + timedelta(hours=3)) == 6):
             week_checked = await week_check('следуюящая неделя')
+
         else:
             week_checked = await week_check(week_type)
+
         try:
-            schedule = await get_sheet(group_input, id, groups[group_input])
-        except KeyError:
-            return 'Ошибка в словаре, sheethandler.py'
+            schedule = await get_sheet(group_input, id, group_list)
+        except:
+            return 'Ошибка в таблице, sheethandler.py'
 
         if 'Ошибка' in week_checked:
             return week_checked  # Проверка ошибки в чётности недели
@@ -359,12 +287,3 @@ async def print_schedule(day_input: str, group_input: str, id: str, week_type: s
                     return await get_schedule_bin(day_input, group_input, week_columns_groups[group_input], week_checked, schedule)
     else:
         return 'Ошибка ввода'
-
-'''
-if __name__ == '__main__':
-    async def main():
-        s = await print_schedule('завтра', 'бвт2103', '123', 'текущая неделя')
-        #for i in s: print(i)
-        print(s)
-asyncio.run(main())
-'''

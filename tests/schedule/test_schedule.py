@@ -3,12 +3,6 @@ import pytest
 
 
 from schedule import sheethandler
-# Закомментировать для локального тестирования
-'''import os
-import sys
-sys.path.append(os.path.abspath('../schedule'))
-import sheethandler'''
-# Раскоментить для локального тестирования, также раскоментить соответсвующее во всех файлах schedule
 
 
 @pytest.mark.asyncio  # Общий тест для всех групп на сегодня или завтра, на просто вывод

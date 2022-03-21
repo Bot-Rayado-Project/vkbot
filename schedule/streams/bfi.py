@@ -1,16 +1,9 @@
 from datetime import datetime, timedelta
+from utils.constants_schedule import time, day_of_week, days
 
 
 async def get_schedule_bfi(day_type: str, group_text: str, group_column: str, week_type: str, schedule) -> str:
     
-    time = {
-        1: '9:30 - 11:05\n',
-        2: '11:20 - 12:55\n',
-        3: '13:10 - 14:45\n',
-        4: '15:25 - 17:00\n',
-        5: '17:15 - 18:50\n'
-    }  # Задача времени для вывода по номеру пары
-    days = ['понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота']
     day_time_utc = datetime.weekday(datetime.today().utcnow() + timedelta(hours=3))  # Получение нынешнего времени
     start_cell = 3 if week_type == 'четная' else 2
 
@@ -64,14 +57,6 @@ async def get_schedule_bfi(day_type: str, group_text: str, group_column: str, we
 
 async def get_full_schedule_bfi(group_text: str, week_type: str, schedule, week_column: str) -> tuple:
 
-    day_of_week = {
-        '1': 'Понедельник',
-        '2': 'Вторник',
-        '3': 'Среда',
-        '4': 'Четверг',
-        '5': 'Пятница',
-        '6': 'Суббота',
-    }
     subject = 1
     full_schedule_tuple = ()
     full_schedule_list = []
