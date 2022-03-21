@@ -148,7 +148,7 @@ async def test_schedule(day, group, week_type, excepted):
                              ('сегодня', 'бин2110', 'текущая неделя', '7'),])
 async def test_count_pars_schedule(day, group, week_type, excepted):
     response = await sheethandler.print_schedule(day, group, '123', week_type)
-    count_pars = response.count('⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻⸻\n')
+    count_pars = response.count('⸻⸻⸻⸻⸻\n')
     assert count_pars <= int(excepted)
 
 
