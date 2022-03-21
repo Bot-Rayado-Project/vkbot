@@ -61,46 +61,22 @@ def database_handler(ret_cmd: bool = False, ret_cfg: bool = False, ret_flag: boo
     return decorator
 
 
-def set_first(cmd, event):
-    cursor.execute(C_SQLITE_SELECT_CONFIG_KEYBOARD_BUTTONS.format(event.from_id))
-    btn = cursor.fetchall()[0][0].split(', ')
-    print(btn, cmd)
-    if cmd not in btn:
-        print(1)
-        cursor.execute(C_SQLITE_UPDATE_CONFIG_BUTTONS.format(cmd, btn[1], btn[2], event.from_id))
-        cursor.execute(C_SQLITE_SET_IS_WRITING_FALSE.format(event.from_id))
-        sqlite_connection.commit()
-        return True
-    else:
-        print(2)
-        cursor.execute(C_SQLITE_SET_IS_WRITING_FALSE.format(event.from_id))
-        sqlite_connection.commit()
-        return False
-
-
-def set_second(cmd, event):
+def set_button_blueprint(sc_btn: str, cmd: str, event: SimpleBotEvent) -> bool:
+    '''Устанавливает шаблон на кнопку в конце алгоритма. Возвращает True в случае если шаблон уже существует,
+    False в случае успеха - шаблона нет.'''
     cursor.execute(C_SQLITE_SELECT_CONFIG_KEYBOARD_BUTTONS.format(event.from_id))
     btn = cursor.fetchall()[0][0].split(', ')
     if cmd not in btn:
-        cursor.execute(C_SQLITE_UPDATE_CONFIG_BUTTONS.format(btn[0], cmd, btn[2], event.from_id))
-        cursor.execute(C_SQLITE_SET_IS_WRITING_FALSE.format(event.from_id))
-        sqlite_connection.commit()
-        return True
-    else:
-        cursor.execute(C_SQLITE_SET_IS_WRITING_FALSE.format(event.from_id))
-        sqlite_connection.commit()
-        return False
-
-
-def set_third(cmd, event):
-    cursor.execute(C_SQLITE_SELECT_CONFIG_KEYBOARD_BUTTONS.format(event.from_id))
-    btn = cursor.fetchall()[0][0].split(', ')
-    if cmd not in btn:
-        cursor.execute(C_SQLITE_UPDATE_CONFIG_BUTTONS.format(btn[0], btn[1], cmd, event.from_id))
-        cursor.execute(C_SQLITE_SET_IS_WRITING_FALSE.format(event.from_id))
-        sqlite_connection.commit()
-        return True
-    else:
+        if sc_btn == 'first_btn':
+            cursor.execute(C_SQLITE_UPDATE_CONFIG_BUTTONS.format(cmd, btn[1], btn[2], event.from_id))
+        elif sc_btn == 'second_btn':
+            cursor.execute(C_SQLITE_UPDATE_CONFIG_BUTTONS.format(btn[0], cmd, btn[2], event.from_id))
+        elif sc_btn == 'third_btn':
+            cursor.execute(C_SQLITE_UPDATE_CONFIG_BUTTONS.format(btn[0], btn[1], cmd, event.from_id))
         cursor.execute(C_SQLITE_SET_IS_WRITING_FALSE.format(event.from_id))
         sqlite_connection.commit()
         return False
+    else:
+        cursor.execute(C_SQLITE_SET_IS_WRITING_FALSE.format(event.from_id))
+        sqlite_connection.commit()
+        return True

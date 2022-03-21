@@ -19,17 +19,17 @@ GROUP_BUTTONS_BFI: list = ['бфи2101', 'бфи2102']
 GROUP_BUTTONS_BVT: list = ['бвт2101', 'бвт2102', 'бвт2103', 'бвт2104', 'бвт2105', 'бвт2106', 'бвт2107', 'бвт2108']
 GROUP_BUTTONS_BST: list = ['бст2101', 'бст2102', 'бст2103', 'бст2104', 'бст2105', 'бст2106']
 GROUP_BUTTONS_BEI: list = ['бэи2101', 'бэи2102', 'бэи2103']
-GROUP_BUTTONS_BIB: list = ['биб2101','биб2102', 'биб2103', 'биб2104']
+GROUP_BUTTONS_BIB: list = ['биб2101', 'биб2102', 'биб2103', 'биб2104']
 GROUP_BUTTONS_BIN: list = ['бин2101', 'бин2102', 'бин2103', 'бин2104', 'бин2105', 'бин2106', 'бин2107', 'бин2108', 'бин2109', 'бин2110']
 GROUP_BUTTONS: list = ['бфи2101', 'бфи2102', 'бвт2101', 'бвт2102', 'бвт2103', 'бвт2104',
                        'бвт2105', 'бвт2106', 'бвт2107', 'бвт2108', 'бст2101', 'бст2102',
-                       'бст2103', 'бст2104', 'бст2105', 'бст2106', 'бэи2101', 'бэи2102', 
-                       'бэи2103','биб2102', 'биб2103', 'биб2104','бин2101', 'бин2102', 
-                       'бин2103', 'бин2104', 'бин2105', 'бин2106', 'бин2107', 'бин2108', 
+                       'бст2103', 'бст2104', 'бст2105', 'бст2106', 'бэи2101', 'бэи2102',
+                       'бэи2103', 'биб2102', 'биб2103', 'биб2104', 'бин2101', 'бин2102',
+                       'бин2103', 'бин2104', 'бин2105', 'бин2106', 'бин2107', 'бин2108',
                        'бин2109', 'бин2110']
 
 # Payload кнопок
-STREAM_BUTTONS_PAYLOAD: list = [{"stream_button": "bfi"}, {"stream_button": "bvt"}, {"stream_button": "bst"}, {"stream_button": "bei"}, 
+STREAM_BUTTONS_PAYLOAD: list = [{"stream_button": "bfi"}, {"stream_button": "bvt"}, {"stream_button": "bst"}, {"stream_button": "bei"},
                                 {"stream_button": "bib"}, {"stream_button": "bin"}]
 DAYS_OF_WEEK_BUTTONS_PAYLOAD: list = [{"dow_button": "today"}, {"dow_button": "tommorow"}, {"dow_button": "full week"}]
 CURRENT_OR_NEXT_WEEK_BUTTONS_PAYLOAD: list = [{"conw_button": "current week"}, {"conw_button": "next week"}]
@@ -99,3 +99,12 @@ for i in range(1, len(CURRENT_OR_NEXT_WEEK_BUTTONS) + 1):
     if i == len(CURRENT_OR_NEXT_WEEK_BUTTONS):
         CURRENT_OR_NEXT_WEEK_KB.add_row()
         CURRENT_OR_NEXT_WEEK_KB.add_text_button(text='Меню', color=ButtonColor.PRIMARY, payload={"button": "menu"})
+
+# Задание получения клавиатур
+
+KB = {'бфи': GROUP_BUTTONS_BFI_KB.get_keyboard,
+      'бвт': GROUP_BUTTONS_BVT_KB.get_keyboard,
+      'бст': GROUP_BUTTONS_BST_KB.get_keyboard,
+      'бэи': GROUP_BUTTONS_BEI_KB.get_keyboard,
+      'биб': GROUP_BUTTONS_BIB_KB.get_keyboard,
+      'бин': GROUP_BUTTONS_BIN_KB.get_keyboard}

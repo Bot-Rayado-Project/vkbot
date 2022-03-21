@@ -1,7 +1,7 @@
 import schedule.sheethandler as sheethandler
 import keyboards.schedule_kb as schedule_kb
 import keyboards.menu_kb as menu_kb
-from utils.sqlite_requests import database_handler, set_first, set_second, set_third
+from utils.sqlite_requests import database_handler, set_button_blueprint
 
 from vkwave.bots import simple_bot_message_handler, DefaultRouter, SimpleBotEvent, PayloadFilter, PayloadContainsFilter
 from datetime import datetime, timedelta
@@ -36,18 +36,7 @@ async def get_current_or_next_week(event: SimpleBotEvent, fetch: dict) -> str:
 @database_handler(True)
 async def get_stream(event: SimpleBotEvent, fetch: dict) -> str:
     last_command = fetch[0][0].lower()  # Последняя команда
-    if last_command == 'бфи':
-        await event.answer(message='Выберите группу.', keyboard=schedule_kb.GROUP_BUTTONS_BFI_KB.get_keyboard())
-    elif last_command == 'бвт':
-        await event.answer(message='Выберите группу.', keyboard=schedule_kb.GROUP_BUTTONS_BVT_KB.get_keyboard())
-    elif last_command == 'бст':
-        await event.answer(message='Выберите группу.', keyboard=schedule_kb.GROUP_BUTTONS_BST_KB.get_keyboard())
-    elif last_command == 'бэи':
-        await event.answer(message='Выберите группу.', keyboard=schedule_kb.GROUP_BUTTONS_BEI_KB.get_keyboard())
-    elif last_command == 'биб':
-        await event.answer(message='Выберите группу.', keyboard=schedule_kb.GROUP_BUTTONS_BIB_KB.get_keyboard())
-    elif last_command == 'бин':
-        await event.answer(message='Выберите группу.', keyboard=schedule_kb.GROUP_BUTTONS_BIN_KB.get_keyboard())
+    await event.answer(message='Выберите группу.', keyboard=schedule_kb.KB[last_command]())
 
 
 @simple_bot_message_handler(schedule_router, PayloadContainsFilter("group_button"))
@@ -55,7 +44,7 @@ async def get_stream(event: SimpleBotEvent, fetch: dict) -> str:
 async def get_group(event: SimpleBotEvent, fetch: dict, flag: bool, btn: str) -> str:
     last_command = fetch[0][0].lower()  # Последняя команда # ГРУППА
     pre_penultimate_command = fetch[2][0].lower()  # Пред предпоследняя команда
-    pre_pre_penultimate_command = fetch[3][0].lower()
+    pre_pre_penultimate_command = fetch[3][0].lower()  # Пред пред предпоследняя команда
     if flag == [(0,)]:
         if any(cmd.lower() in [pre_penultimate_command] for cmd in schedule_kb.CURRENT_OR_NEXT_WEEK_BUTTONS) and pre_pre_penultimate_command == schedule_kb.DAYS_OF_WEEK_BUTTONS[2]:
             schedule = await sheethandler.print_schedule('вся неделя', last_command, event.from_id, pre_penultimate_command)
@@ -68,30 +57,10 @@ async def get_group(event: SimpleBotEvent, fetch: dict, flag: bool, btn: str) ->
             await event.answer(message="Непредвиденная ошибка.", keyboard=menu_kb.START_KB.get_keyboard())
     else:
         if any(cmd.lower() in [pre_penultimate_command] for cmd in schedule_kb.CURRENT_OR_NEXT_WEEK_BUTTONS) and pre_pre_penultimate_command == schedule_kb.DAYS_OF_WEEK_BUTTONS[2]:
-            result = pre_penultimate_command.split()[0][0].upper() + 'Н' + ' ' + last_command.upper()
-            if btn[0][0] == 'first_btn':
-                already_exists = set_first(result, event)
-                await event.answer(message=f"Задан шаблон: {result}", keyboard=menu_kb.START_KB.get_keyboard()) if already_exists else await event.answer(message="Данный шаблон уже существует в 1 ячейке", keyboard=menu_kb.START_KB.get_keyboard())
-            elif btn[0][0] == 'second_btn':
-                already_exists = set_second(result, event)
-                await event.answer(message=f"Задан шаблон: {result}", keyboard=menu_kb.START_KB.get_keyboard()) if already_exists else await event.answer(message="Данный шаблон уже существует в 2 ячейке", keyboard=menu_kb.START_KB.get_keyboard())
-            elif btn[0][0] == 'third_btn':
-                already_exists = set_third(result, event)
-                await event.answer(message=f"Задан шаблон: {result}", keyboard=menu_kb.START_KB.get_keyboard()) if already_exists else await event.answer(message="Данный шаблон уже существует в 3 ячейке", keyboard=menu_kb.START_KB.get_keyboard())
-            else:
-                print("mistake")
+            result = pre_penultimate_command.split()[0][0].upper() + 'Н' + ' ' + last_command.upper()  # ТН БВТ2103 либо СН БВТ2103 (текущая неделя | следующая неделя, группа)
         elif any(cmd.lower() in [pre_penultimate_command] for cmd in schedule_kb.DAYS_OF_WEEK_BUTTONS):
-            result = pre_penultimate_command.capitalize() + ' ' + last_command.upper()
-            if btn[0][0] == 'first_btn':
-                already_exists = set_first(result, event)
-                await event.answer(message=f"Задан шаблон: {result}", keyboard=menu_kb.START_KB.get_keyboard()) if already_exists else await event.answer(message="Данный шаблон уже существует в 1 ячейке", keyboard=menu_kb.START_KB.get_keyboard())
-            elif btn[0][0] == 'second_btn':
-                already_exists = set_second(result, event)
-                await event.answer(message=f"Задан шаблон: {result}", keyboard=menu_kb.START_KB.get_keyboard()) if already_exists else await event.answer(message="Данный шаблон уже существует в 2 ячейке", keyboard=menu_kb.START_KB.get_keyboard())
-            elif btn[0][0] == 'third_btn':
-                already_exists = set_third(result, event)
-                await event.answer(message=f"Задан шаблон: {result}", keyboard=menu_kb.START_KB.get_keyboard()) if already_exists else await event.answer(message="Данный шаблон уже существует в 3 ячейке", keyboard=menu_kb.START_KB.get_keyboard())
-            else:
-                print("mistake")
+            result = pre_penultimate_command.capitalize() + ' ' + last_command.upper()  # Сегодня БВТ2103 (сегодня | завтра, группа)
         else:
             await event.answer(message="Непредвиденная ошибка.", keyboard=menu_kb.START_KB.get_keyboard())
+        already_exists = set_button_blueprint(btn[0][0], result, event)
+        await event.answer(message=f"Задан шаблон: {result}", keyboard=menu_kb.START_KB.get_keyboard()) if not already_exists else await event.answer(message="Данный шаблон уже существует в {} ячейке.".format({'first_btn': 1, 'second_btn': 2, 'third_btn': 3}[btn[0][0]]), keyboard=menu_kb.START_KB.get_keyboard())
