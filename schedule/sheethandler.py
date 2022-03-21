@@ -3,8 +3,10 @@ import openpyxl
 import os
 import glob
 
+
 import schedule.whataweek as whataweek
 from schedule.recieve import recieve_time_table
+from utils.constants_schedule import week_columns_groups
 from schedule.streams.bvt import get_full_schedule_bvt, get_schedule_bvt
 from schedule.streams.bst import get_full_schedule_bst, get_schedule_bst
 from schedule.streams.bei import get_full_schedule_bei, get_schedule_bei
@@ -214,43 +216,6 @@ async def get_sheet(group: str, user_id: str, temp_number: str) -> openpyxl.Work
 
 async def print_schedule(day_input: str, group_input: str, id: str, week_type: str) -> str | tuple:
 
-    week_columns_groups = {
-        'бвт2101': 'D',
-        'бвт2102': 'E',
-        'бвт2103': 'F',
-        'бвт2104': 'G',
-        'бвт2105': 'E',
-        'бвт2106': 'F',
-        'бвт2107': 'G',
-        'бвт2108': 'H',
-        'бфи2101': 'D',
-        'бфи2102': 'E',
-        'бст2101': 'D',
-        'бст2102': 'E',
-        'бст2103': 'F',
-        'бст2104': 'D',
-        'бст2105': 'E',
-        'бст2106': 'F',
-        'бэи2101': 'D',
-        'бэи2102': 'E',
-        'бэи2103': 'F',
-        'биб2101': 'D',
-        'биб2102': 'J',
-        'биб2103': 'P',
-        'биб2104': 'V',
-        'бин2101': 'D',
-        'бин2102': 'E',
-        'бин2103': 'F',
-        'бин2104': 'G',
-        'бин2105': 'D',
-        'бин2106': 'E',
-        'бин2107': 'F',
-        'бин2108': 'D',
-        'бин2109': 'E',
-        'бин2110': 'F',
-
-    }
-    # Список колонок для вывода определённой группы
 
     if (('бвт' in group_input and int(group_input[-1]) < 5) or ('бфи' in group_input) or ('бст' in group_input and int(group_input[-1]) < 4) 
     or ('бэи' in group_input) or ('биб' in group_input) or ('бин' in group_input and int(group_input[-1]) < 5)):
@@ -322,11 +287,3 @@ async def print_schedule(day_input: str, group_input: str, id: str, week_type: s
                     return await get_schedule_bin(day_input, group_input, week_columns_groups[group_input], week_checked, schedule)
     else:
         return 'Ошибка ввода'
-
-""" if __name__ == '__main__':
-    async def main():
-        s = await print_schedule('вся неделя', 'бвт2103', '123', 'текущая неделя')
-        #for i in s: print(i)
-        print(s)
-asyncio.run(main())
- """
