@@ -71,7 +71,8 @@ def get_default_keys():
     global default_keys
     responce = requests.get("https://mtuci.ru/time-table/")
     soup = BeautifulSoup(responce.text, 'lxml')
-    STREAM_ID: dict = {'бвт': '09.03.01', 'бст': '09.03.02', 'бфи': '02.03.02', 'биб': '10.03.01', 'бэи': '09.03.03', 'бин': '11.03.02'}
+    STREAM_ID: dict = {'бвт': '09.03.01', 'бст': '09.03.02', 'бфи': '02.03.02', 'биб': '10.03.01', 'бэи': '09.03.03', 'бин': '11.03.02',
+                       'бмп': '01.03.04', 'зрс': '10.05.02', 'бап': '15.03.04', 'бут': '27.03.04'}
     for link in soup.find_all('a'):
         _link = link.get('href')
         try:
@@ -88,6 +89,14 @@ def get_default_keys():
                     default_keys["бэи"] = _link[15:18]
                 elif STREAM_ID["бин"] in _link:
                     default_keys["бин"] = _link[15:18]
+                elif STREAM_ID["зрс"] in _link:
+                    default_keys["зрс"] = _link[15:18]
+                elif STREAM_ID["бмп"] in _link:
+                    default_keys["бмп"] = _link[15:18]
+                elif STREAM_ID["бут"] in _link:
+                    default_keys["бут"] = _link[15:18]
+                elif STREAM_ID["бап"] in _link:
+                    default_keys["бап"] = _link[15:18]
                 else:
                     pass
         except AttributeError:

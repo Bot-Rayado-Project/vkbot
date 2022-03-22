@@ -7,13 +7,16 @@ import glob
 import schedule.whataweek as whataweek
 from schedule.recieve import recieve_time_table
 from utils.constants_schedule import week_columns_groups
-from schedule.streams.bvt import get_full_schedule_bvt, get_schedule_bvt
-from schedule.streams.bst import get_full_schedule_bst, get_schedule_bst
-from schedule.streams.bei import get_full_schedule_bei, get_schedule_bei
-from schedule.streams.bfi import get_full_schedule_bfi, get_schedule_bfi
-from schedule.streams.bib import get_full_schedule_bib, get_schedule_bib
-from schedule.streams.bin import get_full_schedule_bin, get_schedule_bin
-
+from schedule.streams.IT.bvt import get_full_schedule_bvt, get_schedule_bvt
+from schedule.streams.IT.bst import get_full_schedule_bst, get_schedule_bst
+from schedule.streams.IT.bei import get_full_schedule_bei, get_schedule_bei
+from schedule.streams.IT.bfi import get_full_schedule_bfi, get_schedule_bfi
+from schedule.streams.KIIB.bib import get_full_schedule_bib, get_schedule_bib
+from schedule.streams.KIIB.bmp import get_full_schedule_bmp, get_schedule_bmp
+from schedule.streams.KIIB.zrc import get_full_schedule_zrc, get_schedule_zrc
+from schedule.streams.KIIB.bap import get_full_schedule_bap, get_schedule_bap
+from schedule.streams.KIIB.but import get_full_schedule_but, get_schedule_but
+from schedule.streams.SISS.bin import get_full_schedule_bin, get_schedule_bin
 
 async def check_right_input(day_input: str, group_input: str, week_type: str) -> bool:
 
@@ -23,7 +26,8 @@ async def check_right_input(day_input: str, group_input: str, week_type: str) ->
               'бст2103', 'бст2104', 'бст2105', 'бст2106', 'бэи2101', 'бэи2102',
               'бэи2103', 'биб2101', 'биб2102', 'биб2103', 'биб2104', 'бин2101',
               'бин2102', 'бин2103', 'бин2104', 'бин2105', 'бин2106', 'бин2107',
-              'бин2108', 'бин2109', 'бин2110')
+              'бин2108', 'бин2109', 'бин2110', 'бмп2101', 'зрс2101', 'зрс2102',
+              'бап2101', 'бут2101')
     weeks = ('текущая неделя', 'следующая неделя')
 
     if day_input in days and group_input in groups and week_type in weeks:
@@ -216,9 +220,9 @@ async def get_sheet(group: str, user_id: str, temp_number: str) -> openpyxl.Work
 
 async def print_schedule(day_input: str, group_input: str, id: str, week_type: str) -> str | tuple:
 
-
     if (('бвт' in group_input and int(group_input[-1]) < 5) or ('бфи' in group_input) or ('бст' in group_input and int(group_input[-1]) < 4) 
-    or ('бэи' in group_input) or ('биб' in group_input) or ('бин' in group_input and int(group_input[-1]) < 5)):
+    or ('бэи' in group_input) or ('биб' in group_input) or ('бин' in group_input and int(group_input[-1]) < 5) or ('бмп' in group_input)
+    or ('бап' in group_input) or ('бут' in group_input)):
         group_list = 0
     elif (('бвт' in group_input and int(group_input[-1]) > 4) or ('бст' in group_input and int(group_input[-1]) > 3) 
     or ('бин' in group_input and int(group_input[-1]) > 4 and int(group_input[-1]) < 8)):
@@ -285,5 +289,29 @@ async def print_schedule(day_input: str, group_input: str, id: str, week_type: s
                     return await get_full_schedule_bin(group_input, week_checked, schedule, week_columns_groups[group_input])
                 else:
                     return await get_schedule_bin(day_input, group_input, week_columns_groups[group_input], week_checked, schedule)
+            
+            case 'бмп':
+                if day_input == 'вся неделя':
+                    return await get_full_schedule_bmp(group_input, week_checked, schedule, week_columns_groups[group_input])
+                else:
+                    return await get_schedule_bmp(day_input, group_input, week_columns_groups[group_input], week_checked, schedule)
+
+            case 'бап':
+                if day_input == 'вся неделя':
+                    return await get_full_schedule_bap(group_input, week_checked, schedule, week_columns_groups[group_input])
+                else:
+                    return await get_schedule_bap(day_input, group_input, week_columns_groups[group_input], week_checked, schedule)
+
+            case 'бут':
+                if day_input == 'вся неделя':
+                    return await get_full_schedule_but(group_input, week_checked, schedule, week_columns_groups[group_input])
+                else:
+                    return await get_schedule_but(day_input, group_input, week_columns_groups[group_input], week_checked, schedule)
+
+            case 'зрс':
+                if day_input == 'вся неделя':
+                    return await get_full_schedule_zrc(group_input, week_checked, schedule, week_columns_groups[group_input])
+                else:
+                    return await get_schedule_zrc(day_input, group_input, week_columns_groups[group_input], week_checked, schedule)
     else:
         return 'Ошибка ввода'
