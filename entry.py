@@ -76,7 +76,7 @@ def get_default_keys():
     for link in soup.find_all('a'):
         _link = link.get('href')
         try:
-            if _link.startswith('/upload/') and ("IT" in _link or "KiIB" in _link or 'SiSS' in _link) and "1-kurs" in _link:
+            if _link.startswith('/upload/') and ("IT" in _link or "KiIB" in _link or 'SiSS' in _link or 'RiT' in _link) and "1-kurs" in _link:
                 if STREAM_ID["бвт"] in _link:
                     default_keys["бвт"] = _link[15:18]
                 elif STREAM_ID["бст"] in _link:

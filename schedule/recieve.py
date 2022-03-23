@@ -38,6 +38,8 @@ async def recieve_time_table(group: str, user_id: str) -> None:
     for link in soup.find_all('a'):
         _link = link.get('href')
         try:
+            print_info(data.stream)
+            print_info(STREAM_ID[data.stream])
             if _link.startswith('/upload/') and ("IT" in _link or "KiIB" in _link or 'SiSS' in _link or 'RiT' in _link) and "1-kurs" in _link and STREAM_ID[data.stream] in _link:
                 path = False if len(glob.glob(f'tables/table_{user_id}_*.xlsx')) == 0 else glob.glob(f'tables/table_{user_id}_*.xlsx')[0]
                 if path == False:
