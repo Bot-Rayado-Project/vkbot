@@ -1,11 +1,13 @@
 from datetime import datetime, timedelta
-from utils.constants_schedule import time, day_of_week, days
+from utils.constants_schedule import time, day_of_week, days, supplements
 
 
-async def get_schedule_zrc(day_type: str, group_text: str, group_column: str, week_type: str, schedule) -> str:
+async def get_schedule_zrc(day_type: str, group_text: str, week_type: str, schedule) -> str:
 
     day_time_utc = datetime.weekday(datetime.today().utcnow() + timedelta(hours=3))  # Получение нынешнего времени
-    start_cell = 15 if week_type == 'четная' else 14
+    start_cell = 14
+    week_column = 'G' if week_type == 'нечетная' else 'H'
+    const = 1 if week_type == 'четная' else -1
 
     if day_type == 'завтра':
 
@@ -15,10 +17,10 @@ async def get_schedule_zrc(day_type: str, group_text: str, group_column: str, we
             day_time_utc = 0
         else:
             day_time_utc += 1
-            day = int(day_time_utc) * 11 + start_cell
+            day = int(day_time_utc) * 6 + start_cell
 
     else:
-        day = int(day_time_utc) * 11 + start_cell
+        day = int(day_time_utc) * 6 + start_cell
 
     try:
         schedule_output = '⸻⸻⸻⸻⸻\n' + 'Группа: ' + group_text.upper() + '\n' \
@@ -28,67 +30,105 @@ async def get_schedule_zrc(day_type: str, group_text: str, group_column: str, we
     except KeyError:
         return 'Ошибка в выводе расписания #1'
 
-    time_para = 1  # Номер пары для времени
 
-    for para_cell in range(day, day + 10, 2):
+    for i in range(day, day + 5):
 
-        try:
-            if schedule[group_column + str(para_cell)].value != None:
-
-                try:
-                    schedule_output += str(time[time_para]) + '  ' \
-                        + str(schedule[group_column + str(para_cell)].value) + '\n\n' \
-                        + '⸻⸻⸻⸻⸻\n'  # Добавляем пару, то есть ячейку если она не пустая
-
-                except KeyError:
-                    # Это обработка что ключ будет существовать во времени, то есть номер пары
-                    return 'Ошибка в выводе расписания #1'
-            else:
-                # Если же ячейка пустая, значит пары нет
-                schedule_output += 'Пары нет\n' + '⸻⸻⸻⸻⸻\n'
-        except:
-            # Обрабатываем ошибку в считывании таблицы
-            return 'Ошибка в считывании таблицы #1'
-
-        time_para += 1  # Счётчик пары плюс один
-
+        if schedule[week_column + str(i)].value != None:
+            schedule_output += str(time[i - day + 1]) + '  ' \
+                + str(schedule[week_column + str(i)].value) + '\n\n' \
+                + 'Преподаватель: ' + str(schedule[chr(ord(week_column) + 1 * const) + str(i)].value) + '\n'\
+                + 'Вид занятия: ' + str(supplements[str(schedule[chr(ord(week_column) + 2 * const) + str(i)].value)]) + '\n' \
+                + 'Форма проведения: ' + str(supplements[str(schedule[chr(ord(week_column) + 3 * const) + str(i)].value)]) + '\n' \
+                + '⸻⸻⸻⸻⸻\n'
+        else:
+            schedule_output += 'Пары нет\n' + '⸻⸻⸻⸻⸻\n'
+    
     return schedule_output
 
 
-async def get_full_schedule_zrc(group_text: str, week_type: str, schedule, week_column: str) -> tuple:
+async def get_full_schedule_zrc(group_text: str, week_type: str, schedule) -> tuple:
 
-    subject = 1
+    full_schedule = '⸻⸻⸻⸻⸻\n' + 'Группа: ' + group_text.upper() + '\n' \
+        + 'Неделя: ' + week_type.capitalize() + '\n' \
+        + '⸻⸻⸻⸻⸻\n'
     full_schedule_tuple = ()
     full_schedule_list = []
-    # Формируем список и кортеж для будущего возврата в другой файл, чтобы вернуть пользователю
-    start_cell = 15 if week_type == 'четная' else 14
+    const = 1 if week_type == 'четная' else -1
+    week_column = 'G' if week_type == 'нечетная' else 'H'
 
-    full_schedule_list.append('⸻⸻⸻⸻⸻\n' + 'Группа: ' + group_text.upper() + '\n'
-                              + 'Неделя: ' + (week_type.capitalize()) + '\n'
-                              + '⸻⸻⸻⸻⸻\n')  # Добавляем заголовок вывода расписания с группой и тд.
 
-    for day_of_week_cell in range(start_cell, 67, 11):
+    for k in range(14, 49, 6):
 
-        # Добавление в конечный вывод дня недели то есть значения ячейки из таблицы
-        full_schedule = str(day_of_week[str(subject)]) + '\n\n'
+        current_day_column = 0
+        full_schedule = str(
+            schedule['A' + str(k - 1)].value) + '\n' + '⸻⸻⸻⸻⸻\n'
 
-        for para_cell in range(day_of_week_cell, day_of_week_cell + 10, 2):
-
-            if schedule[week_column + str(para_cell)].value != None:
-
-                full_schedule += str(schedule[week_column + str(para_cell)].value) + '\n'\
+        for i in range(k + current_day_column, k + current_day_column + 5):
+            print('1')
+            if schedule[week_column + str(i)].value != None:
+                print('2')
+                full_schedule += str(current_day_column + 1) + '. ' \
+                    + str(schedule[week_column + str(i)].value) + '(' + str(str(schedule[chr(ord(week_column) + 3 * const) + str(i)].value)) \
+                    + ' ' + str(str(schedule[chr(ord(week_column) + 2 * const) + str(i)].value)) + ')' + '\n'\
                     + '⸻⸻⸻⸻⸻\n'
-                # Если ячейка не пустая добавляем значение ячейки в конечный вывод
-
             else:
-                full_schedule += 'Пары нет\n' + '⸻⸻⸻⸻⸻\n'
-                # Если же пустая, то пары нет
+                full_schedule += str(current_day_column + 1) + \
+                    '. ' + 'Пары нет\n' + '⸻⸻⸻⸻⸻\n'
 
-        # Добавляем полученный день в список
+            current_day_column += 1
+
         full_schedule_list.append(full_schedule)
-        subject += 1
 
-    # Из списка делаем кортеж и возвращаем
     full_schedule_tuple = tuple(full_schedule_list)
 
     return full_schedule_tuple
+
+'''full_schedule = '⸻⸻⸻⸻⸻\n' + 'Группа: ' + group_text.upper() + '\n' \
+        + 'Неделя: ' + (week_checked).capitalize() + '\n' \
+        + '⸻⸻⸻⸻⸻\n'
+    full_schedule_tuple = ()
+    full_schedule_list = []
+    groups = {
+        'бвт2101': 0,
+        'бвт2102': 1,
+        'бвт2103': 2,
+        'бвт2104': 3,
+        'бвт2105': 4,
+        'бвт2106': 5,
+        'бвт2107': 6,
+        'бвт2108': 7,
+        'бфи2101': 8,
+        'бфи2102': 9,
+        'бст2101': 10,
+        'бст2102': 11,
+        'бст2103': 12,
+        'бст2104': 13,
+        'бст2105': 14,
+        'бст2106': 15
+    }
+    schedule = await get_sheet(group_text, id, groups[group_text])
+
+    for k in range(14, 49, 6):
+
+        current_day_column = 0
+        full_schedule = str(
+            schedule['A' + str(k - 1)].value) + '\n' + '⸻⸻⸻⸻⸻\n'
+
+        for i in range(k + current_day_column, k + current_day_column + 5):
+
+            if schedule[week_column + str(i)].value != None:
+                full_schedule += str(current_day_column + 1) + '. ' \
+                    + str(schedule[week_column + str(i)].value) + '(' + str(str(schedule[chr(ord(week_column) + 3 * const) + str(i)].value)) \
+                    + ' ' + str(str(schedule[chr(ord(week_column) + 2 * const) + str(i)].value)) + ')' + '\n'\
+                    + '⸻⸻⸻⸻⸻\n'
+            else:
+                full_schedule += str(current_day_column + 1) + \
+                    '. ' + 'Пары нет\n' + '⸻⸻⸻⸻⸻\n'
+
+            current_day_column += 1
+
+        full_schedule_list.append(full_schedule)
+
+    full_schedule_tuple = tuple(full_schedule_list)
+
+    return full_schedule_tuple'''

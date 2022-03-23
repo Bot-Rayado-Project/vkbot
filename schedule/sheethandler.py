@@ -222,10 +222,10 @@ async def print_schedule(day_input: str, group_input: str, id: str, week_type: s
 
     if (('бвт' in group_input and int(group_input[-1]) < 5) or ('бфи' in group_input) or ('бст' in group_input and int(group_input[-1]) < 4) 
     or ('бэи' in group_input) or ('биб' in group_input) or ('бин' in group_input and int(group_input[-1]) < 5) or ('бмп' in group_input)
-    or ('бап' in group_input) or ('бут' in group_input)):
+    or ('бап' in group_input) or ('бут' in group_input) or ('зрс' in group_input and int(group_input[-1]) == 1)):
         group_list = 0
     elif (('бвт' in group_input and int(group_input[-1]) > 4) or ('бст' in group_input and int(group_input[-1]) > 3) 
-    or ('бин' in group_input and int(group_input[-1]) > 4 and int(group_input[-1]) < 8)):
+    or ('бин' in group_input and int(group_input[-1]) > 4 and int(group_input[-1]) < 8) or ('зрс' in group_input and int(group_input[-1]) == 2)):
         group_list = 1
     else:
         group_list = 2 # Выборка номера листа для каждой группы разный от условия
@@ -310,8 +310,8 @@ async def print_schedule(day_input: str, group_input: str, id: str, week_type: s
 
             case 'зрс':
                 if day_input == 'вся неделя':
-                    return await get_full_schedule_zrc(group_input, week_checked, schedule, week_columns_groups[group_input])
+                    return await get_full_schedule_zrc(group_input, week_checked, schedule)
                 else:
-                    return await get_schedule_zrc(day_input, group_input, week_columns_groups[group_input], week_checked, schedule)
+                    return await get_schedule_zrc(day_input, group_input, week_checked, schedule)
     else:
         return 'Ошибка ввода'
