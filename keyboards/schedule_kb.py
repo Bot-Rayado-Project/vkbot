@@ -12,13 +12,16 @@ GROUP_BUTTONS_BUT_KB: Keyboard = Keyboard(one_time=False)
 GROUP_BUTTONS_ZRC_KB: Keyboard = Keyboard(one_time=False)
 GROUP_BUTTONS_BRT_KB: Keyboard = Keyboard(one_time=False)
 GROUP_BUTTONS_BIK_KB: Keyboard = Keyboard(one_time=False)
+GROUP_BUTTONS_BEE_KB: Keyboard = Keyboard(one_time=False)
+GROUP_BUTTONS_BER_KB: Keyboard = Keyboard(one_time=False)
+GROUP_BUTTONS_BBI_KB: Keyboard = Keyboard(one_time=False)
 STREAM_KB: Keyboard = Keyboard(one_time=False)
 DAYS_OF_WEEK_KB: Keyboard = Keyboard(one_time=False)
 CURRENT_OR_NEXT_WEEK_KB: Keyboard = Keyboard(one_time=False)
 
 
 # Названия кнопок
-STREAM_BUTTONS: list = ['бфи', 'бвт', 'бст', 'бэи', 'биб', 'бин', 'бап', 'бмп', 'бут', 'зрс', 'брт']
+STREAM_BUTTONS: list = ['бфи', 'бвт', 'бст', 'бэи', 'биб', 'бин', 'бап', 'бмп', 'бут', 'зрс', 'брт', 'бээ', 'бэр', 'бби']
 DAYS_OF_WEEK_BUTTONS: list = ['сегодня', 'завтра', 'вся неделя']
 CURRENT_OR_NEXT_WEEK_BUTTONS: list = ['текущая неделя', 'следующая неделя']
 GROUP_BUTTONS_BFI: list = ['бфи2101', 'бфи2102']
@@ -30,6 +33,9 @@ GROUP_BUTTONS_BIN: list = ['бин2101', 'бин2102', 'бин2103', 'бин2104
 GROUP_BUTTONS_BAP: list = ['бап2101']
 GROUP_BUTTONS_BMP: list = ['бмп2101']
 GROUP_BUTTONS_BUT: list = ['бут2101']
+GROUP_BUTTONS_BEE: list = ['бээ2101']
+GROUP_BUTTONS_BER: list = ['бэр2101']
+GROUP_BUTTONS_BBI: list = ['бби2101']
 GROUP_BUTTONS_ZRC: list = ['зрс2101', 'зрс2102']
 GROUP_BUTTONS_BRT: list = ['брт2101', 'брт2102']
 """ GROUP_BUTTONS_BIK: list = ['бик2101', 'бик2102', 'бик2103', 'бик2104', 'бик2105', 'бик2106', 'бик2107', 'бик2108', 'бик2109'] """
@@ -39,12 +45,13 @@ GROUP_BUTTONS: list = ['бфи2101', 'бфи2102', 'бвт2101', 'бвт2102', '
                        'бэи2103', 'биб2102', 'биб2103', 'биб2104', 'бин2101', 'бин2102',
                        'бин2103', 'бин2104', 'бин2105', 'бин2106', 'бин2107', 'бин2108',
                        'бин2109', 'бин2110', 'бмп2101', 'зрс2101', 'зрс2102', 'бап2101',
-                       'бут2101', 'брт2101', 'брт2102']
+                       'бут2101', 'брт2101', 'брт2102', 'бби2101', 'бэр2101', 'бээ2101']
 
 # Payload кнопок
 STREAM_BUTTONS_PAYLOAD: list = [{"stream_button": "bfi"}, {"stream_button": "bvt"}, {"stream_button": "bst"}, {"stream_button": "bei"},
                                 {"stream_button": "bib"}, {"stream_button": "bin"}, {"stream_button": "bmp"}, {"stream_button": "zrc"},
-                                {"stream_button": "bap"}, {"stream_button": "but"},  {"stream_button": "brt"}, {"stream_button": "bik"}]
+                                {"stream_button": "bap"}, {"stream_button": "but"},  {"stream_button": "brt"}, {"stream_button": "bee"},
+                                {"stream_button": "ber"}, {"stream_button": "bbi"}]
 DAYS_OF_WEEK_BUTTONS_PAYLOAD: list = [{"dow_button": "today"}, {"dow_button": "tommorow"}, {"dow_button": "full week"}]
 CURRENT_OR_NEXT_WEEK_BUTTONS_PAYLOAD: list = [{"conw_button": "current week"}, {"conw_button": "next week"}]
 GROUP_BUTTONS_BFI_PAYLOAD: list = [{"group_button": "bfi2101"}, {"group_button": "bfi2102"}]
@@ -59,6 +66,9 @@ GROUP_BUTTONS_BIN_PAYLOAD: list = [{"group_button": "bin2101"}, {"group_button":
 GROUP_BUTTONS_BMP_PAYLOAD: list = [{"group_button": "bmp2101"}]
 GROUP_BUTTONS_ZRC_PAYLOAD: list = [{"group_button": 'zrc2101'}, {"group_button": 'zrc2102'}]
 GROUP_BUTTONS_BAP_PAYLOAD: list = [{"group_button": 'bap2101'}]
+GROUP_BUTTONS_BEE_PAYLOAD: list = [{"group_button": 'bee2101'}]
+GROUP_BUTTONS_BBI_PAYLOAD: list = [{"group_button": 'bbi2101'}]
+GROUP_BUTTONS_BER_PAYLOAD: list = [{"group_button": 'ber2101'}]
 GROUP_BUTTONS_BUT_PAYLOAD: list = [{"group_button": "but2101"}, {"group_button": "but2102"}, {"group_button": "but2103"}]
 GROUP_BUTTONS_BRT_PAYLOAD: list = [{"group_button": 'brt2101'}, {"group_button": 'brt2102'}]
 """ GROUP_BUTTONS_BIK_PAYLOAD: list = [{"group_button": "bik2101"}, {"group_button": "bik2102"}, {"group_button": "bik2103"}, {
@@ -149,6 +159,21 @@ for i in range(1, len(GROUP_BUTTONS_BRT) + 1):
     if i == len(GROUP_BUTTONS_BIK):
         GROUP_BUTTONS_BIK_KB.add_row()
         GROUP_BUTTONS_BIK_KB.add_text_button(text='Меню', color=ButtonColor.PRIMARY, payload={"button": "menu"}) """
+for i in range(1, len(GROUP_BUTTONS_BBI) + 1):
+    GROUP_BUTTONS_BBI_KB.add_text_button(text=GROUP_BUTTONS_BBI[i - 1].upper(), color=ButtonColor.SECONDARY, payload=GROUP_BUTTONS_BBI_PAYLOAD[i - 1])
+    if i == len(GROUP_BUTTONS_BBI):
+        GROUP_BUTTONS_BBI_KB.add_row()
+        GROUP_BUTTONS_BBI_KB.add_text_button(text='Меню', color=ButtonColor.PRIMARY, payload={"button": "menu"})
+for i in range(1, len(GROUP_BUTTONS_BER) + 1):
+    GROUP_BUTTONS_BER_KB.add_text_button(text=GROUP_BUTTONS_BER[i - 1].upper(), color=ButtonColor.SECONDARY, payload=GROUP_BUTTONS_BER_PAYLOAD[i - 1])
+    if i == len(GROUP_BUTTONS_BER):
+        GROUP_BUTTONS_BER_KB.add_row()
+        GROUP_BUTTONS_BER_KB.add_text_button(text='Меню', color=ButtonColor.PRIMARY, payload={"button": "menu"})
+for i in range(1, len(GROUP_BUTTONS_BEE) + 1):
+    GROUP_BUTTONS_BEE_KB.add_text_button(text=GROUP_BUTTONS_BEE[i - 1].upper(), color=ButtonColor.SECONDARY, payload=GROUP_BUTTONS_BEE_PAYLOAD[i - 1])
+    if i == len(GROUP_BUTTONS_BEE):
+        GROUP_BUTTONS_BEE_KB.add_row()
+        GROUP_BUTTONS_BEE_KB.add_text_button(text='Меню', color=ButtonColor.PRIMARY, payload={"button": "menu"})
 for i in range(1, len(CURRENT_OR_NEXT_WEEK_BUTTONS) + 1):
     CURRENT_OR_NEXT_WEEK_KB.add_text_button(text=CURRENT_OR_NEXT_WEEK_BUTTONS[i - 1].capitalize(), color=ButtonColor.SECONDARY, payload=CURRENT_OR_NEXT_WEEK_BUTTONS_PAYLOAD[i - 1])
     if i == len(CURRENT_OR_NEXT_WEEK_BUTTONS):
@@ -167,4 +192,7 @@ KB = {'бфи': GROUP_BUTTONS_BFI_KB.get_keyboard,
       'зрс': GROUP_BUTTONS_ZRC_KB.get_keyboard,
       'бап': GROUP_BUTTONS_BAP_KB.get_keyboard,
       'бут': GROUP_BUTTONS_BUT_KB.get_keyboard,
-      'брт': GROUP_BUTTONS_BRT_KB.get_keyboard}
+      'брт': GROUP_BUTTONS_BRT_KB.get_keyboard,
+      'бби': GROUP_BUTTONS_BBI_KB.get_keyboard,
+      'бээ': GROUP_BUTTONS_BEE_KB.get_keyboard,
+      'бэр': GROUP_BUTTONS_BER_KB.get_keyboard}

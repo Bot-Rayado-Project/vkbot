@@ -34,13 +34,14 @@ async def recieve_time_table(group: str, user_id: str) -> None:
     data = GroupInfo(re.sub('[^а-я]', '', group), re.sub('[^0-9]', '', group))
     print_info('Обработка скачки.')
     STREAM_ID: dict = {'бвт': '09.03.01', 'бст': '09.03.02', 'бфи': '02.03.02', 'биб': '10.03.01', 'бэи': '09.03.03', 'бин': '11.03.02',
-                       'бмп': '01.03.04', 'зрс': '10.05.02', 'бап': '15.03.04', 'бут': '27.03.04', 'брт': '11.03.01'}
+                       'бмп': '01.03.04', 'зрс': '10.05.02', 'бап': '15.03.04', 'бут': '27.03.04', 'брт': '11.03.01', 'бээ' : '38.03.01',
+                       'бби' : '38.03.05', 'бэр' : '42.03.01'}
     for link in soup.find_all('a'):
         _link = link.get('href')
         try:
             print_info(data.stream)
             print_info(STREAM_ID[data.stream])
-            if _link.startswith('/upload/') and ("IT" in _link or "KiIB" in _link or 'SiSS' in _link or 'RiT' in _link) and "1-kurs" in _link and STREAM_ID[data.stream] in _link:
+            if _link.startswith('/upload/') and ("IT" in _link or "KiIB" in _link or 'SiSS' in _link or 'RiT' in _link or 'TSEiMK' in _link) and "1-kurs" in _link and STREAM_ID[data.stream] in _link:
                 path = False if len(glob.glob(f'tables/table_{user_id}_*.xlsx')) == 0 else glob.glob(f'tables/table_{user_id}_*.xlsx')[0]
                 if path == False:
                     print_info('Файла нет')
