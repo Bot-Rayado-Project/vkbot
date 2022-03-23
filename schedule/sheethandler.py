@@ -245,16 +245,13 @@ async def print_schedule(day_input: str, group_input: str, id: str, week_type: s
 
         else:
             week_checked = await week_check(week_type)
-
-        try:
-            schedule = await get_sheet(group_input, id, group_list)
-        except:
-            return 'Ошибка в таблице, sheethandler.py'
+        
+        schedule = await get_sheet(group_input, id, group_list)
 
         if 'Ошибка' in week_checked:
             return week_checked  # Проверка ошибки в чётности недели
-        if 'Ошибка' in schedule:
-            return schedule  # Проверка ошибки в скачке расписания
+        if False in schedule:
+            return False  # Проверка ошибки в скачке расписания
 
         match group_input[0:3]:
 
