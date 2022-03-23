@@ -73,12 +73,9 @@ async def week_check(week_type: str) -> str:
 
 
 async def get_sheet(group: str, user_id: str, temp_number: str) -> openpyxl.Workbook:
-    try:
-        if not os.path.isdir("tables"):
-            os.mkdir("tables")
-    except:
-        # Тут происходит обработки ошибки с папкой tables, вдруг её нет или не создаётся
-        return 'Ошибка в скачке таблицы #3'
+    
+    if not os.path.isdir("tables"):
+        os.mkdir("tables")
 
     data = await recieve_time_table(group, user_id)  # Запрос на скачку таблицы
 
@@ -87,7 +84,7 @@ async def get_sheet(group: str, user_id: str, temp_number: str) -> openpyxl.Work
         wb_obj = openpyxl.load_workbook(path)
     except:
         # Проверка вторая так как иногда ссылки меняют, и ест ьвероятность простого парса еррор сайта
-        return 'Ошибка в скачке таблицы #2'
+        return False
 
     wb_obj.active = temp_number  # Задача листа таблицы
     sheet = wb_obj.active  # Выборка правильной таблицы
