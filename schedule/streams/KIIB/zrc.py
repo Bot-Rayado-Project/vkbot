@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from utils.constants_schedule import time, day_of_week, days, supplements
+from utils.constants_schedule import time, days, supplements
 
 
 async def get_schedule_zrc(day_type: str, group_text: str, week_type: str, schedule) -> str:
