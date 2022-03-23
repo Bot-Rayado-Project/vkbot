@@ -6,14 +6,14 @@
   <h3>Bot Rayado - Бот для ВКонтакте, написанный на Python</h3>
 </div>
 
-## Bot Rayado
+# Bot Rayado
 
 Bot Rayado - это бот, созданный двумя разработчками, чтобы облегчить жизнь студентов МТУСИ.
 
 Bot Rayado вдохновлен многими другими ботами и был создан благодаря энтузиазму разработчиков.
 
 **Текущий мейнтейнер** проекта: [@darttusin](https://github.com/darttusin)
-## Почему VKWave?
+# Почему VKWave?
 
 - Есть шаблоны для быстрого получения расписания
 - Всегда новое расписание, полученное с сайта в момент запроса
@@ -21,9 +21,9 @@ Bot Rayado вдохновлен многими другими ботами и б
 - Быстрая работа бота
 - Регулярные обновления
 
-## Установка
+# Установка
 
-# Холодный старт:
+## Холодный старт:
 
 Клонируем репозиторий:
 ```
@@ -40,7 +40,7 @@ docker build -t vkbot /vkbot/
 docker run -e API_TOKEN='***' -e ALLOWED_USER_IDS='***' -e GROUP_ID='***' -d --name vk_bot vkbot
 ```
 
-# Перезапуск бота с обновлениями:
+## Перезапуск бота с обновлениями:
 
 Для начала синхронизируем файлы через Rsync, затем копируем базу данных из текущего контейнера докер:
 ```
@@ -54,15 +54,15 @@ docker container stop vk_bot && docker container rm vk_bot -f && docker image rm
 
 Далее повторяем действия с холодного старта.
 
-## Статус тестов
+# Статус тестов
 
 ![Dev tests](https://github.com/3xiced/vkbot/actions/workflows/python-app-dev.yml/badge.svg)
 ![Main tests & deployment](https://github.com/3xiced/vkbot/actions/workflows/python-app-main.yml/badge.svg)
-## Производительность
+# Производительность
 
 Bot Rayado не самый легковесный, но довольно оптимизированный бот.
 
-## Сообщество
+# Сообщество
 
 Bot rayado - очень молодой проект.
 
