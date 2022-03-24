@@ -8,6 +8,14 @@ class Settings():
         error = False
         counter = 0
         try:
+            self.__STATE = os.getenv('STATE').split()
+            print_info("STATE: " +
+                       ", ".join(self.__STATE))
+        except:
+            print_error("STATE is not given. Allowed options: DEBUG, STABLE")
+            counter += 1
+            error = True
+        try:
             self.__ALLOWED_USER_IDS = os.getenv('ALLOWED_USER_IDS').split()
             print_info("ALLOWED_USER_IDS: " +
                        ", ".join(self.__ALLOWED_USER_IDS))
@@ -41,6 +49,9 @@ class Settings():
             print_error(f"Import error. {counter} arguments are not given.")
         else:
             print_info("Import complete.")
+    
+    def GET_STATE(self) -> str:
+        return self.__STATE
 
     def GET_ALLOWED_USER_IDS(self) -> list:
         return self.__ALLOWED_USER_IDS
@@ -52,7 +63,10 @@ class Settings():
         return self.__GROUP_ID
 
     def GET_ALL_VARIABLES(self) -> tuple:
-        return self.__ALLOWED_USER_IDS, self.__API_TOKEN, self.__GROUP_ID
+        return self.__ALLOWED_USER_IDS, self.__API_TOKEN, self.__GROUP_ID, self.__STATE
+    
+    def SET_STATE(self, value) -> None:
+        self.__STATE = value
 
     def SET_ALLOWED_USER_IDS(self, value) -> None:
         self.__ALLOWED_USER_IDS = value

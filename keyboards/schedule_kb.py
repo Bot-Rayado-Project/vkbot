@@ -15,7 +15,7 @@ GROUP_BUTTONS_BIK_KB: Keyboard = Keyboard(one_time=False)
 GROUP_BUTTONS_BEE_KB: Keyboard = Keyboard(one_time=False)
 GROUP_BUTTONS_BER_KB: Keyboard = Keyboard(one_time=False)
 GROUP_BUTTONS_BBI_KB: Keyboard = Keyboard(one_time=False)
-FACULTIES_BUTTONS_KB: Keyboard = Keyboard(one_time=False) 
+FACULTIES_BUTTONS_KB: Keyboard = Keyboard(one_time=False)
 STREAM_KB: Keyboard = Keyboard(one_time=False)
 DAYS_OF_WEEK_KB: Keyboard = Keyboard(one_time=False)
 CURRENT_OR_NEXT_WEEK_KB: Keyboard = Keyboard(one_time=False)
@@ -25,7 +25,7 @@ CURRENT_OR_NEXT_WEEK_KB: Keyboard = Keyboard(one_time=False)
 STREAM_BUTTONS: list = ['бфи', 'бвт', 'бст', 'бэи', 'биб', 'бин', 'бап', 'бмп', 'бут', 'зрс', 'брт', 'бээ', 'бэр', 'бби']
 DAYS_OF_WEEK_BUTTONS: list = ['сегодня', 'завтра', 'вся неделя']
 CURRENT_OR_NEXT_WEEK_BUTTONS: list = ['текущая неделя', 'следующая неделя']
-FACULTIES_BUTTONS: list = ['ИТ', 'КиИБ', 'РиТ', 'СиСС', 'ЦЭиМК']
+# FACULTIES_BUTTONS: list = ['ИТ', 'КиИБ', 'РиТ', 'СиСС', 'ЦЭиМК']
 GROUP_BUTTONS_BFI: list = ['бфи2101', 'бфи2102']
 GROUP_BUTTONS_BVT: list = ['бвт2101', 'бвт2102', 'бвт2103', 'бвт2104', 'бвт2105', 'бвт2106', 'бвт2107', 'бвт2108']
 GROUP_BUTTONS_BST: list = ['бст2101', 'бст2102', 'бст2103', 'бст2104', 'бст2105', 'бст2106']
@@ -52,10 +52,10 @@ GROUP_BUTTONS: list = ['бфи2101', 'бфи2102', 'бвт2101', 'бвт2102', '
 # Payload кнопок
 STREAM_BUTTONS_PAYLOAD: list = [{"stream_button": "bfi"}, {"stream_button": "bvt"}, {"stream_button": "bst"}, {"stream_button": "bei"},
                                 {"stream_button": "bib"}, {"stream_button": "bin"}, {"stream_button": "bmp"}, {"stream_button": "zrc"},
-                                {"stream_button": "bap"}, {"stream_button": "but"},  {"stream_button": "brt"}, {"stream_button": "bee"},
+                                {"stream_button": "bap"}, {"stream_button": "but"}, {"stream_button": "brt"}, {"stream_button": "bee"},
                                 {"stream_button": "ber"}, {"stream_button": "bbi"}]
-FACULTIES_BUTTONS_PAYLOAD: list = [{"faculty_button": "it"}, {"faculty_button": "kiib"}, {"faculty_button": "rit"}, {"faculty_button": "siss"},
-                                {"faculty_button": "ceimk"}]
+# FACULTIES_BUTTONS_PAYLOAD: list = [{"faculty_button": "it"}, {"faculty_button": "kiib"}, {"faculty_button": "rit"}, {"faculty_button": "siss"},
+# {"faculty_button": "ceimk"}]
 DAYS_OF_WEEK_BUTTONS_PAYLOAD: list = [{"dow_button": "today"}, {"dow_button": "tommorow"}, {"dow_button": "full week"}]
 CURRENT_OR_NEXT_WEEK_BUTTONS_PAYLOAD: list = [{"conw_button": "current week"}, {"conw_button": "next week"}]
 GROUP_BUTTONS_BFI_PAYLOAD: list = [{"group_button": "bfi2101"}, {"group_button": "bfi2102"}]
@@ -88,13 +88,13 @@ for i in range(1, len(STREAM_BUTTONS) + 1):
     if i == len(STREAM_BUTTONS):
         STREAM_KB.add_row()
         STREAM_KB.add_text_button(text='Меню', color=ButtonColor.PRIMARY, payload={"button": "menu"})
-for i in range(1, len(FACULTIES_BUTTONS) + 1):
+'''for i in range(1, len(FACULTIES_BUTTONS) + 1):
     FACULTIES_BUTTONS_KB.add_text_button(text=FACULTIES_BUTTONS[i - 1].upper(), color=ButtonColor.SECONDARY, payload=FACULTIES_BUTTONS_PAYLOAD[i - 1])
     if i % 3 == 0:
         STREAM_KB.add_row()
     if i == len(FACULTIES_BUTTONS):
         FACULTIES_BUTTONS_KB.add_row()
-        FACULTIES_BUTTONS_KB.add_text_button(text='Меню', color=ButtonColor.PRIMARY, payload={"button": "menu"})
+        FACULTIES_BUTTONS_KB.add_text_button(text='Меню', color=ButtonColor.PRIMARY, payload={"button": "menu"})'''
 for i in range(1, len(DAYS_OF_WEEK_BUTTONS) + 1):
     DAYS_OF_WEEK_KB.add_text_button(text=DAYS_OF_WEEK_BUTTONS[i - 1].capitalize(), color=ButtonColor.SECONDARY, payload=DAYS_OF_WEEK_BUTTONS_PAYLOAD[i - 1])
     if i == len(DAYS_OF_WEEK_BUTTONS):
