@@ -1,5 +1,6 @@
 from utils.constants import *
-from utils.terminal_codes import print_info
+from utils.terminal_codes import print_info, INFO_CODE_USER_MSG
+import utils.terminal_codes as term
 from datetime import datetime
 from vkwave.bots import SimpleBotEvent
 import entry
@@ -13,7 +14,7 @@ def database_handler(ret_cmd: bool = False, ret_cfg: bool = False, ret_flag: boo
         async def wrapper(event: SimpleBotEvent) -> str:
             try:
                 user = await event.get_user()
-                print_info(f"({datetime.today().strftime('%H:%M:%S')}) \033[38;5;80m{user.first_name} {user.last_name} \033[38;5;254m(ID: {event.from_id}): \033[38;5;80m{event.text}\033[0;0m")
+                print_info(term.INFO_CODE_USER_MSG.format(datetime.today().strftime('%H:%M:%S'), user.first_name, user.last_name, event.from_id, event.text))
                 cursor.execute(C_SQLITE_ADD_COMMAND.format(event.from_id, event.text))
                 sqlite_connection.commit()
                 if is_menu:
