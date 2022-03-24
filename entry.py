@@ -83,10 +83,12 @@ def get_default_keys():
     STREAM_ID: dict = {'бвт': '09.03.01', 'бст': '09.03.02', 'бфи': '02.03.02', 'биб': '10.03.01', 'бэи': '09.03.03', 'бин': '11.03.02',
                        'бмп': '01.03.04', 'зрс': '10.05.02', 'бап': '15.03.04', 'бут': '27.03.04', 'брт': '11.03.01', 'бээ': '38.03.01',
                        'бби': '38.03.05', 'бэр': '42.03.01'}
+    FACULTIES: list = ["it", "kiib", "siss", "rit", "tseimk"]
     for link in soup.find_all('a'):
         _link = link.get('href')
         try:
-            if _link.startswith('/upload/') and ("IT" in _link or "KiIB" in _link or 'SiSS' in _link or 'RiT' in _link) and "1-kurs" in _link:
+            if _link.startswith('/upload/') and any(fac in _link.lower() for fac in FACULTIES) and "1-kurs" in _link:
+                print_info(_link)
                 if STREAM_ID["бвт"] in _link:
                     default_keys["бвт"] = _link[15:18]
                 elif STREAM_ID["бст"] in _link:
