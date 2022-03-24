@@ -23,6 +23,7 @@ from schedule.streams.CEIMK.bee import get_full_schedule_bee, get_schedule_bee
 from schedule.streams.CEIMK.bbi import get_full_schedule_bbi, get_schedule_bbi
 from schedule.streams.CEIMK.ber import get_full_schedule_ber, get_schedule_ber
 
+
 async def check_right_input(day_input: str, group_input: str, week_type: str) -> bool:
 
     days = ('сегодня', 'завтра', 'вся неделя')
@@ -72,15 +73,15 @@ async def week_check(week_type: str) -> str:
     return sheet'''
 
 
-async def get_sheet(group: str, user_id: str, temp_number: str) -> openpyxl.Workbook:
-    
+async def get_sheet(group: str, stream: str, temp_number: str) -> openpyxl.Workbook:
+
     if not os.path.isdir("tables"):
         os.mkdir("tables")
 
-    data = await recieve_time_table(group, user_id)  # Запрос на скачку таблицы
+    data = await recieve_time_table(group)  # Запрос на скачку таблицы
 
     try:
-        path = glob.glob('tables/table_{0}_*.xlsx'.format(user_id))[0]
+        path = glob.glob(f'tables/table_{stream}.xlsx')[0]
         wb_obj = openpyxl.load_workbook(path)
     except:
         # Проверка вторая так как иногда ссылки меняют, и ест ьвероятность простого парса еррор сайта
@@ -221,18 +222,18 @@ async def get_sheet(group: str, user_id: str, temp_number: str) -> openpyxl.Work
 
 async def print_schedule(day_input: str, group_input: str, id: str, week_type: str) -> str | tuple:
 
-    if (('бвт' in group_input and int(group_input[-1]) < 5) or ('бфи' in group_input) or ('бст' in group_input and int(group_input[-1]) < 4) 
-    or ('бэи' in group_input) or ('биб' in group_input) or ('бин' in group_input and int(group_input[-1]) < 5) or ('бмп' in group_input)
-    or ('бап' in group_input) or ('бут' in group_input) or ('зрс' in group_input and int(group_input[-1]) == 1)
-    or ('брт' in group_input) or ('бик' in group_input and int(group_input[-1]) < 4) or ('бээ' in group_input) or ('бби' in group_input)
-    or ('бэр' in group_input)):
+    if (('бвт' in group_input and int(group_input[-1]) < 5) or ('бфи' in group_input) or ('бст' in group_input and int(group_input[-1]) < 4)
+        or ('бэи' in group_input) or ('биб' in group_input) or ('бин' in group_input and int(group_input[-1]) < 5) or ('бмп' in group_input)
+        or ('бап' in group_input) or ('бут' in group_input) or ('зрс' in group_input and int(group_input[-1]) == 1)
+        or ('брт' in group_input) or ('бик' in group_input and int(group_input[-1]) < 4) or ('бээ' in group_input) or ('бби' in group_input)
+            or ('бэр' in group_input)):
         group_list = 0
-    elif (('бвт' in group_input and int(group_input[-1]) > 4) or ('бст' in group_input and int(group_input[-1]) > 3) 
-    or ('бин' in group_input and int(group_input[-1]) > 4 and int(group_input[-1]) < 8) or ('зрс' in group_input and int(group_input[-1]) == 2)
-    or ('бик' in group_input and int(group_input[-1]) > 3 and int(group_input[-1]) < 7)):
+    elif (('бвт' in group_input and int(group_input[-1]) > 4) or ('бст' in group_input and int(group_input[-1]) > 3)
+          or ('бин' in group_input and int(group_input[-1]) > 4 and int(group_input[-1]) < 8) or ('зрс' in group_input and int(group_input[-1]) == 2)
+          or ('бик' in group_input and int(group_input[-1]) > 3 and int(group_input[-1]) < 7)):
         group_list = 1
     else:
-        group_list = 2 # Выборка номера листа для каждой группы разный от условия
+        group_list = 2  # Выборка номера листа для каждой группы разный от условия
 
     if ((day_input == 'завтра' and datetime.weekday(datetime.today().utcnow() + timedelta(hours=3)) == 5)
             or (day_input == 'сегодня' and datetime.weekday(datetime.today().utcnow() + timedelta(hours=3)) == 6)):
@@ -245,8 +246,8 @@ async def print_schedule(day_input: str, group_input: str, id: str, week_type: s
 
         else:
             week_checked = await week_check(week_type)
-        
-        schedule = await get_sheet(group_input, id, group_list)
+
+        schedule = await get_sheet(group_input, group_input[0:3], group_list)
 
         if 'Ошибка' in week_checked:
             return week_checked  # Проверка ошибки в чётности недели
@@ -290,7 +291,7 @@ async def print_schedule(day_input: str, group_input: str, id: str, week_type: s
                     return await get_full_schedule_bin(group_input, week_checked, schedule, week_columns_groups[group_input])
                 else:
                     return await get_schedule_bin(day_input, group_input, week_columns_groups[group_input], week_checked, schedule)
-            
+
             case 'бмп':
                 if day_input == 'вся неделя':
                     return await get_full_schedule_bmp(group_input, week_checked, schedule, week_columns_groups[group_input])
@@ -314,19 +315,19 @@ async def print_schedule(day_input: str, group_input: str, id: str, week_type: s
                     return await get_full_schedule_zrc(group_input, week_checked, schedule)
                 else:
                     return await get_schedule_zrc(day_input, group_input, week_checked, schedule)
-            
+
             case 'брт':
                 if day_input == 'вся неделя':
                     return await get_full_schedule_brt(group_input, week_checked, schedule, week_columns_groups[group_input])
                 else:
                     return await get_schedule_brt(day_input, group_input, week_columns_groups[group_input], week_checked, schedule)
-            
+
             case 'бик':
                 if day_input == 'вся неделя':
                     return await get_full_schedule_bik(group_input, week_checked, schedule, week_columns_groups[group_input])
                 else:
                     return await get_schedule_bik(day_input, group_input, week_columns_groups[group_input], week_checked, schedule)
-            
+
             case 'бээ':
                 if day_input == 'вся неделя':
                     return await get_full_schedule_bee(group_input, week_checked, schedule, week_columns_groups[group_input])
@@ -338,7 +339,7 @@ async def print_schedule(day_input: str, group_input: str, id: str, week_type: s
                     return await get_full_schedule_bbi(group_input, week_checked, schedule, week_columns_groups[group_input])
                 else:
                     return await get_schedule_bbi(day_input, group_input, week_columns_groups[group_input], week_checked, schedule)
-            
+
             case 'бэр':
                 if day_input == 'вся неделя':
                     return await get_full_schedule_ber(group_input, week_checked, schedule, week_columns_groups[group_input])
