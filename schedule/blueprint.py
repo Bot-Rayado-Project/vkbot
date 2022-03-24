@@ -86,5 +86,5 @@ class Base():
 
         # Из списка делаем кортеж и возвращаем
         full_schedule_tuple = tuple(full_schedule_list)
-
+        
         return full_schedule_tuple

@@ -12,4 +12,4 @@ async def get_full_schedule_bap(group_text: str, week_type: str, schedule, week_
 
     start_cell = 15 if week_type == 'четная' else 14
     return_class = Base()
-    return return_class.full_schedule(week_type, group_text, schedule, week_column, start_cell, 67, 11)
+    return return_class.full_schedule(week_type, group_text, schedule, week_column, start_cell, 74, 11)
