@@ -37,7 +37,7 @@ docker build -t vkbot /vkbot/
 
 Запускаем контейнер с прокинутыми токеном, айди пользователей и айди группы:
 ```
-docker run -e API_TOKEN='***' -e ALLOWED_USER_IDS='***' -e GROUP_ID='***' -d --name vk_bot vkbot
+docker run -e API_TOKEN='***' -e ALLOWED_USER_IDS='***' -e GROUP_ID='***' -e STATE='STABLE' -d --name vk_bot vkbot
 ```
 
 ## Перезапуск бота с обновлениями:
