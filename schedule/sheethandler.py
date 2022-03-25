@@ -6,7 +6,7 @@ import glob
 
 import schedule.whataweek as whataweek
 from schedule.recieve import recieve_time_table
-from utils.terminal_codes import print_error, print_info, print_warning
+from utils.terminal_codes import print_error, print_info
 from utils.constants_schedule import week_columns_groups
 from schedule.streams.IT.bvt import get_full_schedule_bvt, get_schedule_bvt
 from schedule.streams.IT.bst import get_full_schedule_bst, get_schedule_bst
@@ -22,6 +22,10 @@ from schedule.streams.RIT.bik import get_full_schedule_bik, get_schedule_bik
 from schedule.streams.TCEIMK.bee import get_full_schedule_bee, get_schedule_bee
 from schedule.streams.TCEIMK.bbi import get_full_schedule_bbi, get_schedule_bbi
 from schedule.streams.TCEIMK.ber import get_full_schedule_ber, get_schedule_ber
+
+start_time = datetime.now()
+request_time: dict = {'бвт': start_time, 'бст': start_time, 'бфи': start_time, 'биб': start_time, 'бэи': start_time, 'бик': start_time, 'бмп': start_time,
+                      'зрс': start_time, 'бап': start_time, 'бут': start_time, 'брт': start_time, 'бээ': start_time, 'бби': start_time, 'бэр': start_time}
 
 
 async def check_right_input(day_input: str, group_input: str, week_type: str) -> bool:
@@ -60,11 +64,27 @@ async def week_check(week_type: str) -> str | bool:
 
 
 async def get_sheet(group: str, stream: str, temp_number: str) -> openpyxl.Workbook | bool:
+    global request_time
 
     if not os.path.isdir("tables"):
         os.mkdir("tables")
 
-    data = await recieve_time_table(group)  # Запрос на скачку таблицы
+    print_info(f'Последнее время запроса таблцы: {request_time[stream]}. Текущее время: {datetime.now()}')
+    print_info(f'Разность времени: {abs(request_time[stream].timestamp() - datetime.now().timestamp())}')
+    if abs(request_time[stream].timestamp() - datetime.now().timestamp()) > 180.0:  # 120 секунд
+        print_info("Между запросами прошло больше минуты. Отправлен запрос в recieve_time_table.")
+        await recieve_time_table(group)  # Запрос на скачку таблицы
+        request_time.update({stream: datetime.now()})
+        print_info(f"Таблица скачана. Текущее состояния ключа времени запроса: {request_time[stream]}")
+    else:
+        print_info("Между запросами прошло меньше минуты. Скачка отменена.")
+        path = False if len(glob.glob(f'tables/table_{stream}.xlsx')) == 0 else glob.glob(f'tables/table_{stream}.xlsx')[0]
+        if path == False:
+            print_info("Файла не существует. Форсированная скачка таблицы.")
+            await recieve_time_table(group)
+        else:
+            print_info("Игнорирование скачивания. Проход дальше.")
+            pass
 
     try:
         path = glob.glob(f'tables/table_{stream}.xlsx')[0]

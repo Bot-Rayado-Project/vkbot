@@ -53,6 +53,7 @@ async def get_group(event: SimpleBotEvent, fetch: dict, flag: bool, btn: str) ->
     last_command = fetch[0][0].lower()  # Последняя команда # ГРУППА
     pre_penultimate_command = fetch[3][0].lower()  # Пред предпоследняя команда
     pre_pre_penultimate_command = fetch[4][0].lower()  # Пред пред предпоследняя команда
+    start_time = datetime.now()
     if flag == [(0,)]:
         if any(cmd.lower() in [pre_penultimate_command] for cmd in schedule_kb.CURRENT_OR_NEXT_WEEK_BUTTONS) and pre_pre_penultimate_command == schedule_kb.DAYS_OF_WEEK_BUTTONS[2]:
             schedule = await sheethandler.print_schedule('вся неделя', last_command, event.from_id, pre_penultimate_command)
@@ -71,6 +72,7 @@ async def get_group(event: SimpleBotEvent, fetch: dict, flag: bool, btn: str) ->
                 await event.answer(message=schedule, keyboard=menu_kb.START_KB.get_keyboard())
         else:
             await event.answer(message="Непредвиденная ошибка. Не нажимайте на одну и ту же кнопку по несколько раз. Повторите свой запрос.", keyboard=menu_kb.START_KB.get_keyboard())
+        print_info(f"Общее время вывода расписания: {datetime.now() - start_time}")
     else:
         if any(cmd.lower() in [pre_penultimate_command] for cmd in schedule_kb.CURRENT_OR_NEXT_WEEK_BUTTONS) and pre_pre_penultimate_command == schedule_kb.DAYS_OF_WEEK_BUTTONS[2]:
             result = pre_penultimate_command.split()[0][0].upper() + 'Н' + ' ' + last_command.upper()  # ТН БВТ2103 либо СН БВТ2103 (текущая неделя | следующая неделя, группа)
