@@ -20,10 +20,13 @@ class Base():
 
         else:
             day = int(day_time_utc) * x + start_cell
-        
-        schedule_output = '⸻⸻⸻⸻⸻\n' + 'Группа: ' + group.upper() + '\n' \
-            + 'День недели: ' + days[day_time_utc].capitalize() + '\n' + 'Неделя: ' + week_type.capitalize() + '\n' \
-            + '⸻⸻⸻⸻⸻\n'  # Добавляем заголовок вывода, группа и тд.
+        try:
+
+            schedule_output = '⸻⸻⸻⸻⸻\n' + 'Группа: ' + group.upper() + '\n' \
+                + 'День недели: ' + days[day_time_utc].capitalize() + '\n' + 'Неделя: ' + week_type.capitalize() + '\n' \
+                + '⸻⸻⸻⸻⸻\n'  # Добавляем заголовок вывода, группа и тд.
+        except:
+            return False
 
         time_para = 1  # Номер пары для времени
 
@@ -39,13 +42,13 @@ class Base():
 
                     except KeyError:
                         # Это обработка что ключ будет существовать во времени, то есть номер пары
-                        return 'Ошибка в выводе расписания #1'
+                        return False
                 else:
                     # Если же ячейка пустая, значит пары нет
                     schedule_output += 'Пары нет\n' + '⸻⸻⸻⸻⸻\n'
             except:
                 # Обрабатываем ошибку в считывании таблицы
-                return 'Ошибка в считывании таблицы #1'
+                return False
             
             time_para += 1  # Счётчик пары плюс один
         
@@ -64,21 +67,26 @@ class Base():
                                   + '⸻⸻⸻⸻⸻\n')  # Добавляем заголовок вывода расписания с группой и тд.
 
         for day_of_week_cell in range(start_cell, end, step):
-
-            # Добавление в конечный вывод дня недели то есть значения ячейки из таблицы
-            full_schedule = str(day_of_week[str(subject)]) + '\n\n'
+            try:
+                # Добавление в конечный вывод дня недели то есть значения ячейки из таблицы
+                full_schedule = str(day_of_week[str(subject)]) + '\n\n'
+            except:
+                return False
 
             for para_cell in range(day_of_week_cell, day_of_week_cell + 10, 2):
 
-                if schedule[week_column + str(para_cell)].value != None:
+                try:
+                    if schedule[week_column + str(para_cell)].value != None:
 
-                    full_schedule += str(schedule[week_column + str(para_cell)].value) + '\n'\
-                        + '⸻⸻⸻⸻⸻\n'
-                    # Если ячейка не пустая добавляем значение ячейки в конечный вывод
+                        full_schedule += str(schedule[week_column + str(para_cell)].value) + '\n'\
+                            + '⸻⸻⸻⸻⸻\n'
+                        # Если ячейка не пустая добавляем значение ячейки в конечный вывод
 
-                else:
-                    full_schedule += 'Пары нет\n' + '⸻⸻⸻⸻⸻\n'
-                    # Если же пустая, то пары нет
+                    else:
+                        full_schedule += 'Пары нет\n' + '⸻⸻⸻⸻⸻\n'
+                        # Если же пустая, то пары нет
+                except:
+                    return False
 
             # Добавляем полученный день в список
             full_schedule_list.append(full_schedule)
