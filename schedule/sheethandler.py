@@ -41,7 +41,10 @@ async def check_right_input(day_input: str, group_input: str, week_type: str) ->
         return False
 
 
-async def week_check(week_type: str) -> str:
+async def week_check(week_type: str) -> str | bool:
+
+    if whataweek.get_week() == False:
+        return False
 
     if week_type == 'текущая неделя':
         return await whataweek.get_week()
@@ -54,7 +57,7 @@ async def week_check(week_type: str) -> str:
             return 'четная'  # Тут и тупой поймёт чо происходит
 
 
-async def get_sheet(group: str, stream: str, temp_number: str) -> openpyxl.Workbook:
+async def get_sheet(group: str, stream: str, temp_number: str) -> openpyxl.Workbook | bool:
 
     if not os.path.isdir("tables"):
         os.mkdir("tables")
@@ -74,7 +77,7 @@ async def get_sheet(group: str, stream: str, temp_number: str) -> openpyxl.Workb
     return sheet
 
 
-async def print_schedule(day_input: str, group_input: str, id: str, week_type: str) -> str | tuple:
+async def print_schedule(day_input: str, group_input: str, id: str, week_type: str) -> str | tuple | bool:
 
     if (('бвт' in group_input and int(group_input[-1]) < 5) or ('бфи' in group_input) or ('бст' in group_input and int(group_input[-1]) < 4)
         or ('бэи' in group_input) or ('биб' in group_input) or ('бмп' in group_input)
@@ -103,9 +106,9 @@ async def print_schedule(day_input: str, group_input: str, id: str, week_type: s
 
         schedule = await get_sheet(group_input, group_input[0:3], group_list)
 
-        if 'Ошибка' in week_checked:
+        if week_checked == False:
             return week_checked  # Проверка ошибки в чётности недели
-        if False in schedule:
+        if schedule == False:
             return False  # Проверка ошибки в скачке расписания
 
         match group_input[0:3]:
@@ -194,4 +197,4 @@ async def print_schedule(day_input: str, group_input: str, id: str, week_type: s
                 else:
                     return await get_schedule_ber(day_input, group_input, week_columns_groups[group_input], week_checked, schedule)
     else:
-        return 'Ошибка ввода'
+        return False
