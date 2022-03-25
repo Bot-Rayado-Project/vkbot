@@ -44,7 +44,7 @@ async def check_right_input(day_input: str, group_input: str, week_type: str) ->
 
 async def week_check(week_type: str) -> str | bool:
 
-    if whataweek.get_week() == False:
+    if await whataweek.get_week() == False:
         print_error('Ошибка в чётности недели')
         return False
 

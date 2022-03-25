@@ -31,7 +31,9 @@ async def recieve_time_table(group: str) -> None:
     '''Парсит сайт с расписаниями, скачивает таблицу по запросу потока group. Записывает в файл table_{USER_ID}
     При успешной скачке и записи в файл возвращает NamedTuple data (GroupInfo) с ключами stream, group. Пример ("бвт","2103")'''
     start_time = datetime.now()
+    print_info("Парсинг сайта.")
     responce = await aiohttp_fetch_schedule("https://mtuci.ru/time-table/")
+    print_info(datetime.now() - start_time)
     soup = BeautifulSoup(responce, 'lxml')
     data = GroupInfo(re.sub('[^а-я]', '', group), re.sub('[^0-9]', '', group))
     print_info('Обработка скачки.')
@@ -39,6 +41,8 @@ async def recieve_time_table(group: str) -> None:
                        'бмп': '01.03.04', 'зрс': '10.05.02', 'бап': '15.03.04', 'бут': '27.03.04', 'брт': '11.03.01', 'бээ': '38.03.01',
                        'бби': '38.03.05', 'бэр': '42.03.01'}
     FACULTIES: list = ["it", "kiib", "siss", "rit", "tseimk"]
+    print_info("Перед входом в цикл поиска ссылок")
+    print_info(datetime.now() - start_time)
     for link in soup.find_all('a'):
         _link = link.get('href')
         try:

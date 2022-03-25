@@ -1,3 +1,4 @@
+from utils.attachments import get_file_from_path
 import schedule.sheethandler as sheethandler
 import keyboards.schedule_kb as schedule_kb
 import keyboards.menu_kb as menu_kb
@@ -55,13 +56,21 @@ async def get_group(event: SimpleBotEvent, fetch: dict, flag: bool, btn: str) ->
     if flag == [(0,)]:
         if any(cmd.lower() in [pre_penultimate_command] for cmd in schedule_kb.CURRENT_OR_NEXT_WEEK_BUTTONS) and pre_pre_penultimate_command == schedule_kb.DAYS_OF_WEEK_BUTTONS[2]:
             schedule = await sheethandler.print_schedule('вся неделя', last_command, event.from_id, pre_penultimate_command)
-            for i in range(len(schedule)):
-                await event.answer(message=schedule[i], keyboard=menu_kb.START_KB.get_keyboard())
+            if schedule == False:
+                table_file = await get_file_from_path(event, f"Расписание {last_command[0:3]}.xlsx", f"tables/table_{(last_command.lower())[0:3]}.xlsx")
+                await event.answer(message=f'Ошибка в получении расписания. Возможно изменился формат таблицы, посмотрите расписание вручную. Информация об ошибке передана разработчкам', keyboard=menu_kb.START_KB.get_keyboard(), attachment=table_file)
+            else:
+                for i in range(len(schedule)):
+                    await event.answer(message=schedule[i], keyboard=menu_kb.START_KB.get_keyboard())
         elif any(cmd.lower() in [pre_penultimate_command] for cmd in schedule_kb.DAYS_OF_WEEK_BUTTONS):
             schedule = await sheethandler.print_schedule(pre_penultimate_command, last_command, event.from_id, 'текущая неделя')
-            await event.answer(message=schedule, keyboard=menu_kb.START_KB.get_keyboard())
+            if schedule == False:
+                table_file = await get_file_from_path(event, f"Расписание {last_command[0:3]}.xlsx", f"tables/table_{(last_command.lower())[0:3]}.xlsx")
+                await event.answer(message=f'Ошибка в получении расписания. Возможно изменился формат таблицы, посмотрите расписание вручную. Информация об ошибке передана разработчкам', keyboard=menu_kb.START_KB.get_keyboard(), attachment=table_file)
+            else:
+                await event.answer(message=schedule, keyboard=menu_kb.START_KB.get_keyboard())
         else:
-            await event.answer(message="Непредвиденная ошибка.", keyboard=menu_kb.START_KB.get_keyboard())
+            await event.answer(message="Непредвиденная ошибка. Не нажимайте на одну и ту же кнопку по несколько раз. Повторите свой запрос.", keyboard=menu_kb.START_KB.get_keyboard())
     else:
         if any(cmd.lower() in [pre_penultimate_command] for cmd in schedule_kb.CURRENT_OR_NEXT_WEEK_BUTTONS) and pre_pre_penultimate_command == schedule_kb.DAYS_OF_WEEK_BUTTONS[2]:
             result = pre_penultimate_command.split()[0][0].upper() + 'Н' + ' ' + last_command.upper()  # ТН БВТ2103 либо СН БВТ2103 (текущая неделя | следующая неделя, группа)
