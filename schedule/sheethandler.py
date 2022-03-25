@@ -6,6 +6,7 @@ import glob
 
 import schedule.whataweek as whataweek
 from schedule.recieve import recieve_time_table
+from utils.terminal_codes import print_error, print_info, print_warning
 from utils.constants_schedule import week_columns_groups
 from schedule.streams.IT.bvt import get_full_schedule_bvt, get_schedule_bvt
 from schedule.streams.IT.bst import get_full_schedule_bst, get_schedule_bst
@@ -44,6 +45,7 @@ async def check_right_input(day_input: str, group_input: str, week_type: str) ->
 async def week_check(week_type: str) -> str | bool:
 
     if whataweek.get_week() == False:
+        print_error('Ошибка в чётности недели')
         return False
 
     if week_type == 'текущая неделя':
@@ -68,6 +70,7 @@ async def get_sheet(group: str, stream: str, temp_number: str) -> openpyxl.Workb
         path = glob.glob(f'tables/table_{stream}.xlsx')[0]
         wb_obj = openpyxl.load_workbook(path)
     except:
+        print_error('Ошибка в получении таблицы')
         # Проверка вторая так как иногда ссылки меняют, и ест ьвероятность простого парса еррор сайта
         return False
 
@@ -107,8 +110,10 @@ async def print_schedule(day_input: str, group_input: str, id: str, week_type: s
         schedule = await get_sheet(group_input, group_input[0:3], group_list)
 
         if week_checked == False:
-            return week_checked  # Проверка ошибки в чётности недели
+            print_error('Ошибка в sheethandler.py')
+            return False  # Проверка ошибки в чётности недели
         if schedule == False:
+            print_error('Ошибка в sheethandler.py')
             return False  # Проверка ошибки в скачке расписания
 
         match group_input[0:3]:
@@ -197,4 +202,5 @@ async def print_schedule(day_input: str, group_input: str, id: str, week_type: s
                 else:
                     return await get_schedule_ber(day_input, group_input, week_columns_groups[group_input], week_checked, schedule)
     else:
+        print_error('Ошибка в сопоставлении ввода и потока')
         return False

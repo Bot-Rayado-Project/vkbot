@@ -3,6 +3,7 @@ import re
 from bs4 import BeautifulSoup
 
 from utils.aiohttp_requests import aiohttp_fetch
+from utils.terminal_codes import print_error
 # Закомментировать для локального тестирования
 
 """ import os
