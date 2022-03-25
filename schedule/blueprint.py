@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 from utils.constants_schedule import days, time, day_of_week
+from utils.terminal_codes import print_error, print_info
 
 
 class Base():
@@ -26,6 +27,7 @@ class Base():
                 + 'День недели: ' + days[day_time_utc].capitalize() + '\n' + 'Неделя: ' + week_type.capitalize() + '\n' \
                 + '⸻⸻⸻⸻⸻\n'  # Добавляем заголовок вывода, группа и тд.
         except:
+            print_error('Ошибка в шаблоне, с констанстой')
             return False
 
         time_para = 1  # Номер пары для времени
@@ -41,12 +43,14 @@ class Base():
                             + '⸻⸻⸻⸻⸻\n'  # Добавляем пару, то есть ячейку если она не пустая
 
                     except KeyError:
+                        print_error('Ошибка в шаблоне, с констанстой или с таблицей')
                         # Это обработка что ключ будет существовать во времени, то есть номер пары
                         return False
                 else:
                     # Если же ячейка пустая, значит пары нет
                     schedule_output += 'Пары нет\n' + '⸻⸻⸻⸻⸻\n'
             except:
+                print_error('Ошибка с таблицей')
                 # Обрабатываем ошибку в считывании таблицы
                 return False
             
@@ -71,6 +75,7 @@ class Base():
                 # Добавление в конечный вывод дня недели то есть значения ячейки из таблицы
                 full_schedule = str(day_of_week[str(subject)]) + '\n\n'
             except:
+                print_error('Ошибка в константе')
                 return False
 
             for para_cell in range(day_of_week_cell, day_of_week_cell + 10, 2):
@@ -86,6 +91,7 @@ class Base():
                         full_schedule += 'Пары нет\n' + '⸻⸻⸻⸻⸻\n'
                         # Если же пустая, то пары нет
                 except:
+                    print_error('Ошибка с таблицей или в константе')
                     return False
 
             # Добавляем полученный день в список
