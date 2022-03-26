@@ -23,11 +23,19 @@ def database_handler(ret_cmd: bool = False, ret_cfg: bool = False, ret_flag: boo
                     if btn == []:
                         cursor.execute(C_SQLITE_FIRST_ADD_CONFIG_BUTTONS.format(event.from_id))
                         sqlite_connection.commit()
-                        return await func(event)
+                        if ret_cmd:
+                            cursor.execute(C_SQLITE_SELLECT_ALL_COMMANDS.format(event.from_id))
+                            return await func(event, cursor.fetchall())
+                        else:
+                            return await func(event)
                     else:
                         cursor.execute(C_SQLITE_SET_IS_WRITING_FALSE.format(event.from_id))
                         sqlite_connection.commit()
-                        return await func(event)
+                        if ret_cmd:
+                            cursor.execute(C_SQLITE_SELLECT_ALL_COMMANDS.format(event.from_id))
+                            return await func(event, cursor.fetchall())
+                        else:
+                            return await func(event)
                 if write_flag:
                     cursor.execute(C_SQLITE_SET_IS_WRITING_TRUE.format(event.from_id))
                     sqlite_connection.commit()
