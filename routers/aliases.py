@@ -1,4 +1,5 @@
 import keyboards.schedule_kb as schedule_kb
+import keyboards.admin_kb as admin_kb
 import keyboards.menu_kb as menu_kb
 import schedule.sheethandler as sheethandler
 
@@ -13,21 +14,39 @@ from datetime import datetime, timedelta
 aliases_router = DefaultRouter()
 
 
-@simple_bot_message_handler(aliases_router, TextFilter("rayadotd"))
+@simple_bot_message_handler(aliases_router, PayloadFilter({"special_blueprint_button": "rayadotd"}))
 @database_handler()
 async def rayadotd(event: SimpleBotEvent) -> None:
-    answers: list = [await sheethandler.print_schedule("сегодня", "бвт2103", event.from_id, 'текущая неделя')]
-    answers += [await sheethandler.print_schedule("сегодня", "бст2103", event.from_id, 'текущая неделя')]
-    answers += [await sheethandler.print_schedule("сегодня", "бст2106", event.from_id, 'текущая неделя')]
-    for i in range(len(answers)):
-        await event.answer(message=answers[i], keyboard=menu_kb.START_KB.get_keyboard())
+    await event.answer(message=await sheethandler.print_schedule("сегодня", "бвт2103", event.from_id, 'текущая неделя'), keyboard=admin_kb.ADMIN_KB.get_keyboard())
+    await event.answer(message=await sheethandler.print_schedule("сегодня", "бст2103", event.from_id, 'текущая неделя'), keyboard=admin_kb.ADMIN_KB.get_keyboard())
+    await event.answer(message=await sheethandler.print_schedule("сегодня", "бст2106", event.from_id, 'текущая неделя'), keyboard=admin_kb.ADMIN_KB.get_keyboard())
 
 
-@simple_bot_message_handler(aliases_router, TextFilter("rayadotmr"))
+@simple_bot_message_handler(aliases_router, PayloadFilter({"special_blueprint_button": "rayadotmr"}))
 @database_handler()
-async def rayadotd(event: SimpleBotEvent) -> None:
-    answers: list = [await sheethandler.print_schedule("завтра", "бвт2103", event.from_id, 'текущая неделя')]
-    answers += [await sheethandler.print_schedule("завтра", "бст2103", event.from_id, 'текущая неделя')]
-    answers += [await sheethandler.print_schedule("завтра", "бст2106", event.from_id, 'текущая неделя')]
-    for i in range(len(answers)):
-        await event.answer(message=answers[i], keyboard=menu_kb.START_KB.get_keyboard())
+async def rayadotmr(event: SimpleBotEvent) -> None:
+    await event.answer(message=await sheethandler.print_schedule("завтра", "бвт2103", event.from_id, 'текущая неделя'), keyboard=admin_kb.ADMIN_KB.get_keyboard())
+    await event.answer(message=await sheethandler.print_schedule("завтра", "бст2103", event.from_id, 'текущая неделя'), keyboard=admin_kb.ADMIN_KB.get_keyboard())
+    await event.answer(message=await sheethandler.print_schedule("завтра", "бст2106", event.from_id, 'текущая неделя'), keyboard=admin_kb.ADMIN_KB.get_keyboard())
+
+
+@simple_bot_message_handler(aliases_router, PayloadFilter({"special_blueprint_button": "fuckmaryamtd"}))
+@database_handler()
+async def fuckmaryamtd(event: SimpleBotEvent) -> None:
+    await event.answer(message=await sheethandler.print_schedule("сегодня", "бст2106", event.from_id, 'текущая неделя'), keyboard=admin_kb.ADMIN_KB.get_keyboard())
+    await event.answer(message=await sheethandler.print_schedule("сегодня", "брт2101", event.from_id, 'текущая неделя'), keyboard=admin_kb.ADMIN_KB.get_keyboard())
+
+
+@simple_bot_message_handler(aliases_router, PayloadFilter({"special_blueprint_button": "fuckmaryamtmr"}))
+@database_handler()
+async def fuckmaryamtmr(event: SimpleBotEvent) -> None:
+    await event.answer(message=await sheethandler.print_schedule("завтра", "бст2106", event.from_id, 'текущая неделя'), keyboard=admin_kb.ADMIN_KB.get_keyboard())
+    await event.answer(message=await sheethandler.print_schedule("завтра", "брт2101", event.from_id, 'текущая неделя'), keyboard=admin_kb.ADMIN_KB.get_keyboard())
+
+
+@simple_bot_message_handler(aliases_router, PayloadFilter({"special_blueprint_button": "vanya"}))
+@database_handler()
+async def vanya(event: SimpleBotEvent) -> None:
+    schedule = await sheethandler.print_schedule("вся неделя", "бвт2103", event.from_id, 'следующая неделя')
+    for _schedule in schedule:
+        await event.answer(message=_schedule, keyboard=admin_kb.ADMIN_KB.get_keyboard())

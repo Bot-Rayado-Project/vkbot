@@ -1,5 +1,6 @@
 import sqlite3
 import sys
+import os
 import logging
 import requests
 from bs4 import BeautifulSoup
@@ -16,6 +17,8 @@ from typing import NamedTuple
 settings = Settings()
 storage = Storage()
 default_keys = {}
+ALLOWED_USER_IDS_ADMIN_PANEL: list = settings.GET_ALLOWED_USER_IDS()
+ALLOWED_USER_IDS_START: list = os.getenv('ALLOWED_USER_IDS').split()
 
 
 class GroupInfo(NamedTuple):
