@@ -17,8 +17,11 @@ from typing import NamedTuple
 settings = Settings()
 storage = Storage()
 default_keys = {}
-ALLOWED_USER_IDS_ADMIN_PANEL: list = settings.GET_ALLOWED_USER_IDS()
-ALLOWED_USER_IDS_START: list = os.getenv('ALLOWED_USER_IDS').split()
+try:
+    ALLOWED_USER_IDS_ADMIN_PANEL: list = settings.GET_ALLOWED_USER_IDS()
+    ALLOWED_USER_IDS_START: list = os.getenv('ALLOWED_USER_IDS').split()
+except:
+    pass
 
 
 class GroupInfo(NamedTuple):
