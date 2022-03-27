@@ -31,12 +31,14 @@ async def get_day_of_week(event: SimpleBotEvent, fetch: dict) -> str:
 @simple_bot_message_handler(schedule_router, PayloadContainsFilter("faculty_button"))
 @database_handler(True)
 async def get_faculty(event: SimpleBotEvent, fetch: dict) -> str:
+    last_command = fetch[0][0].lower()
     await event.answer(message='Выберите поток.', keyboard=schedule_kb.KB_STREAMS[event.payload['faculty_button']]())
 
 
 @simple_bot_message_handler(schedule_router, PayloadContainsFilter("conw_button"))
 @database_handler(True)
 async def get_current_or_next_week(event: SimpleBotEvent, fetch: dict) -> str:
+    last_command = fetch[0][0].lower()
     await event.answer(message='Выберите факультет.', keyboard=schedule_kb.FACULTIES_BUTTONS_KB.get_keyboard())
 
 
@@ -56,6 +58,7 @@ async def get_group(event: SimpleBotEvent, fetch: dict, flag: bool, btn: str) ->
     start_time = datetime.now()
     if flag == [(0,)]:
         if any(cmd.lower() in [pre_penultimate_command] for cmd in schedule_kb.CURRENT_OR_NEXT_WEEK_BUTTONS) and pre_pre_penultimate_command == schedule_kb.DAYS_OF_WEEK_BUTTONS[2]:
+            print_info('Вся неделя')
             schedule = await sheethandler.print_schedule('вся неделя', last_command, event.from_id, pre_penultimate_command)
             if schedule == False:
                 table_file = await get_file_from_path(event, f"Расписание {last_command[0:3]}.xlsx", f"tables/table_{(last_command.lower())[0:3]}.xlsx")
@@ -64,6 +67,7 @@ async def get_group(event: SimpleBotEvent, fetch: dict, flag: bool, btn: str) ->
                 for i in range(len(schedule)):
                     await event.answer(message=schedule[i], keyboard=menu_kb.START_KB.get_keyboard())
         elif any(cmd.lower() in [pre_penultimate_command] for cmd in schedule_kb.DAYS_OF_WEEK_BUTTONS):
+            print_info('Сегодня/завтра')
             schedule = await sheethandler.print_schedule(pre_penultimate_command, last_command, event.from_id, 'текущая неделя')
             if schedule == False:
                 table_file = await get_file_from_path(event, f"Расписание {last_command[0:3]}.xlsx", f"tables/table_{(last_command.lower())[0:3]}.xlsx")
@@ -71,7 +75,7 @@ async def get_group(event: SimpleBotEvent, fetch: dict, flag: bool, btn: str) ->
             else:
                 await event.answer(message=schedule, keyboard=menu_kb.START_KB.get_keyboard())
         else:
-            await event.answer(message="Непредвиденная ошибка. Не нажимайте на одну и ту же кнопку по несколько раз. Повторите свой запрос.", keyboard=menu_kb.START_KB.get_keyboard())
+            await event.answer(message="Непредвиденная ошибка. Не нажимайте на 2 разные кнопки в одной категории. Повторите свой запрос.", keyboard=menu_kb.START_KB.get_keyboard())
         print_info(f"Общее время вывода расписания: {datetime.now() - start_time}")
     else:
         if any(cmd.lower() in [pre_penultimate_command] for cmd in schedule_kb.CURRENT_OR_NEXT_WEEK_BUTTONS) and pre_pre_penultimate_command == schedule_kb.DAYS_OF_WEEK_BUTTONS[2]:
