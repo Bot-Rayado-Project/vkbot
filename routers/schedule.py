@@ -2,7 +2,7 @@ from utils.attachments import get_file_from_path
 import schedule.sheethandler as sheethandler
 import keyboards.schedule_kb as schedule_kb
 import keyboards.menu_kb as menu_kb
-from utils.terminal_codes import print_info
+from utils.terminal_codes import print_error, print_info
 from utils.sqlite_requests import database_handler, set_button_blueprint
 
 from vkwave.bots import simple_bot_message_handler, DefaultRouter, SimpleBotEvent, PayloadFilter, PayloadContainsFilter
@@ -63,6 +63,7 @@ async def get_group(event: SimpleBotEvent, fetch: dict, flag: bool, btn: str) ->
             if schedule == False:
                 table_file = await get_file_from_path(event, f"Расписание {last_command[0:3]}.xlsx", f"tables/table_{(last_command.lower())[0:3]}.xlsx")
                 await event.answer(message=f'Ошибка в получении расписания. Возможно изменился формат таблицы, посмотрите расписание вручную. Информация об ошибке передана разработчкам', keyboard=menu_kb.START_KB.get_keyboard(), attachment=table_file)
+                print_error('Критическая ошибка в получении расписания. Проверить таблицу.')
             else:
                 for i in range(len(schedule)):
                     await event.answer(message=schedule[i], keyboard=menu_kb.START_KB.get_keyboard())
@@ -72,10 +73,12 @@ async def get_group(event: SimpleBotEvent, fetch: dict, flag: bool, btn: str) ->
             if schedule == False:
                 table_file = await get_file_from_path(event, f"Расписание {last_command[0:3]}.xlsx", f"tables/table_{(last_command.lower())[0:3]}.xlsx")
                 await event.answer(message=f'Ошибка в получении расписания. Возможно изменился формат таблицы, посмотрите расписание вручную. Информация об ошибке передана разработчкам', keyboard=menu_kb.START_KB.get_keyboard(), attachment=table_file)
+                print_error('Критическая ошибка в получении расписания. Проверить таблицу.')
             else:
                 await event.answer(message=schedule, keyboard=menu_kb.START_KB.get_keyboard())
         else:
             await event.answer(message="Непредвиденная ошибка. Не нажимайте на 2 разные кнопки в одной категории. Повторите свой запрос.", keyboard=menu_kb.START_KB.get_keyboard())
+            print_error('Непредвиденная ошибка в выводе расписания. Предположительно было нажато 2 разные кнопки в одной категории.')
         print_info(f"Общее время вывода расписания: {datetime.now() - start_time}")
     else:
         if any(cmd.lower() in [pre_penultimate_command] for cmd in schedule_kb.CURRENT_OR_NEXT_WEEK_BUTTONS) and pre_pre_penultimate_command == schedule_kb.DAYS_OF_WEEK_BUTTONS[2]:
