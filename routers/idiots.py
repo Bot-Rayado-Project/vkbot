@@ -13,7 +13,11 @@ idiots_router = DefaultRouter()
 @simple_bot_message_handler(idiots_router)
 @database_handler(ret_cmd=True, is_menu=True)
 async def goodbye(event: SimpleBotEvent, fetch: list) -> None:
-    last_command = fetch[1][0].lower()
+    try:
+        last_command = fetch[1][0].lower()
+    except:
+        await event.answer(message='Выберите команду из списка.', keyboard=menu_kb.START_KB.get_keyboard())
+        pass
     if last_command == 'дать доступ':
         try:
             print(entry.ALLOWED_USER_IDS_ADMIN_PANEL)
