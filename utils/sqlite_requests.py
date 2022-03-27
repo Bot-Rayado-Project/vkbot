@@ -1,5 +1,6 @@
+import traceback
 from utils.constants import *
-from utils.terminal_codes import print_info, INFO_CODE_USER_MSG
+from utils.terminal_codes import print_error, print_info, INFO_CODE_USER_MSG, print_warning
 import utils.terminal_codes as term
 from datetime import datetime
 from vkwave.bots import SimpleBotEvent
@@ -64,7 +65,8 @@ def database_handler(ret_cmd: bool = False, ret_cfg: bool = False, ret_flag: boo
                     return await func(event, cursor.fetchall())
                 else:
                     return await func(event)
-            except:
+            except Exception as e:
+                print_error(e)
                 pass
         return wrapper
     return decorator
