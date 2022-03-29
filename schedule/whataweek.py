@@ -1,10 +1,10 @@
-from utils.terminal_codes import print_error
 from datetime import datetime, timedelta
-import calendar
+from utils.terminal_codes import print_info, print_error
 
 
-async def get_week() -> str:
+async def get_week(d: str) -> str:
     try:
+        dat = datetime.now()
         date = datetime.date(datetime.today() + timedelta(hours=3))
         month = str(date)[5:7]
         month = int(str(date)[6:7]) if month[0] == '0' else int(str(date)[5:7])
@@ -19,13 +19,16 @@ async def get_week() -> str:
 
         if month >= 9:
             week = date.isocalendar()[1]
-            weeks_past_sem = datetime.strptime(date, format).isocalendar()[1] - datetime.strptime('{}-09-01'.format(current_year), format).isocalendar()[1] + 1
+            weeks_past_sem = date.isocalendar()[1] - datetime.strptime('{}-09-01'.format(current_year), format).isocalendar()[1] + 1
             week += weeks_past_sem
 
         if week % 2 == 0:
+            print_info('Whataweek ' +  str(datetime.now() - dat))
             return 'четная'
         else:
+            print_info('Whataweek ' +  str(datetime.now() - dat))
             return 'нечетная'
 
     except:
+        print_error('Ошибка в whataweek')
         return False

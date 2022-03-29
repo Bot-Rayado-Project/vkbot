@@ -48,12 +48,13 @@ async def check_right_input(day_input: str, group_input: str, week_type: str) ->
 
 async def week_check(week_type: str) -> str | bool:
 
-    if await whataweek.get_week() == False:
+    checked = await whataweek.get_week()
+    if checked == False:
         print_error('Ошибка в чётности недели')
         return False
 
     if week_type == 'текущая неделя':
-        return await whataweek.get_week()
+        return checked
 
     else:
         if await whataweek.get_week() == 'четная':
