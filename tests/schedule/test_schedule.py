@@ -384,9 +384,6 @@ async def test_full_schedule_current_week(day, group, week_type, expected):
                               ['Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота', 'None'])])
 async def test_full_schedule_next_week(day, group, week_type, expected):
     response = await sheethandler.print_schedule(day, group, '123', week_type)
-    print(response)
-    print(expected)
-    print(len(response))
     assert (expected[0] in response[1]
             and expected[1] in response[2]
             and expected[2] in response[3]

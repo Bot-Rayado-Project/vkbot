@@ -5,7 +5,7 @@ from utils.terminal_codes import print_error, print_info
 
 class Base():
     
-    def schedule(self, start_cell, week_type, group, schedule, group_column, x, day_type):
+    def schedule(self, start_cell: int, week_type: str, group: str, schedule, group_column: str, x: int, day_type: str) -> str:
 
         day_time_utc = datetime.weekday(datetime.today().utcnow() + timedelta(hours=3)) 
 
@@ -59,7 +59,7 @@ class Base():
         return schedule_output
 
 
-    def full_schedule(self, week_type, group, schedule, week_column, start_cell, end, step):
+    def full_schedule(self, week_type: str, group: str, schedule, week_column: str, start_cell: int, end: int, step: int) -> tuple:
 
         subject = 1
         full_schedule_tuple = ()
