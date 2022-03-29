@@ -2,26 +2,15 @@ from datetime import datetime, timedelta
 import openpyxl
 import os
 import glob
+from schedule.streams.KIIB.bap import get_full_schedule_bap
 
 
 import schedule.whataweek as whataweek
 from schedule.recieve import recieve_time_table
 from utils.terminal_codes import print_error, print_info
 from utils.constants_schedule import week_columns_groups
-from schedule.streams.IT.bvt import get_full_schedule_bvt, get_schedule_bvt
-from schedule.streams.IT.bst import get_full_schedule_bst, get_schedule_bst
-from schedule.streams.IT.bei import get_full_schedule_bei, get_schedule_bei
-from schedule.streams.IT.bfi import get_full_schedule_bfi, get_schedule_bfi
-from schedule.streams.KIIB.bib import get_full_schedule_bib, get_schedule_bib
-from schedule.streams.KIIB.bmp import get_full_schedule_bmp, get_schedule_bmp
+from utils.constants_blueprint import group_matching_schedule, group_matching_full_schedule
 from schedule.streams.KIIB.zrc import get_full_schedule_zrc, get_schedule_zrc
-from schedule.streams.KIIB.bap import get_full_schedule_bap, get_schedule_bap
-from schedule.streams.KIIB.but import get_full_schedule_but, get_schedule_but
-from schedule.streams.RIT.brt import get_full_schedule_brt, get_schedule_brt
-from schedule.streams.RIT.bik import get_full_schedule_bik, get_schedule_bik
-from schedule.streams.TCEIMK.bee import get_full_schedule_bee, get_schedule_bee
-from schedule.streams.TCEIMK.bbi import get_full_schedule_bbi, get_schedule_bbi
-from schedule.streams.TCEIMK.ber import get_full_schedule_ber, get_schedule_ber
 
 start_time = datetime.now()
 request_time: dict = {'бвт': start_time, 'бст': start_time, 'бфи': start_time, 'биб': start_time, 'бэи': start_time, 'бик': start_time, 'бмп': start_time,
@@ -138,110 +127,21 @@ async def print_schedule(day_input: str, group_input: str, id: str, week_type: s
             print_error('Ошибка в sheethandler.py')
             return False  # Проверка ошибки в скачке расписания
 
-
-        if group_input[0:3] == 'бвт':
-            if day_input == 'вся неделя':
-                print_info('Sheethandler ' + str(datetime.now() - dat))
-                return await get_full_schedule_bvt(group_input, week_checked, schedule, week_columns_groups[group_input])
-            else:
-                print_info('Sheethandler ' + str(datetime.now() - dat))
-                return await get_schedule_bvt(day_input, group_input, week_columns_groups[group_input], week_checked, schedule)
-
-        elif group_input[0:3] == 'бст':
-            if day_input == 'вся неделя':
-                print_info('Sheethandler ' + str(datetime.now() - dat))
-                return await get_full_schedule_bst(group_input, week_checked, schedule, week_columns_groups[group_input])
-            else:
-                print_info('Sheethandler ' + str(datetime.now() - dat))
-                return await get_schedule_bst(day_input, group_input, week_columns_groups[group_input], week_checked, schedule)
-
-        elif group_input[0:3] == 'бэи':
-            if day_input == 'вся неделя':
-                print_info('Sheethandler ' + str(datetime.now() - dat))
-                return await get_full_schedule_bei(group_input, week_checked, schedule, week_columns_groups[group_input])
-            else:
-                print_info('Sheethandler ' + str(datetime.now() - dat))
-                return await get_schedule_bei(day_input, group_input, week_columns_groups[group_input], week_checked, schedule)
-        elif group_input[0:3] == 'бфи':
-            if day_input == 'вся неделя':
-                print_info('Sheethandler ' + str(datetime.now() - dat))
-                return await get_full_schedule_bfi(group_input, week_checked, schedule, week_columns_groups[group_input])
-            else:
-                print_info('Sheethandler ' + str(datetime.now() - dat))
-                return await get_schedule_bfi(day_input, group_input, week_columns_groups[group_input], week_checked, schedule)
-        elif group_input[0:3] == 'биб':
-            if day_input == 'вся неделя':
-                print_info('Sheethandler ' + str(datetime.now() - dat))
-                return await get_full_schedule_bib(group_input, week_checked, schedule, week_columns_groups[group_input])
-            else:
-                print_info('Sheethandler ' + str(datetime.now() - dat))
-                return await get_schedule_bib(day_input, group_input, week_columns_groups[group_input], week_checked, schedule)
-        elif group_input[0:3] == 'бмп':
-            if day_input == 'вся неделя':
-                print_info('Sheethandler ' + str(datetime.now() - dat))
-                return await get_full_schedule_bmp(group_input, week_checked, schedule, week_columns_groups[group_input])
-            else:
-                print_info('Sheethandler ' + str(datetime.now() - dat))
-                return await get_schedule_bmp(day_input, group_input, week_columns_groups[group_input], week_checked, schedule)
-        elif group_input[0:3] == 'бап':
-            if day_input == 'вся неделя':
-                print_info('Sheethandler ' + str(datetime.now() - dat))
-                return await get_full_schedule_bap(group_input, week_checked, schedule, week_columns_groups[group_input])
-            else:
-                print_info('Sheethandler ' + str(datetime.now() - dat))
-                return await get_schedule_bap(day_input, group_input, week_columns_groups[group_input], week_checked, schedule)
-        elif group_input[0:3] == 'бут':
-            if day_input == 'вся неделя':
-                print_info('Sheethandler ' + str(datetime.now() - dat))
-                return await get_full_schedule_but(group_input, week_checked, schedule, week_columns_groups[group_input])
-            else:
-                print_info('Sheethandler ' + str(datetime.now() - dat))
-                return await get_schedule_but(day_input, group_input, week_columns_groups[group_input], week_checked, schedule)
-        elif group_input[0:3] == 'зрс':
-            if day_input == 'вся неделя':
+        if day_input == 'вся неделя':
+            if group_input[0:3] == 'зрс':
                 print_info('Sheethandler ' + str(datetime.now() - dat))
                 return await get_full_schedule_zrc(group_input, week_checked, schedule)
             else:
                 print_info('Sheethandler ' + str(datetime.now() - dat))
-                return await get_schedule_zrc(day_input, group_input, week_checked, schedule)
-        elif group_input[0:3] == 'брт':
-            if day_input == 'вся неделя':
-                print_info('Sheethandler ' + str(datetime.now() - dat))
-                return await get_full_schedule_brt(group_input, week_checked, schedule, week_columns_groups[group_input])
-            else:
-                print_info('Sheethandler ' + str(datetime.now() - dat))
-                return await get_schedule_brt(day_input, group_input, week_columns_groups[group_input], week_checked, schedule)
-        elif group_input[0:3] == 'бик':
-            if day_input == 'вся неделя':
-                print_info('Sheethandler ' + str(datetime.now() - dat))
-                return await get_full_schedule_bik(group_input, week_checked, schedule, week_columns_groups[group_input])
-            else:
-                print_info('Sheethandler ' + str(datetime.now() - dat))
-                return await get_schedule_bik(day_input, group_input, week_columns_groups[group_input], week_checked, schedule)
-        elif group_input[0:3] == 'бээ':
-            if day_input == 'вся неделя':
-                print_info('Sheethandler ' + str(datetime.now() - dat))
-                return await get_full_schedule_bee(group_input, week_checked, schedule, week_columns_groups[group_input])
-            else:
-                print_info('Sheethandler ' + str(datetime.now() - dat))
-                return await get_schedule_bee(day_input, group_input, week_columns_groups[group_input], week_checked, schedule)
-        elif group_input[0:3] == 'бби':
-            if day_input == 'вся неделя':
-                print_info('Sheethandler ' + str(datetime.now() - dat))
-                return await get_full_schedule_bbi(group_input, week_checked, schedule, week_columns_groups[group_input])
-            else:
-                print_info('Sheethandler ' + str(datetime.now() - dat))
-                return await get_schedule_bbi(day_input, group_input, week_columns_groups[group_input], week_checked, schedule)
-        elif group_input[0:3] == 'бэр':
-            if day_input == 'вся неделя':
-                print_info('Sheethandler ' + str(datetime.now() - dat))
-                return await get_full_schedule_ber(group_input, week_checked, schedule, week_columns_groups[group_input])
-            else:
-                print_info('Sheethandler ' + str(datetime.now() - dat))
-                return await get_schedule_ber(day_input, group_input, week_columns_groups[group_input], week_checked, schedule)
+                return await group_matching_full_schedule[group_input[0:3]](group_input, week_checked, schedule, week_columns_groups[group_input])
         else:
-            print_error('Ошибка в определении группы, sheethandler')
-            return False
+            if group_input[0:3] == 'зрс':
+                print_info('Sheethandler ' + str(datetime.now() - dat))
+                return await get_schedule_zrc(day_input, group_input, week_checked, schedule)
+            else:
+                print_info('Sheethandler ' + str(datetime.now() - dat))
+                return await group_matching_schedule[group_input[0:3]](day_input, group_input, week_columns_groups[group_input], week_checked, schedule)
+        
     else:
         print_error('Ошибка в сопоставлении ввода и потока, sheethandler')
         return False
