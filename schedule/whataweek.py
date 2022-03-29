@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 from utils.terminal_codes import print_info, print_error
 
 
-async def get_week(d: str) -> str:
+async def get_week() -> str:
     try:
         dat = datetime.now()
         date = datetime.date(datetime.today() + timedelta(hours=3))
