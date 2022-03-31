@@ -4,7 +4,6 @@ from schedule.streams.IT.bei import get_full_schedule_bei, get_schedule_bei
 from schedule.streams.IT.bfi import get_full_schedule_bfi, get_schedule_bfi
 from schedule.streams.KIIB.bib import get_full_schedule_bib, get_schedule_bib
 from schedule.streams.KIIB.bmp import get_full_schedule_bmp, get_schedule_bmp
-from schedule.streams.KIIB.zrc import get_full_schedule_zrc, get_schedule_zrc
 from schedule.streams.KIIB.bap import get_full_schedule_bap, get_schedule_bap
 from schedule.streams.KIIB.but import get_full_schedule_but, get_schedule_but
 from schedule.streams.RIT.brt import get_full_schedule_brt, get_schedule_brt

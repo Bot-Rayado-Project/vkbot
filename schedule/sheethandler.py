@@ -2,7 +2,6 @@ from datetime import datetime, timedelta
 import openpyxl
 import os
 import glob
-from schedule.streams.KIIB.bap import get_full_schedule_bap
 
 
 import schedule.whataweek as whataweek
