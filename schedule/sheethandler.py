@@ -3,15 +3,15 @@ import openpyxl
 import os
 import glob
 
-
-import schedule.whataweek as whataweek
 from schedule.recieve import recieve_time_table
 from utils.terminal_codes import print_error, print_info
 from utils.constants_schedule import week_columns_groups
 from utils.constants_blueprint import group_matching_schedule, group_matching_full_schedule
 from schedule.streams.KIIB.zrc import get_full_schedule_zrc, get_schedule_zrc
 
-start_time = datetime.now()
+import schedule.whataweek as whataweek
+
+start_time = datetime.now() - timedelta(hours=3)
 request_time: dict = {'бвт': start_time, 'бст': start_time, 'бфи': start_time, 'биб': start_time, 'бэи': start_time, 'бик': start_time, 'бмп': start_time,
                       'зрс': start_time, 'бап': start_time, 'бут': start_time, 'брт': start_time, 'бээ': start_time, 'бби': start_time, 'бэр': start_time}
 
@@ -60,13 +60,13 @@ async def get_sheet(group: str, stream: str, temp_number: str) -> openpyxl.Workb
 
     print_info(f'Последнее время запроса таблцы: {request_time[stream]}. Текущее время: {datetime.now()}')
     print_info(f'Разность времени: {abs(request_time[stream].timestamp() - datetime.now().timestamp())}')
-    if abs(request_time[stream].timestamp() - datetime.now().timestamp()) > 180.0:  # 120 секунд
+    if abs(request_time[stream].timestamp() - datetime.now().timestamp()) > 300.0:  # 300 секунд
         print_info("Между запросами прошло больше минуты. Отправлен запрос в recieve_time_table.")
         await recieve_time_table(group)  # Запрос на скачку таблицы
         request_time.update({stream: datetime.now()})
         print_info(f"Таблица скачана. Текущее состояния ключа времени запроса: {request_time[stream]}")
     else:
-        print_info("Между запросами прошло меньше минуты. Скачка отменена.")
+        print_info("Между запросами прошло меньше 5 минут. Скачка отменена.")
         path = False if len(glob.glob(f'tables/table_{stream}.xlsx')) == 0 else glob.glob(f'tables/table_{stream}.xlsx')[0]
         if path == False:
             print_info("Файла не существует. Форсированная скачка таблицы.")
@@ -80,7 +80,7 @@ async def get_sheet(group: str, stream: str, temp_number: str) -> openpyxl.Workb
         wb_obj = openpyxl.load_workbook(path)
     except:
         print_error('Ошибка в получении таблицы')
-        # Проверка вторая так как иногда ссылки меняют, и ест ьвероятность простого парса еррор сайта
+        # Проверка вторая так как иногда ссылки меняют, и есть вероятность простого парса еррор сайта
         return False
 
     wb_obj.active = temp_number  # Задача листа таблицы
@@ -140,7 +140,7 @@ async def print_schedule(day_input: str, group_input: str, id: str, week_type: s
             else:
                 print_info('Sheethandler ' + str(datetime.now() - dat))
                 return await group_matching_schedule[group_input[0:3]](day_input, group_input, week_columns_groups[group_input], week_checked, schedule)
-        
+
     else:
         print_error('Ошибка в сопоставлении ввода и потока, sheethandler')
         return False
