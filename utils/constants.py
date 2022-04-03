@@ -10,3 +10,10 @@ C_SQLITE_SET_IS_WRITING_FALSE: str = 'UPDATE config SET is_writing = False where
 C_SQLITE_SET_BUTTON_TO_WRITE: str = 'UPDATE config SET button_to_write="{0}" where user_id={1};'
 C_SQLITE_GET_IS_WRITING: str = 'SELECT is_writing FROM config WHERE user_id={0};'
 C_SQLITE_GET_BUTTON_TO_WRITE: str = 'SELECT button_to_write FROM config WHERE user_id={0};'
+
+STREAMS_IDS: dict = {'бвт': 'it_09.03.01', 'бст': 'it_09.03.02', 'бфи': 'it_02.03.02', 'бэи': 'it_09.03.03',
+                     'биб': 'kiib_10.03.01', 'бмп': 'kiib_01.03.04', 'зрс': 'kiib_10.05.02', 'бап': 'kiib_15.03.04', 'бут': 'kiib_27.03.04',
+                     'брт': 'rit_11.03.01', 'бик': 'rit_11.03.02',
+                     'бин': 'siss_11.03.02',
+                     'бби': 'tseimk_38.03.05', 'бэр': 'tseimk_42.03.01', 'бээ': 'tseimk_38.03.01'}
+STREAMS: list = ['бвт', 'бст', 'бфи', 'биб', 'бэи', 'бик', 'бмп', 'зрс', 'бап', 'бут', 'брт', 'бээ', 'бби', 'бэр', 'бин']

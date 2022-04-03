@@ -1,7 +1,3 @@
-from webbrowser import get
-from vkwave.bots import SimpleBotEvent
-from utils.attachments import get_file_from_path
-
 import sys
 
 

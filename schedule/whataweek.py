@@ -1,6 +1,5 @@
 from datetime import datetime, timedelta
-from signal import default_int_handler
-from sqlite3 import Date
+
 from utils.terminal_codes import print_info, print_error
 
 
