@@ -13,7 +13,8 @@ import schedule.whataweek as whataweek
 
 start_time = datetime.now() - timedelta(hours=3)
 request_time: dict = {'бвт': start_time, 'бст': start_time, 'бфи': start_time, 'биб': start_time, 'бэи': start_time, 'бик': start_time, 'бмп': start_time,
-                      'зрс': start_time, 'бап': start_time, 'бут': start_time, 'брт': start_time, 'бээ': start_time, 'бби': start_time, 'бэр': start_time}
+                      'зрс': start_time, 'бап': start_time, 'бут': start_time, 'брт': start_time, 'бээ': start_time, 'бби': start_time, 'бэр': start_time,
+                      'бин': start_time}
 
 
 async def check_right_input(day_input: str, group_input: str, week_type: str) -> bool:
@@ -102,7 +103,7 @@ async def print_schedule(day_input: str, group_input: str, id: str, week_type: s
         group_list = 0
     elif (('бвт' in group_input and int(group_input[-1]) > 4) or ('бст' in group_input and int(group_input[-1]) > 3)
           or ('зрс' in group_input and int(group_input[-1]) == 2)
-          or ('бик' in group_input and int(group_input[-1]) > 3 and int(group_input[-1]) < 7) 
+          or ('бик' in group_input and int(group_input[-1]) > 3 and int(group_input[-1]) < 7)
           or ('бин' in group_input and int(group_input[-1]) > 4 and int(group_input[-1]) < 8)):
         group_list = 1
     else:
