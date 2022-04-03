@@ -14,11 +14,13 @@ GROUP_BUTTONS_BIK_KB: Keyboard = Keyboard(one_time=False)
 GROUP_BUTTONS_BEE_KB: Keyboard = Keyboard(one_time=False)
 GROUP_BUTTONS_BER_KB: Keyboard = Keyboard(one_time=False)
 GROUP_BUTTONS_BBI_KB: Keyboard = Keyboard(one_time=False)
+GROUP_BUTTONS_BIN_KB: Keyboard = Keyboard(one_time=False)
 FACULTIES_BUTTONS_KB: Keyboard = Keyboard(one_time=False)
 STREAM_IT_BUTTONS_KB: Keyboard = Keyboard(one_time=False)
 STREAM_TSEIMK_BUTTONS_KB: Keyboard = Keyboard(one_time=False)
 STREAM_RIT_BUTTONS_KB: Keyboard = Keyboard(one_time=False)
 STREAM_KIIB_BUTTONS_KB: Keyboard = Keyboard(one_time=False)
+STREAM_SISS_BUTTONS_KB: Keyboard = Keyboard(one_time=False)
 STREAM_KB: Keyboard = Keyboard(one_time=False)
 DAYS_OF_WEEK_KB: Keyboard = Keyboard(one_time=False)
 CURRENT_OR_NEXT_WEEK_KB: Keyboard = Keyboard(one_time=False)
@@ -29,10 +31,11 @@ STREAM_IT_BUTTONS: list = ['бфи', 'бвт', 'бст', 'бэи']
 STREAM_TSEIMK_BUTTONS: list = ['бээ', 'бэр', 'бби']
 STREAM_KIIB_BUTTONS: list = ['бап', 'бмп', 'бут', 'зрс', 'биб']
 STREAM_RIT_BUTTONS: list = ['брт', 'бик']
+STREAM_SISS_BUTTONS: list = ['бин']
 # JNDSJD
 DAYS_OF_WEEK_BUTTONS: list = ['сегодня', 'завтра', 'вся неделя']
 CURRENT_OR_NEXT_WEEK_BUTTONS: list = ['текущая неделя', 'следующая неделя']
-FACULTIES_BUTTONS: list = ['ИТ', 'КиИБ', 'РиТ', 'ЦЭиМК']
+FACULTIES_BUTTONS: list = ['ИТ', 'КиИБ', 'РиТ', 'ЦЭиМК', 'СиСС']
 GROUP_BUTTONS_BFI: list = ['бфи2101', 'бфи2102']
 GROUP_BUTTONS_BVT: list = ['бвт2101', 'бвт2102', 'бвт2103', 'бвт2104', 'бвт2105', 'бвт2106', 'бвт2107', 'бвт2108']
 GROUP_BUTTONS_BST: list = ['бст2101', 'бст2102', 'бст2103', 'бст2104', 'бст2105', 'бст2106']
@@ -47,6 +50,7 @@ GROUP_BUTTONS_BBI: list = ['бби2101']
 GROUP_BUTTONS_ZRC: list = ['зрс2101', 'зрс2102']
 GROUP_BUTTONS_BRT: list = ['брт2101', 'брт2102']
 GROUP_BUTTONS_BIK: list = ['бик2101', 'бик2102', 'бик2103', 'бик2104', 'бик2105', 'бик2106', 'бик2107', 'бик2108', 'бик2109']
+GROUP_BUTTONS_BIN: list = ['бин2101', 'бин2102', 'бин2103', 'бин2104', 'бин2105', 'бин2106', 'бин2107', 'бин2108', 'бин2109', 'бин2110']
 GROUP_BUTTONS: list = ['бфи2101', 'бфи2102', 'бвт2101', 'бвт2102', 'бвт2103', 'бвт2104',
                        'бвт2105', 'бвт2106', 'бвт2107', 'бвт2108', 'бст2101', 'бст2102',
                        'бст2103', 'бст2104', 'бст2105', 'бст2106', 'бэи2101', 'бэи2102',
@@ -60,9 +64,10 @@ STREAM_TSEIMK_BUTTONS_PAYLOAD: list = [{'stream_button': 'бээ'}, {'stream_but
 STREAM_KIIB_BUTTONS_PAYLOAD: list = [{'stream_button': 'бап'}, {'stream_button': 'бмп'}, {'stream_button': 'бут'},
                                      {'stream_button': 'зрс'}, {'stream_button': 'биб'}]
 STREAM_RIT_BUTTONS_PAYLOAD: list = [{'stream_button': 'брт'}, {'stream_button': 'бик'}]
+STREAM_SISS_BUTTONS_PAYLOAD: list = [{'stream_button': 'бин'}]
 # dsd
 
-FACULTIES_BUTTONS_PAYLOAD: list = [{"faculty_button": "it"}, {"faculty_button": "kiib"}, {"faculty_button": "rit"}, {"faculty_button": "tseimk"}]
+FACULTIES_BUTTONS_PAYLOAD: list = [{"faculty_button": "it"}, {"faculty_button": "kiib"}, {"faculty_button": "rit"}, {"faculty_button": "tseimk"}, {"faculty_button": "siss"}]
 DAYS_OF_WEEK_BUTTONS_PAYLOAD: list = [{"dow_button": "today"}, {"dow_button": "tommorow"}, {"dow_button": "full week"}]
 CURRENT_OR_NEXT_WEEK_BUTTONS_PAYLOAD: list = [{"conw_button": "current week"}, {"conw_button": "next week"}]
 GROUP_BUTTONS_BFI_PAYLOAD: list = [{"group_button": "bfi2101"}, {"group_button": "bfi2102"}]
@@ -82,6 +87,10 @@ GROUP_BUTTONS_BRT_PAYLOAD: list = [{"group_button": 'brt2101'}, {"group_button":
 GROUP_BUTTONS_BIK_PAYLOAD: list = [{"group_button": "bik2101"}, {"group_button": "bik2102"}, {"group_button": "bik2103"}, {
     "group_button": "bik2104"}, {"group_button": "bik2105"}, {"group_button": "bik2106"}, {"group_button": "bik2107"}, {"group_button": "bik2108"},
     {"group_button": "bik2109"}]
+GROUP_BUTTONS_BIN_PAYLOAD: list = [{"group_button": "bin2101"}, {"group_button": "bin2102"}, {"group_button": "bin2103"}, {
+    "group_button": "bin2104"}, {"group_button": "bin2105"}, {"group_button": "bin2106"}, {"group_button": "bin2107"}, {"group_button": "bin2108"},
+    {"group_button": "bin2109"}, {"group_button": "bin2110"}]
+
 
 # Генерация кнопок
 
@@ -183,6 +192,13 @@ for i in range(1, len(STREAM_RIT_BUTTONS) + 1):
     elif i == len(STREAM_RIT_BUTTONS):
         STREAM_RIT_BUTTONS_KB.add_row()
         STREAM_RIT_BUTTONS_KB.add_text_button(text='Меню', color=ButtonColor.PRIMARY, payload={"button": "menu"})
+for i in range(1, len(STREAM_SISS_BUTTONS) + 1):
+    STREAM_SISS_BUTTONS_KB.add_text_button(text=STREAM_SISS_BUTTONS[i - 1].upper(), color=ButtonColor.SECONDARY, payload=STREAM_SISS_BUTTONS_PAYLOAD[i - 1])
+    if i % 3 == 0:
+        STREAM_SISS_BUTTONS_KB.add_row()
+    elif i == len(STREAM_SISS_BUTTONS):
+        STREAM_SISS_BUTTONS_KB.add_row()
+        STREAM_SISS_BUTTONS_KB.add_text_button(text='Меню', color=ButtonColor.PRIMARY, payload={"button": "menu"})
 for i in range(1, len(STREAM_KIIB_BUTTONS) + 1):
     STREAM_KIIB_BUTTONS_KB.add_text_button(text=STREAM_KIIB_BUTTONS[i - 1].upper(), color=ButtonColor.SECONDARY, payload=STREAM_KIIB_BUTTONS_PAYLOAD[i - 1])
     if i % 3 == 0:
@@ -202,6 +218,13 @@ for i in range(1, len(GROUP_BUTTONS_BIK) + 1):
     if i == len(GROUP_BUTTONS_BIK):
         GROUP_BUTTONS_BIK_KB.add_row()
         GROUP_BUTTONS_BIK_KB.add_text_button(text='Меню', color=ButtonColor.PRIMARY, payload={"button": "menu"})
+for i in range(1, len(GROUP_BUTTONS_BIN) + 1):
+    GROUP_BUTTONS_BIN_KB.add_text_button(text=GROUP_BUTTONS_BIN[i - 1].upper(), color=ButtonColor.SECONDARY, payload=GROUP_BUTTONS_BIN_PAYLOAD[i - 1])
+    if i % 3 == 0:
+        GROUP_BUTTONS_BIN_KB.add_row()
+    if i == len(GROUP_BUTTONS_BIN):
+        GROUP_BUTTONS_BIN_KB.add_row()
+        GROUP_BUTTONS_BIN_KB.add_text_button(text='Меню', color=ButtonColor.PRIMARY, payload={"button": "menu"})
 
 # Задание получения клавиатур
 
@@ -218,10 +241,12 @@ KB = {'бфи': GROUP_BUTTONS_BFI_KB.get_keyboard,
       'бби': GROUP_BUTTONS_BBI_KB.get_keyboard,
       'бээ': GROUP_BUTTONS_BEE_KB.get_keyboard,
       'бэр': GROUP_BUTTONS_BER_KB.get_keyboard,
-      'бик': GROUP_BUTTONS_BIK_KB.get_keyboard}
+      'бик': GROUP_BUTTONS_BIK_KB.get_keyboard,
+      'бин': GROUP_BUTTONS_BIN_KB.get_keyboard}
 
 
 KB_STREAMS = {'it': STREAM_IT_BUTTONS_KB.get_keyboard,
               'tseimk': STREAM_TSEIMK_BUTTONS_KB.get_keyboard,
               'rit': STREAM_RIT_BUTTONS_KB.get_keyboard,
-              'kiib': STREAM_KIIB_BUTTONS_KB.get_keyboard}
+              'kiib': STREAM_KIIB_BUTTONS_KB.get_keyboard,
+              'siss': STREAM_SISS_BUTTONS_KB.get_keyboard,}

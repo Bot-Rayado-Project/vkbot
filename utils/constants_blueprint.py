@@ -11,6 +11,7 @@ from schedule.streams.RIT.bik import get_full_schedule_bik, get_schedule_bik
 from schedule.streams.TCEIMK.bee import get_full_schedule_bee, get_schedule_bee
 from schedule.streams.TCEIMK.bbi import get_full_schedule_bbi, get_schedule_bbi
 from schedule.streams.TCEIMK.ber import get_full_schedule_ber, get_schedule_ber
+from schedule.streams.SISS.bin import get_full_schedule_bin, get_schedule_bin
 
 group_matching_schedule = {
         'бвт' : get_schedule_bvt,
