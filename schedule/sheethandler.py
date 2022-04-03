@@ -98,11 +98,12 @@ async def print_schedule(day_input: str, group_input: str, id: str, week_type: s
         or ('бэи' in group_input) or ('биб' in group_input) or ('бмп' in group_input)
         or ('бап' in group_input) or ('бут' in group_input) or ('зрс' in group_input and int(group_input[-1]) == 1)
         or ('брт' in group_input) or ('бик' in group_input and int(group_input[-1]) < 4) or ('бээ' in group_input) or ('бби' in group_input)
-            or ('бэр' in group_input)):
+            or ('бэр' in group_input) or ('бин' in group_input and int(group_input[-1]) < 5)):
         group_list = 0
     elif (('бвт' in group_input and int(group_input[-1]) > 4) or ('бст' in group_input and int(group_input[-1]) > 3)
           or ('зрс' in group_input and int(group_input[-1]) == 2)
-          or ('бик' in group_input and int(group_input[-1]) > 3 and int(group_input[-1]) < 7)):
+          or ('бик' in group_input and int(group_input[-1]) > 3 and int(group_input[-1]) < 7) 
+          or ('бин' in group_input and int(group_input[-1]) > 4 and int(group_input[-1]) < 8)):
         group_list = 1
     else:
         group_list = 2  # Выборка номера листа для каждой группы разный от условия
