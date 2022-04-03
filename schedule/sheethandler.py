@@ -113,7 +113,7 @@ async def print_schedule(day_input: str, group_input: str, id: str, week_type: s
             or (day_input == 'сегодня' and datetime.weekday(datetime.today().utcnow() + timedelta(hours=3)) == 6)):
         return 'Занятий нет'
 
-    if check_right_input(day_input, group_input, week_type):
+    if await check_right_input(day_input, group_input, week_type):
 
         if (day_input == 'завтра' and datetime.weekday(datetime.today().utcnow() + timedelta(hours=3)) == 6):
             week_checked = await week_check('следуюящая неделя')
