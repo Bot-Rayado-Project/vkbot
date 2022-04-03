@@ -26,7 +26,8 @@ group_matching_schedule = {
         'брт' : get_schedule_brt,
         'бби' : get_schedule_bbi,
         'бээ' : get_schedule_bee,
-        'бэр' : get_schedule_ber
+        'бэр' : get_schedule_ber,
+        'бин' : get_schedule_bin
 
 }
 group_matching_full_schedule = {
@@ -42,6 +43,7 @@ group_matching_full_schedule = {
         'брт' : get_full_schedule_brt,
         'бби' : get_full_schedule_bbi,
         'бээ' : get_full_schedule_bee,
-        'бэр' : get_full_schedule_ber
+        'бэр' : get_full_schedule_ber,
+        'бин' : get_full_schedule_bin
 
 }
