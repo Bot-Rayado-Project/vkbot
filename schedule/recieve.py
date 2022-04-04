@@ -1,9 +1,7 @@
 import re
-import os
 import aiofile
 import glob
-
-from entry import default_keys
+import requests
 
 from typing import NamedTuple
 from bs4 import BeautifulSoup
@@ -11,20 +9,47 @@ from datetime import datetime
 
 from utils.aiohttp_requests import aiohttp_fetch_schedule
 from utils.terminal_codes import print_error, print_info
+from utils.constants import STREAMS_IDS, STREAMS
+
 
 # Закомментировать для локального тестирования
-'''
-import asyncio
+'''import asyncio
 import sys
+import os
 sys.path.append(os.path.abspath('./utils'))
 from aiohttp_requests import aiohttp_fetch_schedule
-from terminal_codes import print_error'''
+from terminal_codes import print_error, print_info
+from constants import STREAMS_IDS, STREAMS'''
 # Раскоментить для локального тестирования
 
 
 class GroupInfo(NamedTuple):
     stream: str
     group: str
+
+
+def get_default_keys() -> dict | None:
+    '''Задает стартовые сигнатуры для каждого потока. Вызывается единожды - при запуске бота.'''
+    soup = BeautifulSoup(requests.get("https://mtuci.ru/time-table/").text, 'lxml')
+    default_keys: dict = {}
+    for link in soup.find_all('a'):
+        _link = link.get('href')
+        try:
+            if _link.lower().startswith('/upload/') and "1-kurs" in _link.lower():
+                for stream in STREAMS:
+                    if STREAMS_IDS[stream] in _link.lower():
+                        print_info(_link)
+                        default_keys[stream] = _link[15:18]
+        except AttributeError:
+            pass
+        except KeyError:
+            print_error("Ошибка задания стартовых ключей ключей.")
+            return None
+    print_info(f'Стартовые сигнатуры заданы: {default_keys}')
+    return default_keys
+
+
+default_keys: dict = get_default_keys()
 
 
 async def recieve_time_table(group: str) -> None:
@@ -37,26 +62,23 @@ async def recieve_time_table(group: str) -> None:
     soup = BeautifulSoup(responce, 'lxml')
     data = GroupInfo(re.sub('[^а-я]', '', group), re.sub('[^0-9]', '', group))
     print_info('Обработка скачки.')
-    STREAM_ID: dict = {'бвт': '09.03.01', 'бст': '09.03.02', 'бфи': '02.03.02', 'биб': '10.03.01', 'бэи': '09.03.03', 'бик': '11.03.02',
-                       'бмп': '01.03.04', 'зрс': '10.05.02', 'бап': '15.03.04', 'бут': '27.03.04', 'брт': '11.03.01', 'бээ': '38.03.01',
-                       'бби': '38.03.05', 'бэр': '42.03.01'}
-    FACULTIES: list = ["it", "kiib", "siss", "rit", "tseimk"]
     print_info("Перед входом в цикл поиска ссылок")
     print_info(datetime.now() - start_time)
     for link in soup.find_all('a'):
         _link = link.get('href')
         try:
-            if _link.startswith('/upload/') and any(fac in _link.lower() for fac in FACULTIES) and "1-kurs" in _link and STREAM_ID[data.stream] in _link:
+            if _link.startswith('/upload/') and "1-kurs" in _link and STREAMS_IDS[data.stream] in _link.lower():
                 path = False if len(glob.glob(f'tables/table_{data.stream}.xlsx')) == 0 else glob.glob(f'tables/table_{data.stream}.xlsx')[0]
+                print_info(_link)
                 if path == False:
-                    print_info(f'Выбран {data.stream} поток, {STREAM_ID[data.stream]} направление. Таблица не скачана.')
+                    print_info(f'Выбран {data.stream} поток, {STREAMS_IDS[data.stream]} направление. Таблица не скачана.')
                     async with aiofile.async_open(f'tables/table_{data.stream}.xlsx', 'wb') as table:
                         await table.write(await aiohttp_fetch_schedule('https://mtuci.ru' + _link, True))
                     print_info(datetime.now() - start_time)
                     return data
                 else:
                     key = default_keys[data.stream]
-                    print_info(f'Выбран {data.stream} поток, {STREAM_ID[data.stream]} направление. Таблица скачана.')
+                    print_info(f'Выбран {data.stream} поток, {STREAMS_IDS[data.stream]} направление. Таблица скачана.')
                     if _link[15:18] == key:
                         print_info('Сигнатура таблицы равна сигнатуре с сайта.')  # поместить новый ключ в хранилище
                         print_info(datetime.now() - start_time)
@@ -77,7 +99,7 @@ async def recieve_time_table(group: str) -> None:
 # Раскоментировать для локального тестирования
 '''if __name__ == '__main__':
     async def main():
-        res = await recieve_time_table('бин2101', '3123123')
+        res = await recieve_time_table('бик2101')
         print(res)
     asyncio.run(main())
 '''

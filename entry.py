@@ -1,32 +1,10 @@
-import sqlite3
 import sys
-import os
 import logging
-import requests
-from bs4 import BeautifulSoup
 from utils.exceptions import keyboard_interrupt
 from vkwave.bots import SimpleLongPollBot
-from vkwave.bots.storage.storages import Storage
-from vkwave.bots.storage.types import Key
-from utils.terminal_codes import print_info, print_error, print_warning, set_stdout_to_log_file
+from utils.terminal_codes import print_info, print_warning, set_stdout_to_log_file
 import utils.terminal_codes as term
-from utils.settings import Settings
-from typing import NamedTuple
-
-# Запись логов в файл
-settings = Settings()
-storage = Storage()
-default_keys = {}
-try:
-    ALLOWED_USER_IDS_ADMIN_PANEL: list = settings.GET_ALLOWED_USER_IDS()
-    ALLOWED_USER_IDS_START: list = os.getenv('ALLOWED_USER_IDS').split()
-except:
-    pass
-
-
-class GroupInfo(NamedTuple):
-    stream: str
-    group: str
+from utils.settings import settings
 
 
 class InitializeComponent:
@@ -57,8 +35,6 @@ class InitializeComponent:
         self.__set_keyboard_interrupt()
         # Установка логирования
         self.__set_logging()
-        # Установка стандартных ключей
-        get_default_keys()
         print_info("Application startup complete.")
         print_info("Started listening for messages...")
 
@@ -70,63 +46,3 @@ class InitializeComponent:
 
     def __set_logging(self) -> None:
         logging.basicConfig(filename="errors.log", level=logging.ERROR)
-
-
-def set_up_connection_with_db(data_base_name: str) -> tuple | None:
-    try:
-        sqlite_connection: sqlite3.Connection = sqlite3.connect(data_base_name)
-        print_info("Successfully connected to database.")
-        return sqlite_connection, sqlite_connection.cursor()
-    except sqlite3.Error:
-        print_error("Database connection failure.")
-        exit()
-
-
-def get_default_keys():
-    global default_keys
-    responce = requests.get("https://mtuci.ru/time-table/")
-    soup = BeautifulSoup(responce.text, 'lxml')
-    STREAM_ID: dict = {'бвт': '09.03.01', 'бст': '09.03.02', 'бфи': '02.03.02', 'биб': '10.03.01', 'бэи': '09.03.03', 'бин': '11.03.02',
-                       'бмп': '01.03.04', 'зрс': '10.05.02', 'бап': '15.03.04', 'бут': '27.03.04', 'брт': '11.03.01', 'бээ': '38.03.01',
-                       'бби': '38.03.05', 'бэр': '42.03.01'}
-    FACULTIES: list = ["it", "kiib", "siss", "rit", "tseimk"]
-    for link in soup.find_all('a'):
-        _link = link.get('href')
-        try:
-            if _link.startswith('/upload/') and any(fac in _link.lower() for fac in FACULTIES) and "1-kurs" in _link:
-                print_info(_link)
-                if STREAM_ID["бвт"] in _link:
-                    default_keys["бвт"] = _link[15:18]
-                elif STREAM_ID["бст"] in _link:
-                    default_keys["бст"] = _link[15:18]
-                elif STREAM_ID["бфи"] in _link:
-                    default_keys["бфи"] = _link[15:18]
-                elif STREAM_ID["биб"] in _link:
-                    default_keys["биб"] = _link[15:18]
-                elif STREAM_ID["бэи"] in _link:
-                    default_keys["бэи"] = _link[15:18]
-                elif STREAM_ID["бин"] in _link:
-                    default_keys["бин"] = _link[15:18]
-                elif STREAM_ID["зрс"] in _link:
-                    default_keys["зрс"] = _link[15:18]
-                elif STREAM_ID["бмп"] in _link:
-                    default_keys["бмп"] = _link[15:18]
-                elif STREAM_ID["бут"] in _link:
-                    default_keys["бут"] = _link[15:18]
-                elif STREAM_ID["бап"] in _link:
-                    default_keys["бап"] = _link[15:18]
-                elif STREAM_ID["брт"] in _link:
-                    default_keys["брт"] = _link[15:18]
-                elif STREAM_ID["бби"] in _link:
-                    default_keys["бби"] = _link[15:18]
-                elif STREAM_ID["бэр"] in _link:
-                    default_keys["бэр"] = _link[15:18]
-                elif STREAM_ID["бээ"] in _link:
-                    default_keys["бээ"] = _link[15:18]
-                else:
-                    pass
-        except AttributeError:
-            pass
-        except KeyError:
-            print_error("Ошибка задания стартовых ключей ключей.")
-            return None

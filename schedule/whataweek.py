@@ -1,34 +1,22 @@
 from datetime import datetime, timedelta
+
 from utils.terminal_codes import print_info, print_error
 
 
 async def get_week() -> str:
     try:
-        dat = datetime.now()
-        date = datetime.date(datetime.today() + timedelta(hours=3))
-        month = str(date)[5:7]
-        month = int(str(date)[6:7]) if month[0] == '0' else int(str(date)[5:7])
-        format = "%Y-%m-%d"
-        past_year = str(int(str(datetime.date(datetime.today() + timedelta(hours=3)))[:4]) - 1)
-        current_year = str(datetime.date(datetime.today() + timedelta(hours=3)))[:4]
-
-        if month < 9:
-            week = date.isocalendar()[1]
-            weeks_past_year = datetime.strptime('{}-12-31'.format(past_year), format).isocalendar()[1] - datetime.strptime('{}-09-01'.format(past_year), format).isocalendar()[1] + 1
-            week += weeks_past_year
-
-        if month >= 9:
-            week = date.isocalendar()[1]
-            weeks_past_sem = date.isocalendar()[1] - datetime.strptime('{}-09-01'.format(current_year), format).isocalendar()[1] + 1
-            week += weeks_past_sem
-
-        if week % 2 == 0:
-            print_info('Whataweek ' +  str(datetime.now() - dat))
+        dat = datetime.now() + timedelta(hours=3)
+        if (datetime.timestamp(datetime.now() + timedelta(hours=3)) 
+        - datetime.timestamp(datetime.strptime('{}-09-01'.format(
+        str(int(str(datetime.date(datetime.today()
+        + timedelta(hours=3)))[:4]) - 1)), "%Y-%m-%d"))) % 2 == 0:
+            print_info('Whataweek ' + str((datetime.now() + timedelta(hours=3)) - dat))
             return 'четная'
         else:
-            print_info('Whataweek ' +  str(datetime.now() - dat))
+            print_info('Whataweek ' + str((datetime.now() + timedelta(hours=3)) - dat))
             return 'нечетная'
 
     except:
         print_error('Ошибка в whataweek')
         return False
+

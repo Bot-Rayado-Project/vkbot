@@ -6,7 +6,6 @@ from utils.terminal_codes import print_error, print_info
 class Base():
     
     def schedule(self, start_cell: int, week_type: str, group: str, schedule, group_column: str, x: int, day_type: str) -> str:
-
         day_time_utc = datetime.weekday(datetime.today().utcnow() + timedelta(hours=3)) 
 
         if day_type == 'завтра':

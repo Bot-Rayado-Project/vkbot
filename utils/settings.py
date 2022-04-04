@@ -1,4 +1,5 @@
 import os
+
 from utils.terminal_codes import print_info, print_error, print_warning
 
 
@@ -49,7 +50,7 @@ class Settings():
             print_error(f"Import error. {counter} arguments are not given.")
         else:
             print_info("Import complete.")
-    
+
     def GET_STATE(self) -> str:
         return self.__STATE
 
@@ -64,7 +65,7 @@ class Settings():
 
     def GET_ALL_VARIABLES(self) -> tuple:
         return self.__ALLOWED_USER_IDS, self.__API_TOKEN, self.__GROUP_ID, self.__STATE
-    
+
     def SET_STATE(self, value) -> None:
         self.__STATE = value
 
@@ -76,3 +77,9 @@ class Settings():
 
     def SET_GROUP_ID(self, value) -> None:
         self.__GROUP_ID = value
+
+
+settings = Settings()
+
+ALLOWED_USER_IDS_ADMIN_PANEL: list = settings.GET_ALLOWED_USER_IDS()
+ALLOWED_USER_IDS_START: list = os.getenv('ALLOWED_USER_IDS').split()

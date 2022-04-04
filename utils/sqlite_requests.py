@@ -1,13 +1,23 @@
-import traceback
 from utils.constants import *
-from utils.terminal_codes import print_error, print_info, INFO_CODE_USER_MSG, print_warning
+from utils.terminal_codes import print_error, print_info
 import utils.terminal_codes as term
 from datetime import datetime
 from vkwave.bots import SimpleBotEvent
-import entry
 import typing
+import sqlite3
 
-sqlite_connection, cursor = entry.set_up_connection_with_db("users.db")
+
+def set_up_connection_with_db(data_base_name: str) -> tuple | None:
+    try:
+        sqlite_connection: sqlite3.Connection = sqlite3.connect(data_base_name)
+        print_info("Successfully connected to database.")
+        return sqlite_connection, sqlite_connection.cursor()
+    except sqlite3.Error:
+        print_error("Database connection failure.")
+        exit()
+
+
+sqlite_connection, cursor = set_up_connection_with_db("users.db")
 
 
 def database_handler(ret_cmd: bool = False, ret_cfg: bool = False, ret_flag: bool = False, write_flag: bool = False, is_menu: bool = False):
