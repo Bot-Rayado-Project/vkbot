@@ -4,6 +4,8 @@ WORKDIR /vkbot
 
 COPY . .
 
-RUN pip install -r requirements.txt
+RUN pip install poetry
+RUN poetry config virtualenvs.create false \
+  && poetry install --no-interaction --no-ansi
 
-CMD ["python", "main.py"]
+CMD ["python3", "main.py"]

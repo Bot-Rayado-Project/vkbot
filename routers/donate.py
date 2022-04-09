@@ -6,10 +6,10 @@ from utils.sqlite_requests import database_handler
 
 from vkwave.bots import simple_bot_message_handler, DefaultRouter, SimpleBotEvent, PayloadFilter
 
-geobot_router = DefaultRouter()
+donate_router = DefaultRouter()
 
 
-@simple_bot_message_handler(geobot_router, PayloadFilter({"button": "donate"}))
+@simple_bot_message_handler(donate_router, PayloadFilter({"button": "donate"}))
 @database_handler()
 async def miamor(event: SimpleBotEvent) -> str:
     if str(event.from_id) in sett.ALLOWED_USER_IDS_ADMIN_PANEL:

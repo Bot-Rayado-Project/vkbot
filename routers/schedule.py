@@ -59,17 +59,16 @@ async def get_group(event: SimpleBotEvent, fetch: dict, flag: bool, btn: str) ->
     if flag == [(0,)]:
         if any(cmd.lower() in [pre_penultimate_command] for cmd in schedule_kb.CURRENT_OR_NEXT_WEEK_BUTTONS) and pre_pre_penultimate_command == schedule_kb.DAYS_OF_WEEK_BUTTONS[2]:
             print_info('Вся неделя')
-            schedule = await sheethandler.print_schedule('вся неделя', last_command, event.from_id, pre_penultimate_command)
+            schedule = await sheethandler.print_full_schedule(pre_penultimate_command, last_command)
             if schedule == False:
                 table_file = await get_file_from_path(event, f"Расписание {last_command[0:3]}.xlsx", f"tables/table_{(last_command.lower())[0:3]}.xlsx")
                 await event.answer(message=f'Ошибка в получении расписания. Возможно изменился формат таблицы, посмотрите расписание вручную. Информация об ошибке передана разработчкам', keyboard=menu_kb.START_KB.get_keyboard(), attachment=table_file)
                 print_error('Критическая ошибка в получении расписания. Проверить таблицу.')
             else:
-                for i in range(len(schedule)):
-                    await event.answer(message=schedule[i], keyboard=menu_kb.START_KB.get_keyboard())
+                await event.answer(message=schedule, keyboard=menu_kb.START_KB.get_keyboard())
         elif any(cmd.lower() in [pre_penultimate_command] for cmd in schedule_kb.DAYS_OF_WEEK_BUTTONS):
             print_info('Сегодня/завтра')
-            schedule = await sheethandler.print_schedule(pre_penultimate_command, last_command, event.from_id, 'текущая неделя')
+            schedule = await sheethandler.print_schedule(pre_penultimate_command, last_command)
             if schedule == False:
                 table_file = await get_file_from_path(event, f"Расписание {last_command[0:3]}.xlsx", f"tables/table_{(last_command.lower())[0:3]}.xlsx")
                 await event.answer(message=f'Ошибка в получении расписания. Возможно изменился формат таблицы, посмотрите расписание вручную. Информация об ошибке передана разработчкам', keyboard=menu_kb.START_KB.get_keyboard(), attachment=table_file)
