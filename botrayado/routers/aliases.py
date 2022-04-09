@@ -1,10 +1,7 @@
-import keyboards.admin_kb as admin_kb
-import schedule.sheethandler as sheethandler
+import botrayado.keyboards.admin_kb as admin_kb
+import botrayado.schedule.sheethandler as sheethandler
 
-
-from vkwave.bots import simple_bot_message_handler, DefaultRouter, SimpleBotEvent
-
-from utils.sqlite_requests import database_handler
+from botrayado.database.db import database_handler
 from vkwave.bots import simple_bot_message_handler, DefaultRouter, SimpleBotEvent, PayloadFilter
 
 
@@ -47,5 +44,4 @@ async def fuckmaryamtmr(event: SimpleBotEvent) -> None:
 @database_handler()
 async def vanya(event: SimpleBotEvent) -> None:
     schedule = await sheethandler.print_full_schedule("следующая неделя", "бвт2103")
-    for _schedule in schedule:
-        await event.answer(message=_schedule, keyboard=admin_kb.ADMIN_KB.get_keyboard())
+    await event.answer(message=schedule, keyboard=admin_kb.ADMIN_KB.get_keyboard())

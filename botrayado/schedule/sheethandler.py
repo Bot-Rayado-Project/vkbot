@@ -1,19 +1,25 @@
-from schedule.whataweek import get_week
+from botrayado.schedule.whataweek import get_week
 from transliterate import translit
 from datetime import datetime, timedelta
-from utils.aiohttp_requests import aiohttp_fetch
-from utils.constants_schedule import DAYS_ENG, DAYS_RU
+from botrayado.utils.constants import DAYS_ENG, DAYS_RU, RESTIP, RESTPORT
 import json
+import aiohttp
 
 
-async def print_schedule(day_type, group):
+async def aiohttp_fetch(url: str) -> str:
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as response:
+            return await response.text()
+
+
+async def print_schedule(day_type: str, group: str) -> str:
 
     day_time_utc = datetime.weekday(datetime.today().utcnow() + timedelta(hours=3))
 
     if day_type == 'завтра':
         day_time_utc += 1
     if day_time_utc == 6:
-            return 'Занятий нет'
+        return 'Занятий нет'
 
     week_checked = await get_week()
     even = True if week_checked == 'четная' else False
@@ -25,18 +31,18 @@ async def print_schedule(day_type, group):
     if day_type == 'завтра':
         if day_time_utc == 7:
             day_of_week = DAYS_ENG[0]
-        else:   
+        else:
             day_of_week = DAYS_ENG[day_time_utc]
     else:
         day_of_week = DAYS_ENG[day_time_utc]
 
-    responce = json.loads(await aiohttp_fetch(url='http://localhost:8000/schedule/?group={0}&even={1}&day={2}'.format(group, even, day_of_week)))
+    responce = json.loads(await aiohttp_fetch(url=f'http://{RESTIP}:{RESTPORT}/schedule/?group={group}&even={even}&day={day_of_week}'))
     output += responce['schedule']
 
     return output
 
 
-async def print_full_schedule(day_type, group):
+async def print_full_schedule(day_type: str, group: str) -> str:
 
     week_checked = await get_week()
     if week_checked == 'четная':
@@ -54,11 +60,9 @@ async def print_full_schedule(day_type, group):
         + 'Неделя: ' + week_checked.capitalize() + '\n' + '⸻⸻⸻⸻⸻\n'
     group = translit(group, language_code='ru', reversed=True)
 
-    responce = json.loads(await aiohttp_fetch(url='http://localhost:8000/schedule/?group={0}&even={1}'.format(group, even)))
+    responce = json.loads(await aiohttp_fetch(url=f'http://{RESTIP}:{RESTPORT}/schedule/?group={group}&even={even}'))
     for i in range(6):
         output += '\n' + DAYS_RU[i].capitalize() + '\n\n'
         output += responce['schedule'][i]['schedule']
-        
-    return output
 
-        
+    return output
