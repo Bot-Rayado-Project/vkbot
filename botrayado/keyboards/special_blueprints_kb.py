@@ -1,6 +1,6 @@
 from vkwave.bots import Keyboard, ButtonColor
 
-SPECIAL_BLUEPRINTS_BUTTONS: list = ['rayadotd', 'rayadotmr', 'fuckmaryamtd', 'fuckmaryamtmr', 'ваня']  # брт2101
+SPECIAL_BLUEPRINTS_BUTTONS: list = ['rayadotd', 'rayadotmr', 'fuckmaryamtd', 'fuckmaryamtmr', 'ваня']
 SPECIAL_BLUEPRINTS_BUTTONS_PAYLOAD: list = [{"special_blueprint_button": "rayadotd"}, {"special_blueprint_button": "rayadotmr"},
                                             {"special_blueprint_button": "fuckmaryamtd"}, {"special_blueprint_button": "fuckmaryamtmr"},
                                             {"special_blueprint_button": "vanya"}]

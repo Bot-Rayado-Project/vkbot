@@ -1,3 +1,4 @@
+import traceback
 import botrayado.schedule.sheethandler as sheethandler
 import botrayado.keyboards.schedule_kb as schedule_kb
 import botrayado.keyboards.menu_kb as menu_kb
@@ -49,10 +50,13 @@ async def get_stream(event: SimpleBotEvent, fetch: dict) -> str:
 @simple_bot_message_handler(schedule_router, PayloadContainsFilter("group_button"))
 @database_handler(ret_cmd=True, ret_flag=True)
 async def get_group(event: SimpleBotEvent, fetch: dict, flag: bool, btn: str) -> str:
-    last_command = fetch[0][0].lower()  # Последняя команда # ГРУППА
-    pre_penultimate_command = fetch[3][0].lower()  # Пред предпоследняя команда
-    pre_pre_penultimate_command = fetch[4][0].lower()  # Пред пред предпоследняя команда
-    start_time = datetime.now()
+    try:
+        last_command = fetch[0][0].lower()  # Последняя команда # ГРУППА
+        pre_penultimate_command = fetch[3][0].lower()  # Пред предпоследняя команда
+        pre_pre_penultimate_command = fetch[4][0].lower()  # Пред пред предпоследняя команда
+    except IndexError as e:
+        logger.error(f"Error in schedule.py, fetching commands ({e}): {traceback.format_exc()}")
+
     if flag == [(0,)]:
         if any(cmd.lower() in [pre_penultimate_command] for cmd in schedule_kb.CURRENT_OR_NEXT_WEEK_BUTTONS) and pre_pre_penultimate_command == schedule_kb.DAYS_OF_WEEK_BUTTONS[2]:
             schedule = await sheethandler.print_full_schedule(pre_penultimate_command, last_command)
@@ -61,9 +65,7 @@ async def get_group(event: SimpleBotEvent, fetch: dict, flag: bool, btn: str) ->
             schedule = await sheethandler.print_schedule(pre_penultimate_command, last_command)
             await event.answer(message=schedule, keyboard=menu_kb.START_KB.get_keyboard())
         else:
-            await event.answer(message="Непредвиденная ошибка. Не нажимайте на 2 разные кнопки в одной категории. Повторите свой запрос.", keyboard=menu_kb.START_KB.get_keyboard())
-            logger.error('Непредвиденная ошибка в выводе расписания. Предположительно было нажато 2 разные кнопки в одной категории.')
-        logger.info(f"Общее время вывода расписания: {datetime.now() - start_time}")
+            await event.answer(message="Не нажимайте на 2 разные кнопки в одной категории. Повторите свой запрос.", keyboard=menu_kb.START_KB.get_keyboard())
     else:
         if any(cmd.lower() in [pre_penultimate_command] for cmd in schedule_kb.CURRENT_OR_NEXT_WEEK_BUTTONS) and pre_pre_penultimate_command == schedule_kb.DAYS_OF_WEEK_BUTTONS[2]:
             result = pre_penultimate_command.split()[0][0].upper() + 'Н' + ' ' + last_command.upper()  # ТН БВТ2103 либо СН БВТ2103 (текущая неделя | следующая неделя, группа)
