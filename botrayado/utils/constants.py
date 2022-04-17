@@ -1,4 +1,5 @@
 import os
+from typing import NamedTuple
 
 
 class NoneException(Exception):
@@ -40,3 +41,20 @@ STREAMS: list = ['бвт', 'бст', 'бфи', 'биб', 'бэи', 'бик', 'б
 
 DAYS_ENG = ['ponedelnik', 'vtornik', 'sreda', 'chetverg', 'pjatnitsa', 'subbota']
 DAYS_RU = ['понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота']
+
+# Реквесты
+
+
+class HeadmanRequest(NamedTuple):
+    week: str = None
+    dayofweek: str = None
+    pair: str = None
+    move: str = None
+    changes: str = None
+
+
+headman_requests = {}
+
+# Старосты
+
+headmans_ids: dict = {210481885: 'бвт2103'}

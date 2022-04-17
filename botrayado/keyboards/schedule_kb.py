@@ -60,7 +60,7 @@ STREAM_RIT_BUTTONS: list = ['брт', 'бик']
 STREAM_SISS_BUTTONS: list = ['бин']
 
 # Названия кнопок для дней недели
-DAYS_OF_WEEK_BUTTONS: list = ['сегодня', 'завтра', 'вся неделя']
+DAYS_OF_WEEK_BUTTONS: list = ['сегодня', 'завтра', 'вся неделя', 'редактировать расписание', 'посмотреть аннотации']
 CURRENT_OR_NEXT_WEEK_BUTTONS: list = ['текущая неделя', 'следующая неделя']
 
 
@@ -97,7 +97,7 @@ STREAM_RIT_BUTTONS_PAYLOAD: list = [{'stream_button': 'брт'}, {'stream_button
 STREAM_SISS_BUTTONS_PAYLOAD: list = [{'stream_button': 'бин'}]
 
 # Payload кнопок для дней недели
-DAYS_OF_WEEK_BUTTONS_PAYLOAD: list = [{"dow_button": "today"}, {"dow_button": "tommorow"}, {"dow_button": "full week"}]
+DAYS_OF_WEEK_BUTTONS_PAYLOAD: list = [{"dow_button": "today"}, {"dow_button": "tommorow"}, {"dow_button": "full week"}, {"dow_button_c": "edit"}, {"dow_button_c": "look"}]
 CURRENT_OR_NEXT_WEEK_BUTTONS_PAYLOAD: list = [{"conw_button": "current week"}, {"conw_button": "next week"}]
 
 
@@ -232,7 +232,13 @@ for i in range(1, len(STREAM_TSEIMK_BUTTONS) + 1):
 
 # Генерация кнопок для дней недели
 for i in range(1, len(DAYS_OF_WEEK_BUTTONS) + 1):
-    DAYS_OF_WEEK_KB.add_text_button(text=DAYS_OF_WEEK_BUTTONS[i - 1].capitalize(), color=ButtonColor.SECONDARY, payload=DAYS_OF_WEEK_BUTTONS_PAYLOAD[i - 1])
+    if i < 4:
+        DAYS_OF_WEEK_KB.add_text_button(text=DAYS_OF_WEEK_BUTTONS[i - 1].capitalize(), color=ButtonColor.SECONDARY, payload=DAYS_OF_WEEK_BUTTONS_PAYLOAD[i - 1])
+    if i == 4:
+        DAYS_OF_WEEK_KB.add_row()
+        DAYS_OF_WEEK_KB.add_text_button(text=DAYS_OF_WEEK_BUTTONS[i - 1].capitalize(), color=ButtonColor.SECONDARY, payload=DAYS_OF_WEEK_BUTTONS_PAYLOAD[i - 1])
+    if i == 5:
+        DAYS_OF_WEEK_KB.add_text_button(text=DAYS_OF_WEEK_BUTTONS[i - 1].capitalize(), color=ButtonColor.SECONDARY, payload=DAYS_OF_WEEK_BUTTONS_PAYLOAD[i - 1])
     if i == len(DAYS_OF_WEEK_BUTTONS):
         DAYS_OF_WEEK_KB.add_row()
         DAYS_OF_WEEK_KB.add_text_button(text='Меню', color=ButtonColor.PRIMARY, payload={"button": "menu"})

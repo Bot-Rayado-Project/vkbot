@@ -7,3 +7,4 @@ from botrayado.routers.aliases import aliases_router
 from botrayado.routers.idiots import idiots_router
 from botrayado.routers.config import config_router
 from botrayado.routers.admin import admin_router
+from botrayado.routers.headman import headman_router

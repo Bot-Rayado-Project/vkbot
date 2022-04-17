@@ -6,7 +6,7 @@ routers_list: list = [routers.schedule_router, routers.joke_router,
                       routers.donate_router, routers.help_router,
                       routers.menu_router, routers.aliases_router,
                       routers.config_router, routers.admin_router,
-                      routers.idiots_router]
+                      routers.headman_router, routers.idiots_router]
 
 bot = SimpleLongPollBot(TOKENS, GROUPID)
 
