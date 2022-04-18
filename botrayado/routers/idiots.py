@@ -1,6 +1,7 @@
 import botrayado.keyboards.menu_kb as menu_kb
 import botrayado.keyboards.admin_kb as admin_kb
 import botrayado.utils.constants as constants
+import aiohttp
 
 from botrayado.database.db import database_handler
 from botrayado.utils.constants import _USERSIDS, USERSIDS, headmans_ids
@@ -8,6 +9,12 @@ from vkwave.bots import simple_bot_message_handler, DefaultRouter, SimpleBotEven
 
 
 idiots_router = DefaultRouter()
+
+
+async def aiohttp_fetch(url: str) -> str:
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as response:
+            return await response.text()
 
 
 @simple_bot_message_handler(idiots_router)
@@ -23,6 +30,7 @@ async def idiots(event: SimpleBotEvent, fetch: list) -> None:
             await event.answer(message=f'Пользователь {event.text} удален из списка.', keyboard=admin_kb.ADMIN_KB.get_keyboard())
         elif last_command == 'перезаписать':
             await event.answer(message=f'Успешно перезаписано', keyboard=admin_kb.ADMIN_KB.get_keyboard())
+
             constants.headman_requests[event.from_id] = constants.HeadmanRequest()
     else:
         await event.answer(message='Выберите команду из списка.', keyboard=menu_kb.START_KB.get_keyboard())
