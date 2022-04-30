@@ -48,13 +48,15 @@ DAYS_RU = ['понедельник', 'вторник', 'среда', 'четве
 class HeadmanRequest(NamedTuple):
     week: str = None
     dayofweek: str = None
-    pair: str = None
+    pair: int = None
     move: str = None
     changes: str = None
+    group: str = None
 
 
 headman_requests = {}
 
+
 # Старосты
 
-headmans_ids: dict = {210481885: 'бвт2103'}
+headmans_ids: dict = {210481885: 'bvt2103'}

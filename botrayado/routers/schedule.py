@@ -59,10 +59,10 @@ async def get_group(event: SimpleBotEvent, fetch: dict, flag: bool, btn: str) ->
 
     if flag == [(0,)]:
         if any(cmd.lower() in [pre_penultimate_command] for cmd in schedule_kb.CURRENT_OR_NEXT_WEEK_BUTTONS) and pre_pre_penultimate_command == schedule_kb.DAYS_OF_WEEK_BUTTONS[2]:
-            schedule = await sheethandler.print_full_schedule(pre_penultimate_command, last_command)
+            schedule = await sheethandler.print_full_schedule(event.from_id, pre_penultimate_command, last_command)
             await event.answer(message=schedule, keyboard=menu_kb.START_KB.get_keyboard())
         elif any(cmd.lower() in [pre_penultimate_command] for cmd in schedule_kb.DAYS_OF_WEEK_BUTTONS):
-            schedule = await sheethandler.print_schedule(pre_penultimate_command, last_command)
+            schedule = await sheethandler.print_schedule(event.from_id, pre_penultimate_command, last_command)
             await event.answer(message=schedule, keyboard=menu_kb.START_KB.get_keyboard())
         else:
             await event.answer(message="Не нажимайте на 2 разные кнопки в одной категории. Повторите свой запрос.", keyboard=menu_kb.START_KB.get_keyboard())

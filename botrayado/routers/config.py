@@ -27,10 +27,10 @@ async def cells_handler(event: SimpleBotEvent, buttons: list[tuple]) -> None:
     else:
         button = cell.lower().split()
         if 'сн' in button or 'тн' in button:
-            schedule = await sheethandler.print_full_schedule('следующая неделя' if 'сн' in button else 'текущая неделя', button[1].lower())  # Вся неделя, группа, тип недели
+            schedule = await sheethandler.print_full_schedule(event.from_id, 'следующая неделя' if 'сн' in button else 'текущая неделя', button[1].lower())  # Вся неделя, группа, тип недели
             await event.answer(message=schedule, keyboard=CONFIG_KB.get_keyboard())
         else:
-            schedule = await sheethandler.print_schedule(button[0].lower(), button[1].lower())  # Сегодня БВТ2103 etc.
+            schedule = await sheethandler.print_schedule(event.from_id, button[0].lower(), button[1].lower())  # Сегодня БВТ2103 etc.
             await event.answer(message=schedule, keyboard=CONFIG_KB.get_keyboard())
 
 

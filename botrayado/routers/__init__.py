@@ -4,7 +4,8 @@ from botrayado.routers.joke import joke_router
 from botrayado.routers.donate import donate_router
 from botrayado.routers.help import help_router
 from botrayado.routers.aliases import aliases_router
-from botrayado.routers.idiots import idiots_router
 from botrayado.routers.config import config_router
 from botrayado.routers.admin import admin_router
-from botrayado.routers.headman import headman_router
+from botrayado.routers.edit import edit_router
+from botrayado.routers.lookheadman import lookheadman_router
+from botrayado.routers.idiots import idiots_router

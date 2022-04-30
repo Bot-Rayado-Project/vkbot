@@ -16,7 +16,7 @@ async def aiohttp_fetch(url: str) -> str:
             return await response.text()
 
 
-async def print_schedule(day_type: str, group: str) -> str:
+async def print_schedule(id: int, day_type: str, stream_group: str) -> str:
     try:
         day_time_utc = datetime.weekday(
             datetime.today().utcnow() + timedelta(hours=3))
@@ -35,15 +35,15 @@ async def print_schedule(day_type: str, group: str) -> str:
         elif week_checked == 'нечетная' and day_type == 'завтра' and day_time_utc == 0:
             even = True
             week_checked = 'четная'
-        output = '⸻⸻⸻⸻⸻\n' + 'Группа: ' + group.upper() + '\n' \
+        parity = 'четная' if even else 'нечетная'
+        output = '⸻⸻⸻⸻⸻\n' + 'Группа: ' + stream_group.upper() + '\n' \
             + 'День недели: ' + DAYS_RU[day_time_utc].capitalize() + '\n' + 'Неделя: ' + week_checked.capitalize() + '\n' \
             + '⸻⸻⸻⸻⸻\n'
-        group = translit(group, language_code='ru', reversed=True)
 
         day_of_week = DAYS_ENG[day_time_utc] if day_type == 'завтра' else DAYS_ENG[day_time_utc]
 
-        responce = json.loads(await aiohttp_fetch(url=f'http://{RESTIP}:{RESTPORT}/schedule/?group={group}&even={even}&day={day_of_week}'))
-        output += responce['schedule']
+        response = json.loads(await aiohttp_fetch(url=f'http://{RESTIP}:{RESTPORT}/schedule/?id={id}&stream_group={stream_group}&parity={parity}&day={day_of_week}'))
+        output += response["shared_schedule"][day_of_week]
 
         return output
     except Exception as e:
@@ -51,7 +51,7 @@ async def print_schedule(day_type: str, group: str) -> str:
         return "Ошибка в получении расписания. Информация об ошибке направлена разработчикам"
 
 
-async def print_full_schedule(day_type: str, group: str) -> str:
+async def print_full_schedule(id: int, day_type: str, stream_group: str) -> str:
     try:
         week_checked = await get_week()
         if week_checked == 'четная':
@@ -68,15 +68,15 @@ async def print_full_schedule(day_type: str, group: str) -> str:
             else:
                 even = False
                 week_checked = 'нечетная'
+        parity = 'четная' if even else 'нечетная'
 
-        output = '⸻⸻⸻⸻⸻\n' + 'Группа: ' + group.upper() + '\n' \
+        output = '⸻⸻⸻⸻⸻\n' + 'Группа: ' + stream_group.upper() + '\n' \
             + 'Неделя: ' + week_checked.capitalize() + '\n' + '⸻⸻⸻⸻⸻\n'
-        group = translit(group, language_code='ru', reversed=True)
 
-        responce = json.loads(await aiohttp_fetch(url=f'http://{RESTIP}:{RESTPORT}/schedule/?group={group}&even={even}'))
+        response = json.loads(await aiohttp_fetch(url=f'http://{RESTIP}:{RESTPORT}/schedule/?id={id}&stream_group={stream_group}&parity={parity}'))
         for i in range(6):
             output += '\n' + DAYS_RU[i].capitalize() + '\n\n'
-            output += responce['schedule'][i]['schedule']
+            output += response['shared_schedule'][DAYS_ENG[i]]
 
         return output
     except Exception as e:
@@ -95,6 +95,10 @@ async def print_schedule_custom(group: str, day_of_week: str, even: bool) -> str
 
         responce = json.loads(await aiohttp_fetch(url=f'http://{RESTIP}:{RESTPORT}/schedule/?group={group}&even={even}&day={day_of_week}'))
         output += responce['schedule']
+        if responce['annotation'] == 'No annotation found':
+            pass
+        else:
+            output += 'Аннотация на текущий день: \n' + responce['annotation']
 
         return output
     except Exception as e:
