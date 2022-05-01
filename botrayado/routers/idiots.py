@@ -1,7 +1,8 @@
-import botrayado.keyboards.menu_kb as menu_kb
-import botrayado.keyboards.admin_kb as admin_kb
+from botrayado.keyboards import *
 import botrayado.utils.constants as constants
+import botrayado.routers.edit_personal as edit_personal
 import aiohttp
+import json
 
 from botrayado.database.db import database_handler
 from botrayado.utils.constants import _USERSIDS, USERSIDS, headmans_ids
@@ -24,80 +25,59 @@ async def post_request(url: str, data: dict) -> str:
 
 @simple_bot_message_handler(idiots_router)
 @database_handler(ret_cmd=True, is_menu=True)
-async def idiots(event: SimpleBotEvent, fetch: list) -> None:
-    if str(event.from_id) in USERSIDS or event.from_id in list(headmans_ids.keys()):
+async def idiots(event: SimpleBotEvent, fetch: list, button: str) -> None:
+    last_command = fetch[1][0].lower()
 
-        last_command = fetch[1][0].lower()
+    if last_command == 'дать доступ' and str(event.from_id) in USERSIDS:
 
-        if last_command == 'дать доступ':
+        _USERSIDS.append(str(event.text))
+        await event.answer(message=f'Пользователь {event.text} добавлен в список.', keyboard=admin_kb.ADMIN_KB.get_keyboard())
 
-            _USERSIDS.append(str(event.text))
-            await event.answer(message=f'Пользователь {event.text} добавлен в список.', keyboard=admin_kb.ADMIN_KB.get_keyboard())
+    elif last_command == 'забрать доступ' and str(event.from_id) in USERSIDS:
 
-        elif last_command == 'забрать доступ':
+        _USERSIDS.remove(str(event.text))
+        await event.answer(message=f'Пользователь {event.text} удален из списка.', keyboard=admin_kb.ADMIN_KB.get_keyboard())
 
-            _USERSIDS.remove(str(event.text))
-            await event.answer(message=f'Пользователь {event.text} удален из списка.', keyboard=admin_kb.ADMIN_KB.get_keyboard())
+    elif last_command == 'перезаписать(записать)':
 
-        elif last_command == 'перезаписать(записать)':
-            # Задание действия удалить или перезаписать(записать)
-            constants.headman_requests[event.from_id] = constants.HeadmanRequest(
-                week=constants.headman_requests[event.from_id].week,
-                dayofweek=constants.headman_requests[event.from_id].dayofweek,
-                pair=constants.headman_requests[event.from_id].pair,
-                move=constants.headman_requests[event.from_id].move,
-                changes=event.text,
-                group=constants.headmans_ids.get(event.from_id)
-            )
+        if constants.currently_editing[event.from_id] == True:
 
-            # Если пара = 0, значит аннотация на весь день
-            if constants.headman_requests[event.from_id].pair != 0:
-
-                logger.info(constants.headman_requests[event.from_id])
+            if edit_personal.edit_personal_requests[event.from_id].pair_number != 0:
                 response = await post_request(
-                    url=f'http://{RESTIP}:{RESTPORT}/change-schedule/',
+                    url=f'http://{RESTIP}:{RESTPORT}/change-schedule-personal/',
                     data={
-                        'week': constants.headman_requests[event.from_id].week,
-                        'dayofweek': constants.headman_requests[event.from_id].dayofweek,
-                        'group': constants.headman_requests[event.from_id].group,
-                        'pair': constants.headman_requests[event.from_id].pair,
-                        'changes': constants.headman_requests[event.from_id].changes
+                        'stream_group': edit_personal.edit_personal_requests[event.from_id].stream_group,
+                        'day': edit_personal.edit_personal_requests[event.from_id].day,
+                        'parity': edit_personal.edit_personal_requests[event.from_id].parity,
+                        'pair_number': edit_personal.edit_personal_requests[event.from_id].pair_number,
+                        'changes': event.text,
+                        'id': event.from_id,
                     }
                 )
-                print(response)
-                even = True if constants.headman_requests[event.from_id].week.lower() == 'четная' else False
-                schedule = await sheethandler.print_schedule_custom(constants.headmans_ids[event.from_id].lower(),
-                                                                    constants.headman_requests[event.from_id].dayofweek.lower(),
-                                                                    even)
-                await event.answer(message=f'Успешно перезаписано', keyboard=menu_kb.START_KB.get_keyboard())
-                await event.answer(message=f'Измененный день:\n {schedule}', keyboard=menu_kb.START_KB.get_keyboard())
-
+                if json.loads(response)['ok'] != True:
+                    logger.error(
+                        'Ошибка при запросе к rest сервису на изменение персональной пары.')
+                    await event.answer(message='Ошибка при изменении персональной пары. Информация об ошибке направлена разработчикам', keyboard=schedule_kb.DAYS_OF_WEEK_KB.get_keyboard())
             else:
-
-                logger.info(constants.headman_requests[event.from_id])
                 response = await post_request(
-                    url=f'http://{RESTIP}:{RESTPORT}/add-annotation/',
+                    url=f'http://{RESTIP}:{RESTPORT}/add-annotation-personal/',
                     data={
-                        'week': constants.headman_requests[event.from_id].week,
-                        'dayofweek': constants.headman_requests[event.from_id].dayofweek,
-                        'group': constants.headman_requests[event.from_id].group,
-                        'annotation': constants.headman_requests[event.from_id].changes
+                        'stream_group': edit_personal.edit_personal_requests[event.from_id].stream_group,
+                        'day': edit_personal.edit_personal_requests[event.from_id].day,
+                        'parity': edit_personal.edit_personal_requests[event.from_id].parity,
+                        'id': event.from_id,
+                        'annotation': event.text
                     }
                 )
-                print(response)
-                even = True if constants.headman_requests[event.from_id].week.lower() == 'четная' else False
-                schedule = await sheethandler.print_schedule_custom(constants.headmans_ids[event.from_id].lower(),
-                                                                    constants.headman_requests[event.from_id].dayofweek.lower(),
-                                                                    even)
-                await event.answer(message=f'Успешно перезаписано', keyboard=menu_kb.START_KB.get_keyboard())
-                await event.answer(message=f'Измененный день:\n {schedule}', keyboard=menu_kb.START_KB.get_keyboard())
-
-        else:
-
-            await event.answer(message='Выберите команду из списка.', keyboard=menu_kb.START_KB.get_keyboard())
-
-        constants.headman_requests[event.from_id] = constants.HeadmanRequest()
+                if json.loads(response)['ok'] != True:
+                    logger.error(
+                        'Ошибка при запросе к rest сервису на изменение персональной аннотации.')
+                    await event.answer(message='Ошибка при изменении персональной аннотации. Информация об ошибке направлена разработчикам', keyboard=schedule_kb.DAYS_OF_WEEK_KB.get_keyboard())
+            edit_personal.edit_personal_requests[event.from_id] = edit_personal.EditPersonalRequest(
+                event.from_id)
 
     else:
 
-        await event.answer(message='Выберите команду из списка.', keyboard=menu_kb.START_KB.get_keyboard())
+        await event.answer(message='Выберите команду из списка.', keyboard=menu_kb.create_menu_keyboard(button).get_keyboard())
+
+    constants.headman_requests[event.from_id] = constants.HeadmanRequest()

@@ -1,11 +1,8 @@
-import botrayado.keyboards.admin_kb as admin_kb
-import botrayado.keyboards.special_blueprints_kb as special_blueprints
-from datetime import datetime
-
-from botrayado.database.db import database_handler
-
 from vkwave.bots import simple_bot_message_handler, DefaultRouter, SimpleBotEvent, PayloadFilter, DocUploader
-
+from datetime import datetime
+from botrayado.utils import *
+from botrayado.keyboards import *
+from botrayado.database import *
 from botrayado.utils.constants import USERSIDS, _USERSIDS
 
 admin_router = DefaultRouter()

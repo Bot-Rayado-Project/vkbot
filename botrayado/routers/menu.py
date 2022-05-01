@@ -12,17 +12,19 @@ menu_router = DefaultRouter()
 
 @simple_bot_message_handler(menu_router, TextFilter(["старт", "начать"], PayloadFilter({"button": "menu"})))
 @database_handler(is_menu=True)
-async def menu(event: SimpleBotEvent) -> str:
-    if event.from_id in list(headmans_ids.keys()):
-        constants.headman_requests[event.from_id] = constants.HeadmanRequest()
+async def menu(event: SimpleBotEvent, button: str) -> str:
     await event.answer(message='Добро пожаловать в Bot Rayado\n\nЕсли у вас не отобразилась клавиатура, нажмите на кнопку' +
                        'слева от кнопки выбора эмодзи\n\n Наши преимущества:\n\n - Есть шаблоны для быстрого получения расписания\n' +
-                       ' - Всегда новое расписание, полученное с сайта\n - Все потоки 1 курса\n - Быстрая работа бота\n - Регулярные обновления', keyboard=menu_kb.START_KB.get_keyboard())
+                       ' - Всегда новое расписание, полученное с сайта\n - Все потоки 1 курса\n - Быстрая работа бота\n - Регулярные обновления', keyboard=menu_kb.create_menu_keyboard(button).get_keyboard())
 
 
 @simple_bot_message_handler(menu_router, TextFilter(["меню", "расписание"], PayloadFilter({"button": "menu"})))
 @database_handler(is_menu=True)
-async def menu(event: SimpleBotEvent) -> str:
-    if event.from_id in list(headmans_ids.keys()):
-        constants.headman_requests[event.from_id] = constants.HeadmanRequest()
-    await event.answer(message='Выберите команду из списка.', keyboard=menu_kb.START_KB.get_keyboard())
+async def menu(event: SimpleBotEvent, button: str) -> str:
+    await event.answer(message='Выберите команду из списка.', keyboard=menu_kb.create_menu_keyboard(button).get_keyboard())
+
+
+@simple_bot_message_handler(menu_router, PayloadFilter({"button": "priority"}))
+@database_handler(is_menu=True, switch_button=True)
+async def menu(event: SimpleBotEvent, button: str) -> str:
+    await event.answer(message='Выберите команду из списка.', keyboard=menu_kb.create_menu_keyboard(button).get_keyboard())

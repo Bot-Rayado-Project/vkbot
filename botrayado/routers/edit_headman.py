@@ -1,18 +1,12 @@
-import json
-from transliterate import translit
-import botrayado.utils.constants as constants
-import botrayado.keyboards.edit_kb as edit_kb
-import botrayado.keyboards.schedule_kb as schedule_kb
-import botrayado.keyboards.menu_kb as menu_kb
-import botrayado.schedule.sheethandler as sheethandler
-import aiohttp
-
-from botrayado.database.db import database_handler
-from botrayado.utils.constants import RESTIP, RESTPORT
-
 from vkwave.bots import simple_bot_message_handler, DefaultRouter, SimpleBotEvent, PayloadFilter, PayloadContainsFilter
-
-from botrayado.utils.logger import get_logger
+from transliterate import translit
+import botrayado.schedule.sheethandler as sheethandler
+from botrayado.utils import *
+from botrayado.keyboards import *
+from botrayado.database import *
+from botrayado.utils.constants import RESTIP, RESTPORT
+import json
+import aiohttp
 
 logger = get_logger(__name__)
 
@@ -29,15 +23,6 @@ async def get_request(url: str) -> str:
     async with aiohttp.ClientSession() as session:
         async with session.get(url=url) as response:
             return await response.text()
-
-'''
-@simple_bot_message_handler(headman_router, PayloadFilter({"dow_button_c": "edit"}))
-@database_handler()
-async def edit_schedule(event: SimpleBotEvent) -> str:
-    if constants.headmans_ids.get(event.from_id) is not None:
-        await event.answer(message='Выберите неделю', keyboard=edit_kb.CHOOSE_WEEK_KB.get_keyboard())
-    else:
-        await event.answer(message='Доступа нет. До свидания', keyboard=schedule_kb.DAYS_OF_WEEK_KB.get_keyboard())'''
 
 
 @simple_bot_message_handler(headman_router, PayloadContainsFilter("cwb_button"))
@@ -58,23 +43,28 @@ async def choose_day_of_week(event: SimpleBotEvent) -> str:
     # Задание дня недели
     constants.headman_requests[event.from_id] = constants.HeadmanRequest(
         week=constants.headman_requests[event.from_id].week,
-        dayofweek=translit(event.text, language_code='ru', reversed=True).replace("'", "").lower(),
+        dayofweek=translit(event.text, language_code='ru',
+                           reversed=True).replace("'", "").lower(),
         group=constants.headmans_ids.get(event.from_id)
     )
 
     if constants.headman_requests[event.from_id].week.lower() == 'обе':
         schedule = await sheethandler.print_schedule_custom(constants.headmans_ids[event.from_id].lower(),
-                                                            constants.headman_requests[event.from_id].dayofweek.lower(),
-                                                            True)
+                                                            constants.headman_requests[event.from_id].dayofweek.lower(
+        ),
+            True)
         schedule += await sheethandler.print_schedule_custom(constants.headmans_ids[event.from_id].lower(),
-                                                             constants.headman_requests[event.from_id].dayofweek.lower(),
-                                                             False)
+                                                             constants.headman_requests[event.from_id].dayofweek.lower(
+        ),
+            False)
         await event.answer(message=f'Текущее расписание на выбранные дни: \n {schedule}', keyboard=edit_kb.CHOOSE_PAIR_KB.get_keyboard())
     else:
-        even = True if constants.headman_requests[event.from_id].week.lower() == 'четная' else False
+        even = True if constants.headman_requests[event.from_id].week.lower(
+        ) == 'четная' else False
         schedule = await sheethandler.print_schedule_custom(constants.headmans_ids[event.from_id].lower(),
-                                                            constants.headman_requests[event.from_id].dayofweek.lower(),
-                                                            even)
+                                                            constants.headman_requests[event.from_id].dayofweek.lower(
+        ),
+            even)
         await event.answer(message=f'Текущее расписание на выбранный день: \n {schedule}', keyboard=edit_kb.CHOOSE_PAIR_KB.get_keyboard())
 
     await event.answer(message='Выберите пару для редактирования либо 6-ую кнопку для добавления общей аннотации ко дню', keyboard=edit_kb.CHOOSE_PAIR_KB.get_keyboard())
@@ -91,7 +81,8 @@ async def resetday(event: SimpleBotEvent) -> str:
         group=constants.headmans_ids.get(event.from_id)
     )
 
-    even = True if constants.headman_requests[event.from_id].week.lower() == 'четная' else False
+    even = True if constants.headman_requests[event.from_id].week.lower(
+    ) == 'четная' else False
     response = json.loads(await get_request(
         f'http://{RESTIP}:{RESTPORT}/annotation/?group={constants.headman_requests[event.from_id].group}&day={constants.headman_requests[event.from_id].dayofweek}&even={even}'
     ))
@@ -110,11 +101,13 @@ async def resetday(event: SimpleBotEvent) -> str:
         )
     if constants.headman_requests[event.from_id].week.lower() == 'обе':
         schedule = await sheethandler.print_schedule_custom(constants.headmans_ids[event.from_id].lower(),
-                                                            constants.headman_requests[event.from_id].dayofweek.lower(),
-                                                            True)
+                                                            constants.headman_requests[event.from_id].dayofweek.lower(
+        ),
+            True)
         schedule += await sheethandler.print_schedule_custom(constants.headmans_ids[event.from_id].lower(),
-                                                             constants.headman_requests[event.from_id].dayofweek.lower(),
-                                                             False)
+                                                             constants.headman_requests[event.from_id].dayofweek.lower(
+        ),
+            False)
         await event.answer(message=f'Предыдущее расписание на выбранные дни (до сброса): \n {schedule}', keyboard=menu_kb.START_KB.get_keyboard())
         response = await post_request(
             url=f'http://{RESTIP}:{RESTPORT}/reset-schedule/',
@@ -133,17 +126,21 @@ async def resetday(event: SimpleBotEvent) -> str:
             }
         )
         schedule = await sheethandler.print_schedule_custom(constants.headmans_ids[event.from_id].lower(),
-                                                            constants.headman_requests[event.from_id].dayofweek.lower(),
-                                                            True)
+                                                            constants.headman_requests[event.from_id].dayofweek.lower(
+        ),
+            True)
         schedule += await sheethandler.print_schedule_custom(constants.headmans_ids[event.from_id].lower(),
-                                                             constants.headman_requests[event.from_id].dayofweek.lower(),
-                                                             False)
+                                                             constants.headman_requests[event.from_id].dayofweek.lower(
+        ),
+            False)
         await event.answer(message=f'День успешно сброшен. Текущее расписание (после сброса): {schedule}', keyboard=menu_kb.START_KB.get_keyboard())
     else:
-        even = True if constants.headman_requests[event.from_id].week.lower() == 'четная' else False
+        even = True if constants.headman_requests[event.from_id].week.lower(
+        ) == 'четная' else False
         schedule = await sheethandler.print_schedule_custom(constants.headmans_ids[event.from_id].lower(),
-                                                            constants.headman_requests[event.from_id].dayofweek.lower(),
-                                                            even)
+                                                            constants.headman_requests[event.from_id].dayofweek.lower(
+        ),
+            even)
         await event.answer(message=f'Предыдущее расписание на выбранный день (до сброса): \n {schedule}', keyboard=menu_kb.START_KB.get_keyboard())
         response = await post_request(
             url=f'http://{RESTIP}:{RESTPORT}/reset-schedule/',
@@ -154,8 +151,9 @@ async def resetday(event: SimpleBotEvent) -> str:
             }
         )
         schedule = await sheethandler.print_schedule_custom(constants.headmans_ids[event.from_id].lower(),
-                                                            constants.headman_requests[event.from_id].dayofweek.lower(),
-                                                            even)
+                                                            constants.headman_requests[event.from_id].dayofweek.lower(
+        ),
+            even)
         await event.answer(message=f'День успешно сброшен. Текущее расписание (после сброса): {schedule}', keyboard=menu_kb.START_KB.get_keyboard())
 
 
@@ -170,7 +168,8 @@ async def choose_pair_forall(event: SimpleBotEvent) -> str:
         group=constants.headmans_ids.get(event.from_id)
     )
 
-    even = True if constants.headman_requests[event.from_id].week.lower() == 'четная' else False
+    even = True if constants.headman_requests[event.from_id].week.lower(
+    ) == 'четная' else False
     response = json.loads(await get_request(
         f'http://{RESTIP}:{RESTPORT}/annotation/?group={constants.headman_requests[event.from_id].group}&day={constants.headman_requests[event.from_id].dayofweek}&even={even}'
     ))
@@ -195,17 +194,21 @@ async def choose_pair(event: SimpleBotEvent) -> str:
 
     if constants.headman_requests[event.from_id].week.lower() == 'обе':
         schedule = (await sheethandler.print_schedule_custom(constants.headmans_ids[event.from_id].lower(),
-                                                             constants.headman_requests[event.from_id].dayofweek.lower(),
-                                                             True)).split('⸻⸻⸻⸻⸻\n')[constants.headman_requests[event.from_id].pair + 1]
+                                                             constants.headman_requests[event.from_id].dayofweek.lower(
+        ),
+            True)).split('⸻⸻⸻⸻⸻\n')[constants.headman_requests[event.from_id].pair + 1]
         schedule += (await sheethandler.print_schedule_custom(constants.headmans_ids[event.from_id].lower(),
-                                                              constants.headman_requests[event.from_id].dayofweek.lower(),
-                                                              False)).split('⸻⸻⸻⸻⸻\n')[constants.headman_requests[event.from_id].pair + 1]
+                                                              constants.headman_requests[event.from_id].dayofweek.lower(
+        ),
+            False)).split('⸻⸻⸻⸻⸻\n')[constants.headman_requests[event.from_id].pair + 1]
         await event.answer(message=f'Выбранные пары: \n {schedule}', keyboard=edit_kb.CHOOSE_PAIR_KB.get_keyboard())
     else:
-        even = True if constants.headman_requests[event.from_id].week.lower() == 'четная' else False
+        even = True if constants.headman_requests[event.from_id].week.lower(
+        ) == 'четная' else False
         schedule = (await sheethandler.print_schedule_custom(constants.headmans_ids[event.from_id].lower(),
-                                                             constants.headman_requests[event.from_id].dayofweek.lower(),
-                                                             even)).split('⸻⸻⸻⸻⸻\n')[constants.headman_requests[event.from_id].pair + 1]
+                                                             constants.headman_requests[event.from_id].dayofweek.lower(
+        ),
+            even)).split('⸻⸻⸻⸻⸻\n')[constants.headman_requests[event.from_id].pair + 1]
         await event.answer(message=f'Выбранная пара: \n {schedule}', keyboard=edit_kb.CHOOSE_PAIR_KB.get_keyboard())
 
     await event.answer(message='Выберите опцию - удалить пару или перезаписать.', keyboard=edit_kb.CHOOSE_MOVE_KB.get_keyboard())
@@ -223,7 +226,8 @@ async def choose_move(event: SimpleBotEvent) -> str:
         group=constants.headmans_ids.get(event.from_id)
     )
 
-    even = True if constants.headman_requests[event.from_id].week.lower() == 'четная' else False
+    even = True if constants.headman_requests[event.from_id].week.lower(
+    ) == 'четная' else False
 
     # Если пара = 0, значит аннотация на весь день
     if constants.headman_requests[event.from_id].pair != 0:
@@ -240,8 +244,9 @@ async def choose_move(event: SimpleBotEvent) -> str:
             )
             print(response)
             schedule = await sheethandler.print_schedule_custom(constants.headmans_ids[event.from_id].lower(),
-                                                                constants.headman_requests[event.from_id].dayofweek.lower(),
-                                                                even)
+                                                                constants.headman_requests[event.from_id].dayofweek.lower(
+            ),
+                even)
             await event.answer(message='Пара успешно удалена', keyboard=menu_kb.START_KB.get_keyboard())
             await event.answer(message=f'Измененный день:\n {schedule}', keyboard=menu_kb.START_KB.get_keyboard())
         else:
