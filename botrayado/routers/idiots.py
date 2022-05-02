@@ -1,6 +1,7 @@
 from botrayado.keyboards import *
 import botrayado.utils.constants as constants
 import botrayado.routers.edit_personal as edit_personal
+import botrayado.routers.edit_headman as edit_headman
 import aiohttp
 import json
 
@@ -58,6 +59,7 @@ async def idiots(event: SimpleBotEvent, fetch: list, button: str) -> None:
                     logger.error(
                         'Ошибка при запросе к rest сервису на изменение персональной пары.')
                     await event.answer(message='Ошибка при изменении персональной пары. Информация об ошибке направлена разработчикам', keyboard=schedule_kb.DAYS_OF_WEEK_KB.get_keyboard())
+                await event.answer(message='Пара успешно изменена', keyboard=schedule_kb.DAYS_OF_WEEK_KB.get_keyboard())
             else:
                 response = await post_request(
                     url=f'http://{RESTIP}:{RESTPORT}/add-annotation-personal/',
@@ -73,11 +75,46 @@ async def idiots(event: SimpleBotEvent, fetch: list, button: str) -> None:
                     logger.error(
                         'Ошибка при запросе к rest сервису на изменение персональной аннотации.')
                     await event.answer(message='Ошибка при изменении персональной аннотации. Информация об ошибке направлена разработчикам', keyboard=schedule_kb.DAYS_OF_WEEK_KB.get_keyboard())
+                await event.answer(message='Аннотация успешно изменена', keyboard=schedule_kb.DAYS_OF_WEEK_KB.get_keyboard())
             edit_personal.edit_personal_requests[event.from_id] = edit_personal.EditPersonalRequest(
                 event.from_id)
+
+        else:
+
+            if edit_headman.edit_headman_requests[event.from_id].pair_number != 0:
+                response = await post_request(
+                    url=f'http://{RESTIP}:{RESTPORT}/change-schedule-headman/',
+                    data={
+                        'stream_group': edit_headman.edit_headman_requests[event.from_id].stream_group,
+                        'day': edit_headman.edit_headman_requests[event.from_id].day,
+                        'parity': edit_headman.edit_headman_requests[event.from_id].parity,
+                        'pair_number': edit_headman.edit_headman_requests[event.from_id].pair_number,
+                        'changes': event.text
+                    }
+                )
+                if json.loads(response)['ok'] != True:
+                    logger.error(
+                        'Ошибка при запросе к rest сервису на изменение старосты пары.')
+                    await event.answer(message='Ошибка при изменении старосты пары. Информация об ошибке направлена разработчикам', keyboard=schedule_kb.DAYS_OF_WEEK_KB.get_keyboard())
+                await event.answer(message='Пара успешно изменена', keyboard=schedule_kb.DAYS_OF_WEEK_KB.get_keyboard())
+            else:
+                response = await post_request(
+                    url=f'http://{RESTIP}:{RESTPORT}/add-annotation-headman/',
+                    data={
+                        'stream_group': edit_headman.edit_headman_requests[event.from_id].stream_group,
+                        'day': edit_headman.edit_headman_requests[event.from_id].day,
+                        'parity': edit_headman.edit_headman_requests[event.from_id].parity,
+                        'annotation': event.text
+                    }
+                )
+                if json.loads(response)['ok'] != True:
+                    logger.error(
+                        'Ошибка при запросе к rest сервису на изменение старосты аннотации.')
+                    await event.answer(message='Ошибка при изменении старосты аннотации. Информация об ошибке направлена разработчикам', keyboard=schedule_kb.DAYS_OF_WEEK_KB.get_keyboard())
+                await event.answer(message='Аннотация успешно изменена', keyboard=schedule_kb.DAYS_OF_WEEK_KB.get_keyboard())
+            edit_headman.edit_headman_requests[event.from_id] = edit_headman.EditHeadmanRequest(
+                constants.headmans_ids.get(event.from_id))
 
     else:
 
         await event.answer(message='Выберите команду из списка.', keyboard=menu_kb.create_menu_keyboard(button).get_keyboard())
-
-    constants.headman_requests[event.from_id] = constants.HeadmanRequest()

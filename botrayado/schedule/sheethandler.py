@@ -152,9 +152,42 @@ async def print_full_schedule(id: int, day_type: str, stream_group: str) -> str:
             + 'Неделя: ' + week_checked.capitalize() + '\n' + '⸻⸻⸻⸻⸻\n'
 
         response = json.loads(await aiohttp_fetch(url=f'http://{RESTIP}:{RESTPORT}/schedule/?id={id}&stream_group={stream_group}&parity={parity}'))
+        cursor.execute(
+            f'SELECT button FROM menu_buttons_table WHERE user_id={id};')
+        btn = cursor.fetchall()[0][0]
         for i in range(6):
-            output += '\n' + DAYS_RU[i].capitalize() + '\n\n'
-            output += response['shared_schedule'][DAYS_ENG[i]]
+            if btn == 'свое':
+                if response["personal_schedule"][DAYS_ENG[i]] == "":
+                    if response["headman_schedule"][DAYS_ENG[i]] == "":
+                        output += '\n' + \
+                            DAYS_RU[i].capitalize() + '\n\n'
+                        output += response["shared_schedule"][DAYS_ENG[i]]
+                    else:
+                        output += '\n' + \
+                            DAYS_RU[i].capitalize() + \
+                            " - изменен старостой: \n\n"
+                        output += response["headman_schedule"][DAYS_ENG[i]]
+                else:
+                    output += '\n' + \
+                        DAYS_RU[i].capitalize() + \
+                        " - изменен вами: \n\n"
+                    output += response["personal_schedule"][DAYS_ENG[i]]
+            else:
+                if response["headman_schedule"][DAYS_ENG[i]] == "":
+                    if response["personal_schedule"][DAYS_ENG[i]] == "":
+                        output += '\n' + \
+                            DAYS_RU[i].capitalize() + '\n\n'
+                        output += response["shared_schedule"][DAYS_ENG[i]]
+                    else:
+                        output += '\n' + \
+                            DAYS_RU[i].capitalize() + \
+                            " - изменен вами: \n\n"
+                        output += response["personal_schedule"][DAYS_ENG[i]]
+                else:
+                    output += '\n' + \
+                        DAYS_RU[i].capitalize() + \
+                        " - изменен старостой: \n\n"
+                    output += response["headman_schedule"][DAYS_ENG[i]]
 
         return output
     except Exception as e:

@@ -48,7 +48,7 @@ async def get_stream(event: SimpleBotEvent, fetch: dict) -> str:
 
 
 @simple_bot_message_handler(schedule_router, PayloadContainsFilter("group_button"))
-@database_handler(ret_cmd=True, ret_flag=True)
+@database_handler(ret_cmd=True, ret_flag=True, ret_btn=True)
 async def get_group(event: SimpleBotEvent, fetch: dict, flag: bool, btn: str, button: str) -> str:
     try:
         last_command = fetch[0][0].lower()  # Последняя команда # ГРУППА

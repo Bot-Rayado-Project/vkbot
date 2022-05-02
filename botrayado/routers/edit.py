@@ -1,4 +1,5 @@
 from vkwave.bots import simple_bot_message_handler, DefaultRouter, SimpleBotEvent, PayloadFilter
+import botrayado.routers.edit_headman as edit_headman
 from botrayado.utils import *
 from botrayado.keyboards import *
 from botrayado.database import *
@@ -19,6 +20,8 @@ async def edit_schedule(event: SimpleBotEvent) -> None:
 @database_handler()
 async def edit_schedule_headman(event: SimpleBotEvent) -> None:
     if constants.headmans_ids.get(event.from_id) is not None:
+        edit_headman.edit_headman_requests[event.from_id] = edit_headman.EditHeadmanRequest(
+            constants.headmans_ids.get(event.from_id))
         await event.answer(message='Доступ разрешен. Выберите неделю', keyboard=edit_headman_kb.CHOOSE_WEEK_HEADMAN_KB.get_keyboard())
     else:
         await event.answer(message='Вас нет в списке старост какой-либо из групп. Если вы являетесь старостой или доверенным лицом для своей группы, \
