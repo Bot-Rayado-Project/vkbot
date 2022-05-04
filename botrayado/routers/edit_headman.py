@@ -1,10 +1,9 @@
 from typing import NamedTuple
 import aiohttp
 import json
-from transliterate import translit
 from botrayado.utils.constants import RESTIP, RESTPORT
 import botrayado.utils.constants as constants
-from vkwave.bots import simple_bot_message_handler, DefaultRouter, SimpleBotEvent, PayloadFilter, PayloadContainsFilter
+from vkwave.bots import simple_bot_message_handler, DefaultRouter, SimpleBotEvent, PayloadContainsFilter
 from botrayado.utils import *
 from botrayado.keyboards import *
 from botrayado.database import *
