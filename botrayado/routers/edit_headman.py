@@ -1,4 +1,3 @@
-from curses import pair_number
 from typing import NamedTuple
 import aiohttp
 import json
@@ -9,6 +8,7 @@ from vkwave.bots import simple_bot_message_handler, DefaultRouter, SimpleBotEven
 from botrayado.utils import *
 from botrayado.keyboards import *
 from botrayado.database import *
+from botrayado.schedule.sheethandler import *
 
 logger = get_logger(__name__)
 
@@ -59,6 +59,8 @@ async def choose_day_of_week(event: SimpleBotEvent) -> str:
         edit_headman_requests[event.from_id].parity,
         event.text.lower()
     )
+    current_schedule = await print_schedule_custom_headman(event.from_id, edit_headman_requests[event.from_id].stream_group, edit_headman_requests[event.from_id].day, edit_headman_requests[event.from_id].parity)
+    await event.answer(message=current_schedule)
     logger.info(edit_headman_requests[event.from_id])
     await event.answer(message='Выберите пару, либо воспользуйтесь кнопкой "Сбросить все изменения" для сброса всех изменений',
                        keyboard=edit_headman_kb.CHOOSE_PAIR_HEADMAN_KB.get_keyboard())

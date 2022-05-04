@@ -6,6 +6,7 @@ from transliterate import translit
 from botrayado.utils.constants import RESTIP, RESTPORT
 import botrayado.utils.constants as constants
 from vkwave.bots import simple_bot_message_handler, DefaultRouter, SimpleBotEvent, PayloadFilter, PayloadContainsFilter
+from botrayado.schedule.sheethandler import *
 from botrayado.utils import *
 from botrayado.keyboards import *
 from botrayado.database import *
@@ -94,6 +95,8 @@ async def choose_day_of_week(event: SimpleBotEvent) -> str:
         event.text.lower()
     )
     logger.info(edit_personal_requests[event.from_id])
+    current_schedule = await print_schedule_custom_personal(event.from_id, edit_personal_requests[event.from_id].stream_group, edit_personal_requests[event.from_id].day, edit_personal_requests[event.from_id].parity)
+    await event.answer(message=current_schedule)
     await event.answer(message='Выберите пару, либо воспользуйтесь кнопкой "Сбросить все изменения" для сброса всех изменений',
                        keyboard=edit_personal_kb.CHOOSE_PAIR_PERSONAL_KB.get_keyboard())
 
@@ -119,6 +122,8 @@ async def choose_pair_number(event: SimpleBotEvent) -> str:
         edit_personal_requests[event.from_id] = EditPersonalRequest(
             event.from_id
         )
+        current_schedule = await print_schedule(event.from_id, event.text.lower(), edit_personal_requests[event.from_id].stream_group)
+        await event.answer(message=f'Новое выводимое расписание: \n\n {current_schedule}')
         await event.answer(message='День успешно сброшен.', keyboard=schedule_kb.DAYS_OF_WEEK_KB.get_keyboard())
 
     elif event.text.lower() == 'общ. аннотация':
