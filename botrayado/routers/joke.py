@@ -14,7 +14,7 @@ async def aiohttp_fetch(url: str) -> str:
 
 
 @simple_bot_message_handler(joke_router, PayloadFilter({"button": "joke"}))
-@database_handler()
-async def get_joke(event: SimpleBotEvent) -> str:
+@database_handler(ret_btn=True)
+async def get_joke(event: SimpleBotEvent, button: str) -> str:
     msg = (await aiohttp_fetch(url='http://rzhunemogu.ru/RandJSON.aspx?CType=11'))[12:-2]
-    await event.answer(message=msg, keyboard=menu_kb.START_KB.get_keyboard())
+    await event.answer(message=msg, keyboard=menu_kb.create_menu_keyboard(button).get_keyboard())

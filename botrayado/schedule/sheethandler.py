@@ -2,6 +2,7 @@ import traceback
 from botrayado.schedule.whataweek import get_week
 from transliterate import translit
 from botrayado.utils.logger import get_logger
+from botrayado.database.db import sqlite_connection, cursor
 from datetime import datetime, timedelta
 from botrayado.utils.constants import DAYS_ENG, DAYS_RU, RESTIP, RESTPORT
 import json
@@ -43,11 +44,88 @@ async def print_schedule(id: int, day_type: str, stream_group: str) -> str:
         day_of_week = DAYS_ENG[day_time_utc] if day_type == 'завтра' else DAYS_ENG[day_time_utc]
 
         response = json.loads(await aiohttp_fetch(url=f'http://{RESTIP}:{RESTPORT}/schedule/?id={id}&stream_group={stream_group}&parity={parity}&day={day_of_week}'))
-        output += response["shared_schedule"][day_of_week]
+        cursor.execute(
+            f'SELECT button FROM menu_buttons_table WHERE user_id={id};')
+        btn = cursor.fetchall()[0][0]
+        if btn == 'свое':
+            if response["personal_schedule"][day_of_week] == "":
+                if response["headman_schedule"][day_of_week] == "":
+                    output += response["shared_schedule"][day_of_week]
+                    if response["personal_annotation"][day_of_week] == "":
+                        if response["headman_annotation"][day_of_week] == "":
+                            pass
+                        else:
+                            output += "\nАннотация от старосты:\n" + \
+                                response["headman_annotation"][day_of_week]
+                    else:
+                        output += "\nАннотация от вас:\n" + \
+                            response["personal_annotation"][day_of_week]
+                else:
+                    output = "Данный день изменен старостой: \n" + output
+                    output += response["headman_schedule"][day_of_week]
+                    if response["personal_annotation"][day_of_week] == "":
+                        if response["headman_annotation"][day_of_week] == "":
+                            pass
+                        else:
+                            output += "\nАннотация от старосты:\n" + \
+                                response["headman_annotation"][day_of_week]
+                    else:
+                        output += "\nАннотация от вас:\n" + \
+                            response["personal_annotation"][day_of_week]
+            else:
+                output = "Данный день изменен вами: \n" + output
+                output += response["personal_schedule"][day_of_week]
+                if response["personal_annotation"][day_of_week] == "":
+                    if response["headman_annotation"][day_of_week] == "":
+                        pass
+                    else:
+                        output += "\nАннотация от старосты:\n" + \
+                            response["headman_annotation"][day_of_week]
+                else:
+                    output += "\nАннотация от вас:\n" + \
+                        response["personal_annotation"][day_of_week]
+        else:
+            if response["headman_schedule"][day_of_week] == "":
+                if response["personal_schedule"][day_of_week] == "":
+                    output += response["shared_schedule"][day_of_week]
+                    if response["headman_annotation"][day_of_week] == "":
+                        if response["personal_annotation"][day_of_week] == "":
+                            pass
+                        else:
+                            output += "\nАннотация от вас:\n" + \
+                                response["personal_annotation"][day_of_week]
+                    else:
+                        output += "\nАннотация от старосты:\n" + \
+                            response["headman_annotation"][day_of_week]
+                else:
+                    output = "Данный день изменен вами: \n" + output
+                    output += response["personal_schedule"][day_of_week]
+                    if response["headman_annotation"][day_of_week] == "":
+                        if response["personal_annotation"][day_of_week] == "":
+                            pass
+                        else:
+                            output += "\nАннотация от вас:\n" + \
+                                response["personal_annotation"][day_of_week]
+                    else:
+                        output += "\nАннотация от старосты:\n" + \
+                            response["headman_annotation"][day_of_week]
+            else:
+                output = "Данный день изменен старостой: \n" + output
+                output += response["headman_schedule"][day_of_week]
+                if response["headman_annotation"][day_of_week] == "":
+                    if response["personal_annotation"][day_of_week] == "":
+                        pass
+                    else:
+                        output += "\nАннотация от вас:\n" + \
+                            response["personal_annotation"][day_of_week]
+                else:
+                    output += "\nАннотация от старосты:\n" + \
+                        response["headman_annotation"][day_of_week]
 
         return output
     except Exception as e:
-        logger.error(f"Error in sheethandler printing schedule ({e}): {traceback.format_exc()}")
+        logger.error(
+            f"Error in sheethandler printing schedule ({e}): {traceback.format_exc()}")
         return "Ошибка в получении расписания. Информация об ошибке направлена разработчикам"
 
 
@@ -74,33 +152,101 @@ async def print_full_schedule(id: int, day_type: str, stream_group: str) -> str:
             + 'Неделя: ' + week_checked.capitalize() + '\n' + '⸻⸻⸻⸻⸻\n'
 
         response = json.loads(await aiohttp_fetch(url=f'http://{RESTIP}:{RESTPORT}/schedule/?id={id}&stream_group={stream_group}&parity={parity}'))
+        cursor.execute(
+            f'SELECT button FROM menu_buttons_table WHERE user_id={id};')
+        btn = cursor.fetchall()[0][0]
         for i in range(6):
-            output += '\n' + DAYS_RU[i].capitalize() + '\n\n'
-            output += response['shared_schedule'][DAYS_ENG[i]]
+            if btn == 'свое':
+                if response["personal_schedule"][DAYS_ENG[i]] == "":
+                    if response["headman_schedule"][DAYS_ENG[i]] == "":
+                        output += '\n' + \
+                            DAYS_RU[i].capitalize() + '\n\n'
+                        output += response["shared_schedule"][DAYS_ENG[i]]
+                    else:
+                        output += '\n' + \
+                            DAYS_RU[i].capitalize() + \
+                            " - изменен старостой: \n\n"
+                        output += response["headman_schedule"][DAYS_ENG[i]]
+                else:
+                    output += '\n' + \
+                        DAYS_RU[i].capitalize() + \
+                        " - изменен вами: \n\n"
+                    output += response["personal_schedule"][DAYS_ENG[i]]
+            else:
+                if response["headman_schedule"][DAYS_ENG[i]] == "":
+                    if response["personal_schedule"][DAYS_ENG[i]] == "":
+                        output += '\n' + \
+                            DAYS_RU[i].capitalize() + '\n\n'
+                        output += response["shared_schedule"][DAYS_ENG[i]]
+                    else:
+                        output += '\n' + \
+                            DAYS_RU[i].capitalize() + \
+                            " - изменен вами: \n\n"
+                        output += response["personal_schedule"][DAYS_ENG[i]]
+                else:
+                    output += '\n' + \
+                        DAYS_RU[i].capitalize() + \
+                        " - изменен старостой: \n\n"
+                    output += response["headman_schedule"][DAYS_ENG[i]]
 
         return output
     except Exception as e:
-        logger.error(f"Error in sheethandler printing full schedule ({e}): {traceback.format_exc()}")
+        logger.error(
+            f"Error in sheethandler printing full schedule ({e}): {traceback.format_exc()}")
         return "Ошибка в получении расписания. Информация об ошибке направлена разработчикам"
 
 
-async def print_schedule_custom(group: str, day_of_week: str, even: bool) -> str:
+async def print_schedule_custom_headman(id: int, stream_group: str, day_of_week: str, parity: bool) -> str:
     try:
-        week_checked = 'четная' if even else 'нечетная'
-        output = '⸻⸻⸻⸻⸻\n' + 'Группа: ' + group.upper() + '\n' \
-            + 'День недели: ' + day_of_week.capitalize() + '\n' + 'Неделя: ' + week_checked.capitalize() + '\n' \
+        output = '⸻⸻⸻⸻⸻\n' + 'Группа: ' + stream_group.upper() + '\n' \
+            + 'День недели: ' + day_of_week.capitalize() + '\n' + 'Неделя: ' + parity.capitalize() + '\n' \
             + '⸻⸻⸻⸻⸻\n'
-        group = translit(group, language_code='ru', reversed=True)
-        day_of_week = translit(day_of_week, language_code='ru', reversed=True).replace("'", "")
+        day_of_week = translit(
+            day_of_week, language_code='ru', reversed=True).replace("'", "")
 
-        responce = json.loads(await aiohttp_fetch(url=f'http://{RESTIP}:{RESTPORT}/schedule/?group={group}&even={even}&day={day_of_week}'))
-        output += responce['schedule']
-        if responce['annotation'] == 'No annotation found':
-            pass
+        response = json.loads(await aiohttp_fetch(url=f'http://{RESTIP}:{RESTPORT}/schedule/?id={id}&stream_group={stream_group}&parity={parity}&day={day_of_week}'))
+
+        if response['headman_schedule'][day_of_week] != "":
+            output = "↤↤ Текущее расписание (Измененное вами) ↦↦ \n\n" + output + \
+                response['headman_schedule'][day_of_week] + \
+                "\nАннотация: " + (response['headman_annotation'][day_of_week]
+                                   if response['headman_annotation'][day_of_week] != "" else 'Отсутствует') + '\n'
+            output += "\n\n↤↤ Оригинальное расписание(Без изменений) ↦↦ \n\n" + \
+                response['shared_schedule'][day_of_week]
         else:
-            output += 'Аннотация на текущий день: \n' + responce['annotation']
+            output += "Текущее расписание: \n\n" + \
+                response['shared_schedule'][day_of_week]
 
         return output
     except Exception as e:
-        logger.error(f"Error in sheethandler printing schedule ({e}): {traceback.format_exc()}")
+        logger.error(
+            f"Error in sheethandler printing schedule ({e}): {traceback.format_exc()}")
+        return "Ошибка в получении расписания. Информация об ошибке направлена разработчикам"
+
+
+async def print_schedule_custom_personal(id: int, stream_group: str, day_of_week: str, parity: bool) -> str:
+    try:
+        output = '⸻⸻⸻⸻⸻\n' + 'Группа: ' + stream_group.upper() + '\n' \
+            + 'День недели: ' + day_of_week.capitalize() + '\n' + 'Неделя: ' + parity.capitalize() + '\n' \
+            + '⸻⸻⸻⸻⸻\n'
+        day_of_week = translit(
+            day_of_week, language_code='ru', reversed=True).replace("'", "")
+
+        response = json.loads(await aiohttp_fetch(url=f'http://{RESTIP}:{RESTPORT}/schedule/?id={id}&stream_group={stream_group}&parity={parity}&day={day_of_week}'))
+
+        if response['personal_schedule'][day_of_week] != "":
+            output += "↤↤ Текущее расписание (Измененное вами) ↦↦ \n\n" + \
+                response['personal_schedule'][day_of_week] + \
+                "\nАннотация: " + (response['personal_annotation'][day_of_week]
+                                   if response['personal_annotation'][day_of_week] != '' else 'Отсутствует.') + '\n'
+            output += "\n\n↤↤ Оригинальное расписание(Без изменений) ↦↦ \n\n" + \
+                response['shared_schedule'][day_of_week]
+        else:
+            output += "Текущее расписание: \n\n" + \
+                response['shared_schedule'][day_of_week]
+
+        return output
+    except Exception as e:
+        logger.error(
+            f"Error in sheethandler printing schedule ({e}): {traceback.format_exc()}")
         return "Ошибка в получении расписания. Информация об ошибке направлена разработчикам"
