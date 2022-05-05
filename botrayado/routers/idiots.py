@@ -6,7 +6,7 @@ import aiohttp
 import json
 
 from botrayado.database.db import database_handler
-from botrayado.utils.constants import _USERSIDS, USERSIDS, headmans_ids
+from botrayado.database.db import cursor
 from botrayado.utils.constants import RESTIP, RESTPORT
 from vkwave.bots import simple_bot_message_handler, DefaultRouter, SimpleBotEvent
 from botrayado.utils.logger import get_logger
@@ -27,19 +27,32 @@ async def post_request(url: str, data: dict) -> str:
 @simple_bot_message_handler(idiots_router)
 @database_handler(ret_cmd=True, is_menu=True)
 async def idiots(event: SimpleBotEvent, fetch: list, button: str) -> None:
-    last_command = fetch[1][0].lower()
+    try:
+        last_command = fetch[1][0].lower()
+    except:
+        await event.answer(message='Выберите команду из списка.', keyboard=menu_kb.create_menu_keyboard(button).get_keyboard())
+    logger.info(last_command)
+    cursor.execute(
+        f"SELECT full_admin_panel FROM accesses WHERE user_id={event.from_id}")
+    fetch_admin = cursor.fetchall()
+    if fetch_admin == []:
+        is_admin = False
+    else:
+        is_admin = fetch_admin[0][0]
+    logger.info(fetch_admin)
+    logger.info(is_admin)
+    if last_command == 'дать доступ' and is_admin == True:
 
-    if last_command == 'дать доступ' and str(event.from_id) in USERSIDS:
-
-        _USERSIDS.append(str(event.text))
         await event.answer(message=f'Пользователь {event.text} добавлен в список.', keyboard=admin_kb.ADMIN_KB.get_keyboard())
 
-    elif last_command == 'забрать доступ' and str(event.from_id) in USERSIDS:
+    elif last_command == 'забрать доступ' and is_admin == True:
 
-        _USERSIDS.remove(str(event.text))
         await event.answer(message=f'Пользователь {event.text} удален из списка.', keyboard=admin_kb.ADMIN_KB.get_keyboard())
 
     elif last_command == 'перезаписать(записать)':
+        cursor.execute(
+            f"SELECT stream_group FROM accesses WHERE user_id={event.from_id}")
+        group = cursor.fetchall()
 
         if constants.currently_editing[event.from_id] == True:
 
@@ -112,8 +125,9 @@ async def idiots(event: SimpleBotEvent, fetch: list, button: str) -> None:
                         'Ошибка при запросе к rest сервису на изменение старосты аннотации.')
                     await event.answer(message='Ошибка при изменении старосты аннотации. Информация об ошибке направлена разработчикам', keyboard=schedule_kb.DAYS_OF_WEEK_KB.get_keyboard())
                 await event.answer(message='Аннотация успешно изменена', keyboard=schedule_kb.DAYS_OF_WEEK_KB.get_keyboard())
-            edit_headman.edit_headman_requests[event.from_id] = edit_headman.EditHeadmanRequest(
-                constants.headmans_ids.get(event.from_id))
+            if group != []:
+                edit_headman.edit_headman_requests[event.from_id] = edit_headman.EditHeadmanRequest(
+                    group[0][0])
 
     else:
 

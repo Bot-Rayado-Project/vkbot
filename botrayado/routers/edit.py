@@ -3,6 +3,7 @@ import botrayado.routers.edit_headman as edit_headman
 from botrayado.utils import *
 from botrayado.keyboards import *
 from botrayado.database import *
+from botrayado.database.db import cursor
 
 logger = get_logger(__name__)
 
@@ -19,9 +20,23 @@ async def edit_schedule(event: SimpleBotEvent) -> None:
 @simple_bot_message_handler(edit_router, PayloadFilter({'chp': 'headman'}))
 @database_handler()
 async def edit_schedule_headman(event: SimpleBotEvent) -> None:
-    if constants.headmans_ids.get(event.from_id) is not None:
+    cursor.execute(
+        f"SELECT headman_panel FROM accesses WHERE user_id={event.from_id}")
+    haedman_panel = cursor.fetchall()
+    if haedman_panel != []:
+        is_headman = haedman_panel[0][0]
+        if is_headman:
+            cursor.execute(
+                f"SELECT stream_group FROM accesses WHERE user_id={event.from_id}")
+            group = cursor.fetchall()
+            if group != []:
+                _group = group[0][0]
+    else:
+        is_headman = False
+
+    if is_headman:
         edit_headman.edit_headman_requests[event.from_id] = edit_headman.EditHeadmanRequest(
-            constants.headmans_ids.get(event.from_id))
+            _group)
         await event.answer(message='Доступ разрешен. Выберите неделю', keyboard=edit_headman_kb.CHOOSE_WEEK_HEADMAN_KB.get_keyboard())
     else:
         await event.answer(message='Вас нет в списке старост какой-либо из групп. Если вы являетесь старостой или доверенным лицом для своей группы, \
