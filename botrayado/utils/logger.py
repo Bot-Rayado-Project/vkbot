@@ -6,7 +6,7 @@ log_format = '%(asctime)s.%(msecs)03d %(filename)s:%(lineno)d %(levelname)s %(me
 
 
 def get_file_handler() -> logging.FileHandler:
-    file_handler = logging.FileHandler("logs.log", encoding='UTF-8')
+    file_handler = logging.FileHandler("logs/logs.log", encoding='UTF-8')
     file_handler.setLevel(logging.INFO)
     file_handler.setFormatter(logging.Formatter(log_format))
     return file_handler
