@@ -46,6 +46,14 @@ async def print_schedule(id: int, day_type: str, stream_group: str) -> str:
         response = json.loads(await aiohttp_fetch(url=f'http://{RESTIP}:{RESTPORT}/schedule/?id={id}&stream_group={stream_group}&parity={parity}&day={day_of_week}'))
         cursor.execute(
             f'SELECT button FROM menu_buttons_table WHERE user_id={id};')
+        btn = cursor.fetchall()
+        logger.info(btn)
+        if btn == []:
+            cursor.execute(
+                f"INSERT INTO menu_buttons_table VALUES({id}, 'староста');")
+            sqlite_connection.commit()
+        cursor.execute(
+            f'SELECT button FROM menu_buttons_table WHERE user_id={id};')
         btn = cursor.fetchall()[0][0]
         if btn == 'свое':
             if response["personal_schedule"][day_of_week] == "":
@@ -152,6 +160,14 @@ async def print_full_schedule(id: int, day_type: str, stream_group: str) -> str:
             + 'Неделя: ' + week_checked.capitalize() + '\n' + '⸻⸻⸻⸻⸻\n'
 
         response = json.loads(await aiohttp_fetch(url=f'http://{RESTIP}:{RESTPORT}/schedule/?id={id}&stream_group={stream_group}&parity={parity}'))
+        cursor.execute(
+            f'SELECT button FROM menu_buttons_table WHERE user_id={id};')
+        btn = cursor.fetchall()
+        logger.info(btn)
+        if btn == []:
+            cursor.execute(
+                f"INSERT INTO menu_buttons_table VALUES({id}, 'староста');")
+            sqlite_connection.commit()
         cursor.execute(
             f'SELECT button FROM menu_buttons_table WHERE user_id={id};')
         btn = cursor.fetchall()[0][0]
