@@ -39,11 +39,11 @@ def database_handler(ret_cmd: bool = False, ret_cfg: bool = False, ret_flag: boo
                     if switch_button:
                         if btn[0][0] == "староста":
                             cursor.execute(
-                                "UPDATE menu_buttons_table SET button='свое';")
+                                "UPDATE menu_buttons_table SET button='свое' WHERE user_id={event.from_id};")
                             sqlite_connection.commit()
                         else:
                             cursor.execute(
-                                "UPDATE menu_buttons_table SET button='староста';")
+                                "UPDATE menu_buttons_table SET button='староста' WHERE user_id={event.from_id};")
                             sqlite_connection.commit()
                 cursor.execute(
                     C_SQLITE_SELECT_CONFIG_KEYBOARD_BUTTONS.format(event.from_id))
