@@ -104,6 +104,14 @@ def database_handler(ret_cmd: bool = False, ret_cfg: bool = False, ret_flag: boo
                     return await func(event, cursor.fetchall())
             elif ret_cmd and ret_flag and ret_btn:
                 cursor.execute(
+                    f'SELECT button FROM menu_buttons_table WHERE user_id={event.from_id};')
+                btn = cursor.fetchall()
+                logger.info(btn)
+                if btn == []:
+                    cursor.execute(
+                        f"INSERT INTO menu_buttons_table VALUES({event.from_id}, 'староста');")
+                    sqlite_connection.commit()
+                cursor.execute(
                     C_SQLITE_SELLECT_ALL_COMMANDS.format(event.from_id))
                 cmd = cursor.fetchall()
                 cursor.execute(C_SQLITE_GET_IS_WRITING.format(event.from_id))
