@@ -1,7 +1,6 @@
 from vkwave.bots import simple_bot_message_handler, DefaultRouter, SimpleBotEvent, PayloadFilter, TextFilter
 from bot.keyboards import create_menu_kb
 from bot.utils import aiohttp_fetch
-import json
 
 joke_router = DefaultRouter()
 

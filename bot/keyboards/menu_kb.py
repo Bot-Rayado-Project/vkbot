@@ -2,11 +2,14 @@ from vkwave.bots import Keyboard, ButtonColor
 from bot.db import db_get_priority_button
 from bot.utils import schedule_request as sr
 from bot.utils import ScheduleRequest
+from bot.utils import personal_request as pr
+from bot.utils import EditPersonalRequest
 
 
 async def create_menu_kb(user_id: int) -> Keyboard:
     '''Генерирует стартовую клавиатуру и устанавливает реквесты пользователя на стандарт'''
     sr.user_schedule_requests[user_id] = ScheduleRequest()
+    pr.edit_personal_requests[user_id] = EditPersonalRequest(user_id)
 
     button = await db_get_priority_button(user_id)
 

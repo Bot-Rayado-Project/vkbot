@@ -69,3 +69,17 @@ async def db_change_priority_button(user_id: int, connection: typing.Optional[as
         await connection.fetch(f"UPDATE menu_buttons_table SET button='староста' where user_id={user_id};")
     await db_close(connection)
     return button
+
+
+async def db_get_access_to_headman_edit(user_id: int, connection: typing.Optional[asyncpg.Connection] = None) -> str:
+    '''Забирает права старосты у человека'''
+    connection = connection or await db_connect_env_variables()
+    if connection is None:
+        logger.error('Connection is None')
+        return False
+    database_responce = await connection.fetchrow(f'SELECT headman_panel FROM accesses WHERE user_id={user_id};')
+    if database_responce is None:
+        await db_close(connection)
+        return False
+    await db_close(connection)
+    return dict(database_responce)['headman_panel']

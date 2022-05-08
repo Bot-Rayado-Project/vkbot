@@ -96,7 +96,7 @@ async def schedule_stream(event: SimpleBotEvent) -> None:
                 logger.info(
                     f'{event.from_id}: {event.text} - Отсуствует day или faculty в запросе. Откат в меню')
             elif sr.user_schedule_requests[event.from_id].day.lower() == 'вся неделя':
-                if sr.user_schedule_requests[event.from_id].parity.lower() == None:
+                if sr.user_schedule_requests[event.from_id].parity is None:
                     await event.answer(message='Запрашиваемая вами клавиатура изменилась в связи с обновлением. \
                     Во избежание ошибок повторите свой запрос', keyboard=(await create_menu_kb(event.from_id)).get_keyboard())
                     logger.info(
@@ -133,7 +133,7 @@ async def schedule_group(event: SimpleBotEvent) -> None:
                 logger.info(
                     f'{event.from_id}: {event.text} - Отсуствует day или faculty в запросе. Откат в меню')
             elif sr.user_schedule_requests[event.from_id].day.lower() == 'вся неделя':
-                if sr.user_schedule_requests[event.from_id].parity.lower() == None:
+                if sr.user_schedule_requests[event.from_id].parity is None:
                     await event.answer(message='Запрашиваемая вами клавиатура изменилась в связи с обновлением. \
                     Во избежание ошибок повторите свой запрос', keyboard=(await create_menu_kb(event.from_id)).get_keyboard())
                     logger.info(
@@ -159,7 +159,7 @@ async def schedule_group(event: SimpleBotEvent) -> None:
                 sr.user_schedule_requests[event.from_id].faculty,
                 event.text
             )
-            if sr.user_schedule_requests[event.from_id].parity == None:
+            if sr.user_schedule_requests[event.from_id].parity is None:
                 schedule = await get_schedule_for_day(event.from_id,
                                                       sr.user_schedule_requests[event.from_id].day,
                                                       sr.user_schedule_requests[event.from_id].stream_group)

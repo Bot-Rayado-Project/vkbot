@@ -1,6 +1,13 @@
 from vkwave.bots import simple_bot_message_handler, DefaultRouter, SimpleBotEvent, TextFilter, PayloadFilter
 from bot.keyboards import create_menu_kb
+from bot.utils import personal_request as pr
+from bot.utils import EditPersonalRequest
+from bot.utils import post_request
+from bot.constants import RESTIP, RESTPORT
+from bot.logger import get_logger
+import json
 
+logger = get_logger(__name__)
 
 menu_router = DefaultRouter()
 
@@ -20,4 +27,61 @@ async def menu(event: SimpleBotEvent) -> None:
 
 @simple_bot_message_handler(menu_router)
 async def menu(event: SimpleBotEvent) -> None:
-    await event.answer(message='Выберите необходимую вам кнопку на клавиатуре', keyboard=(await create_menu_kb(event.from_id)).get_keyboard())
+    if pr.edit_personal_requests.get(event.from_id) == None:
+        await event.answer(message='Выберите необходимую вам кнопку на клавиатуре', keyboard=(await create_menu_kb(event.from_id)).get_keyboard())
+    else:
+        if pr.edit_personal_requests[event.from_id].writing_changes_or_annotation == True:
+            # Записываем изменения
+            if pr.edit_personal_requests[event.from_id].pair_number != 0:
+                response = await post_request(
+                    url=f'http://{RESTIP}:{RESTPORT}/change-schedule-personal/',
+                    data={
+                        'stream_group': pr.edit_personal_requests[event.from_id].stream_group,
+                        'day': pr.edit_personal_requests[event.from_id].day,
+                        'parity': pr.edit_personal_requests[event.from_id].parity,
+                        'pair_number': pr.edit_personal_requests[event.from_id].pair_number,
+                        'changes': event.text,
+                        'id': event.from_id,
+                    }
+                )
+                logger.info(response)
+                try:
+                    json.loads(response)['ok']
+                except Exception:
+                    logger.error(
+                        'Ошибка при запросе к rest сервису на сброс всего дня.')
+                    await event.answer(message='Ошибка при сбросе персонального дня. Информация об ошибке направлена разработчикам', keyboard=(await create_menu_kb(event.from_id)).get_keyboard())
+                if json.loads(response)['ok'] != True:
+                    logger.error(
+                        'Ошибка при запросе к rest сервису на изменение персональной пары.')
+                    await event.answer(message='Ошибка при изменении персональной пары. Информация об ошибке направлена разработчикам', keyboard=(await create_menu_kb(event.from_id)).get_keyboard())
+                else:
+                    await event.answer(message='Пара успешно изменена', keyboard=(await create_menu_kb(event.from_id)).get_keyboard())
+            else:
+                response = await post_request(
+                    url=f'http://{RESTIP}:{RESTPORT}/add-annotation-personal/',
+                    data={
+                        'stream_group': pr.edit_personal_requests[event.from_id].stream_group,
+                        'day': pr.edit_personal_requests[event.from_id].day,
+                        'parity': pr.edit_personal_requests[event.from_id].parity,
+                        'id': event.from_id,
+                        'annotation': event.text
+                    }
+                )
+                logger.info(response)
+                try:
+                    json.loads(response)['ok']
+                except Exception:
+                    logger.error(
+                        'Ошибка при запросе к rest сервису на сброс всего дня.')
+                    await event.answer(message='Ошибка при сбросе персонального дня. Информация об ошибке направлена разработчикам', keyboard=(await create_menu_kb(event.from_id)).get_keyboard())
+                if json.loads(response)['ok'] != True:
+                    logger.error(
+                        'Ошибка при запросе к rest сервису на изменение персональной аннотации.')
+                    await event.answer(message='Ошибка при изменении персональной аннотации. Информация об ошибке направлена разработчикам', keyboard=(await create_menu_kb(event.from_id)).get_keyboard())
+                else:
+                    await event.answer(message='Аннотация успешно изменена', keyboard=(await create_menu_kb(event.from_id)).get_keyboard())
+            logger.info(
+                f'{event.from_id}: {event.text} - {pr.edit_personal_requests[event.from_id]}')
+        else:
+            await event.answer(message='Выберите необходимую вам кнопку на клавиатуре', keyboard=(await create_menu_kb(event.from_id)).get_keyboard())
