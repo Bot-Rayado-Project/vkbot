@@ -56,7 +56,6 @@ async def db_get_priority_button(user_id: int, connection: typing.Optional[async
         await connection.fetch(f"INSERT INTO menu_buttons_table VALUES({user_id}, 'староста');")
         await db_close(connection)
         return 'староста'
-    logger.info(dict(database_responce))
     await db_close(connection)
     return dict(database_responce)['button']
 
@@ -64,7 +63,6 @@ async def db_get_priority_button(user_id: int, connection: typing.Optional[async
 async def db_change_priority_button(user_id: int, connection: typing.Optional[asyncpg.Connection] = None) -> str:
     connection = connection or await db_connect_env_variables()
     button = await db_get_priority_button(user_id)
-    logger.info(button)
     if button == 'староста':
         await connection.fetch(f"UPDATE menu_buttons_table SET button='свое' where user_id={user_id};")
     else:

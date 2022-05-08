@@ -72,8 +72,9 @@ SCHEDULE_FACULTY_KB.add_text_button(text=SCHEDULE_FACULTY_BUTTONS[6],
 ***
 '''
 
-SCHEDULE_PARITY_BUTTONS: list = ['Четная', 'Нечетная', 'Назад', 'Меню']
-SCHEDULE_PARITY_BUTTONS_PAYLOAD: list = [{'schedule_parity_button': 'even'}, {'schedule_parity_button': 'odd'}, {'schedule_parity_button': 'back'},
+SCHEDULE_PARITY_BUTTONS: list = ['Текущая неделя', 'Следующая неделя',
+                                 'Назад', 'Меню']
+SCHEDULE_PARITY_BUTTONS_PAYLOAD: list = [{'schedule_parity_button': 'current'}, {'schedule_parity_button': 'next'}, {'schedule_parity_button': 'back'},
                                          {'button': 'menu'}]
 SCHEDULE_PARITY_KB: Keyboard = Keyboard(one_time=False)
 
