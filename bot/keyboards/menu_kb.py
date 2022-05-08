@@ -1,9 +1,13 @@
 from vkwave.bots import Keyboard, ButtonColor
 from bot.db import db_get_priority_button
+from bot.utils import schedule_request as sr
+from bot.utils import ScheduleRequest
 
 
 async def create_menu_kb(user_id: int) -> Keyboard:
-    '''Генерирует стартовую клавиатуру'''
+    '''Генерирует стартовую клавиатуру и устанавливает реквесты пользователя на стандарт'''
+    sr.user_schedule_requests[user_id] = ScheduleRequest()
+
     button = await db_get_priority_button(user_id)
 
     MENU_BUTTONS: list = ['Расписание', 'Шаблоны расписания', 'Анекдот',
