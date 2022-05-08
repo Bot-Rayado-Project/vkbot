@@ -26,4 +26,4 @@ RUN poetry config virtualenvs.create false \
 COPY . /vkbot
 
 # Setting start comand to python server.py:
-CMD ["python", "server.py"]
+CMD ["python", "-m", "bot"]
