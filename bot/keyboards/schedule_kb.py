@@ -153,7 +153,7 @@ SCHEDULE_STREAM_KIIB_KB.add_text_button(text=SCHEDULE_STREAM_KIIB_BUTTONS[6],
                                         color=ButtonColor.PRIMARY,
                                         payload=SCHEDULE_STREAM_KIIB_BUTTONS_PAYLOAD[6])
 
-SCHEDULE_STREAM_RIT_BUTTONS: list = ['БИК', 'БИК', 'Назад', 'Меню']
+SCHEDULE_STREAM_RIT_BUTTONS: list = ['БРТ', 'БИК', 'Назад', 'Меню']
 SCHEDULE_STREAM_RIT_BUTTONS_PAYLOAD: list = [{'schedule_stream_button': 'brt'}, {'schedule_stream_button': 'bik'},
                                              {'schedule_stream_button': 'back'}, {'button': 'menu'}]
 SCHEDULE_STREAM_RIT_KB: Keyboard = Keyboard(one_time=False)
@@ -439,7 +439,8 @@ SCHEDULE_GROUP_ZRS_KB.add_text_button(text=SCHEDULE_GROUP_ZRS_BUTTONS[3],
 
 # ----- БИБ ----- #
 
-SCHEDULE_GROUP_BIB_BUTTONS: list = ['БИБ2101', 'БИБ2102', 'Назад', 'Меню']
+SCHEDULE_GROUP_BIB_BUTTONS: list = ['БИБ2101', 'БИБ2102', 'БИБ2103',
+                                    'БИБ2104', 'Назад', 'Меню']
 SCHEDULE_GROUP_BIB_BUTTONS_PAYLOAD: list = [{'schedule_group_button': 'bib2101'},
                                             {'schedule_group_button': 'bib2102'},
                                             {'schedule_group_button': 'bib2103'},

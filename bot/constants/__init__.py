@@ -8,3 +8,5 @@ from bot.constants.environment import DBUSER
 from bot.constants.environment import DBNAME
 from bot.constants.environment import DBHOST
 from bot.constants.environment import DBPASSWORD
+from bot.constants.schedule import DAYS_ENG
+from bot.constants.schedule import DAYS_RU

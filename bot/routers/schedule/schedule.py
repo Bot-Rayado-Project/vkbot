@@ -1,6 +1,7 @@
 from vkwave.bots import simple_bot_message_handler, DefaultRouter, SimpleBotEvent, PayloadFilter, PayloadContainsFilter
 from bot.utils import schedule_request as sr
 from bot.utils import ScheduleRequest
+from bot.schedule import get_schedule_for_day
 from bot.logger import get_logger
 from bot.keyboards import *
 
@@ -158,6 +159,9 @@ async def schedule_group(event: SimpleBotEvent) -> None:
                 sr.user_schedule_requests[event.from_id].faculty,
                 event.text
             )
-            await event.answer(message='Расписание: ', keyboard=(await create_menu_kb(event.from_id)).get_keyboard())
+            schedule = await get_schedule_for_day(event.from_id,
+                                                  sr.user_schedule_requests[event.from_id].day,
+                                                  sr.user_schedule_requests[event.from_id].stream_group)
+            await event.answer(message=f'Расписание: {schedule}', keyboard=(await create_menu_kb(event.from_id)).get_keyboard())
         logger.info(
             f'{event.from_id}: {event.text} - {sr.user_schedule_requests[event.from_id]}')
