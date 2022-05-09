@@ -1,12 +1,12 @@
 import json
 from vkwave.bots import simple_bot_message_handler, DefaultRouter, SimpleBotEvent, PayloadContainsFilter
 from bot.logger import get_logger
-from bot.db import db_get_access_to_headman_edit, db_get_headman_group
 from bot.utils import headman_request as hr
 from bot.utils import EditHeadmanRequest
 from bot.utils import post_request
 from bot.keyboards import *
 from bot.constants import RESTIP, RESTPORT
+from bot.schedule import get_schedule_custom_headman
 
 logger = get_logger(__name__)
 
@@ -68,6 +68,12 @@ async def edit_schedule_day(event: SimpleBotEvent) -> None:
                     hr.edit_headman_requests[event.from_id].parity,
                     event.text.lower()
                 )
+                current_schedule = await get_schedule_custom_headman(
+                    event.from_id,
+                    hr.edit_headman_requests[event.from_id].stream_group,
+                    hr.edit_headman_requests[event.from_id].day,
+                    hr.edit_headman_requests[event.from_id].parity)
+                await event.answer(message=f'Текущее расписание: \n\n {current_schedule}')
                 await event.answer(message='Выберите пару, либо воспользуйтесь кнопкой "Сбросить все изменения" для сброса всех изменений', keyboard=EDIT_SCHEDULE_HEADMAN_PAIR_KB.get_keyboard())
         logger.info(
             f'{event.from_id}: {event.text} - {hr.edit_headman_requests[event.from_id]}')
@@ -117,8 +123,12 @@ async def edit_schedule_pair(event: SimpleBotEvent) -> None:
                             'Ошибка при запросе к rest сервису на сброс всего дня.')
                         await event.answer(message='Ошибка при сбросе дня. Информация об ошибке направлена разработчикам', keyboard=(await create_menu_kb(event.from_id)).get_keyboard())
                     else:
-                        # current_schedule = await print_schedule(event.from_id, event.text.lower(), edit_headman_requests[event.from_id].stream_group)
-                        # await event.answer(message=f'Новое выводимое расписание: \n\n {current_schedule}')
+                        current_schedule = await get_schedule_custom_headman(
+                            event.from_id,
+                            hr.edit_headman_requests[event.from_id].stream_group,
+                            hr.edit_headman_requests[event.from_id].day,
+                            hr.edit_headman_requests[event.from_id].parity)
+                        await event.answer(message=f'Новое выводимое расписание: \n\n {current_schedule}')
                         await event.answer(message='День успешно сброшен.', keyboard=SCHEDULE_DAY_KB.get_keyboard())
                         hr.edit_headman_requests[event.from_id] = EditHeadmanRequest(
                         )

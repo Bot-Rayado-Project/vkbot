@@ -6,6 +6,7 @@ from bot.utils import EditPersonalRequest
 from bot.utils import post_request
 from bot.keyboards import *
 from bot.constants import RESTIP, RESTPORT
+from bot.schedule import get_schedule_custom_personal
 
 logger = get_logger(__name__)
 
@@ -166,6 +167,12 @@ async def edit_schedule_day(event: SimpleBotEvent) -> None:
                     pr.edit_personal_requests[event.from_id].parity,
                     event.text.lower()
                 )
+                current_schedule = await get_schedule_custom_personal(
+                    event.from_id,
+                    pr.edit_personal_requests[event.from_id].stream_group,
+                    pr.edit_personal_requests[event.from_id].day,
+                    pr.edit_personal_requests[event.from_id].parity)
+                await event.answer(message=f'Текущее расписание: \n\n {current_schedule}')
                 await event.answer(message='Выберите пару, либо воспользуйтесь кнопкой "Сбросить все изменения" для сброса всех изменений', keyboard=EDIT_SCHEDULE_PERSONAL_PAIR_KB.get_keyboard())
         logger.info(
             f'{event.from_id}: {event.text} - {pr.edit_personal_requests[event.from_id]}')
@@ -221,8 +228,12 @@ async def edit_schedule_pair(event: SimpleBotEvent) -> None:
                             'Ошибка при запросе к rest сервису на сброс всего дня.')
                         await event.answer(message='Ошибка при сбросе персонального дня. Информация об ошибке направлена разработчикам', keyboard=(await create_menu_kb(event.from_id)).get_keyboard())
                     else:
-                        # current_schedule = await print_schedule(event.from_id, event.text.lower(), edit_personal_requests[event.from_id].stream_group)
-                        # await event.answer(message=f'Новое выводимое расписание: \n\n {current_schedule}')
+                        current_schedule = await get_schedule_custom_personal(
+                            event.from_id,
+                            pr.edit_personal_requests[event.from_id].stream_group,
+                            pr.edit_personal_requests[event.from_id].day,
+                            pr.edit_personal_requests[event.from_id].parity)
+                        await event.answer(message=f'Новое выводимое расписание: \n\n {current_schedule}')
                         await event.answer(message='День успешно сброшен.', keyboard=SCHEDULE_DAY_KB.get_keyboard())
                         pr.edit_personal_requests[event.from_id] = EditPersonalRequest(
                             event.from_id
@@ -248,7 +259,7 @@ async def edit_schedule_pair(event: SimpleBotEvent) -> None:
                         pr.edit_personal_requests[event.from_id].day,
                         int(event.text[0])
                     )
-                    await event.answer(message='Выберите действие с выбранной парой', keyboard=EDIT_SCHEDULE_PERSONAL_MOVE_KB.get_keyboard())
+                await event.answer(message='Выберите действие с выбранной парой', keyboard=EDIT_SCHEDULE_PERSONAL_MOVE_KB.get_keyboard())
         logger.info(
             f'{event.from_id}: {event.text} - {pr.edit_personal_requests[event.from_id]}')
 

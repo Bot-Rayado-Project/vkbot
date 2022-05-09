@@ -1,10 +1,11 @@
 from datetime import datetime, timedelta
-import traceback
 from bot.utils import get_parity, aiohttp_fetch
 from bot.constants import DAYS_RU, DAYS_ENG, RESTIP, RESTPORT
 from bot.db import db_get_priority_button
 from bot.logger import get_logger
+from transliterate import translit
 import json
+import traceback
 
 logger = get_logger(__name__)
 
@@ -200,3 +201,59 @@ async def get_schedule_for_whole_week(id: int, week: str, stream_group: str) -> 
                 output += response["headman_schedule"][DAYS_ENG[i]]
 
     return output
+
+
+async def get_schedule_custom_headman(id: int, stream_group: str, day_of_week: str, parity: bool) -> str:
+    try:
+        output = '⸻⸻⸻⸻⸻\n' + 'Группа: ' + stream_group.upper() + '\n' \
+            + 'День недели: ' + day_of_week.capitalize() + '\n' + 'Неделя: ' + parity.capitalize() + '\n' \
+            + '⸻⸻⸻⸻⸻\n'
+        day_of_week = translit(
+            day_of_week, language_code='ru', reversed=True).replace("'", "")
+
+        response = json.loads(await aiohttp_fetch(url=f'http://{RESTIP}:{RESTPORT}/schedule/?id={id}&stream_group={stream_group}&parity={parity}&day={day_of_week}'))
+
+        if response['headman_schedule'][day_of_week] != "":
+            output = "↤↤ Текущее расписание (Измененное вами) ↦↦ \n\n" + output + \
+                response['headman_schedule'][day_of_week] + \
+                "\nАннотация: " + (response['headman_annotation'][day_of_week]
+                                   if response['headman_annotation'][day_of_week] != "" else 'Отсутствует') + '\n'
+            output += "\n\n↤↤ Оригинальное расписание(Без изменений) ↦↦ \n\n" + \
+                response['shared_schedule'][day_of_week]
+        else:
+            output += "Текущее расписание: \n\n" + \
+                response['shared_schedule'][day_of_week]
+
+        return output
+    except Exception as e:
+        logger.error(
+            f"Error in sheethandler printing schedule ({e}): {traceback.format_exc()}")
+        return "Ошибка в получении расписания. Информация об ошибке направлена разработчикам"
+
+
+async def get_schedule_custom_personal(id: int, stream_group: str, day_of_week: str, parity: bool) -> str:
+    try:
+        output = '⸻⸻⸻⸻⸻\n' + 'Группа: ' + stream_group.upper() + '\n' \
+            + 'День недели: ' + day_of_week.capitalize() + '\n' + 'Неделя: ' + parity.capitalize() + '\n' \
+            + '⸻⸻⸻⸻⸻\n'
+        day_of_week = translit(
+            day_of_week, language_code='ru', reversed=True).replace("'", "")
+
+        response = json.loads(await aiohttp_fetch(url=f'http://{RESTIP}:{RESTPORT}/schedule/?id={id}&stream_group={stream_group}&parity={parity}&day={day_of_week}'))
+
+        if response['personal_schedule'][day_of_week] != "":
+            output += "↤↤ Текущее расписание (Измененное вами) ↦↦ \n\n" + \
+                response['personal_schedule'][day_of_week] + \
+                "\nАннотация: " + (response['personal_annotation'][day_of_week]
+                                   if response['personal_annotation'][day_of_week] != '' else 'Отсутствует.') + '\n'
+            output += "\n\n↤↤ Оригинальное расписание(Без изменений) ↦↦ \n\n" + \
+                response['shared_schedule'][day_of_week]
+        else:
+            output += "Текущее расписание: \n\n" + \
+                response['shared_schedule'][day_of_week]
+
+        return output
+    except Exception as e:
+        logger.error(
+            f"Error in sheethandler printing schedule ({e}): {traceback.format_exc()}")
+        return "Ошибка в получении расписания. Информация об ошибке направлена разработчикам"
