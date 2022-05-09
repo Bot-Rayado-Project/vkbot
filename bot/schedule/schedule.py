@@ -56,6 +56,7 @@ async def get_schedule_for_day(id: int, day: str, stream_group: str) -> str:
         logger.error(
             f"Ошибка в получении кнопки ({e}): {traceback.format_exc()}")
         return "Ошибка в получении кнопки приоритета. Информация об ошибке направлена разработчикам"
+
     if button == 'свое':
         if response["personal_schedule"][_day] == "":
             if response["headman_schedule"][_day] == "":
@@ -130,8 +131,7 @@ async def get_schedule_for_day(id: int, day: str, stream_group: str) -> str:
             else:
                 output += "\nАннотация от старосты:\n" + \
                     response["headman_annotation"][_day]
-
-        return output
+    return output
 
 
 async def get_schedule_for_whole_week(id: int, week: str, stream_group: str) -> str:
