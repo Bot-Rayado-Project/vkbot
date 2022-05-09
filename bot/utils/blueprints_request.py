@@ -1,0 +1,12 @@
+from typing import NamedTuple
+
+
+class BlueprintsRequest(NamedTuple):
+    day: str = None
+    parity: str = None
+    faculty: str = None
+    stream_group: str = None
+    cell: int = None
+
+
+user_blueprints_requests = {}

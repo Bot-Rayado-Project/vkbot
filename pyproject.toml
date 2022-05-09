@@ -7,8 +7,8 @@ authors = ["darttusin <ivanchepikov444@gmail.com>"]
 [tool.poetry.dependencies]
 python = "^3.10"
 vkwave = "^0.2.16"
+asyncpg = "^0.25.0"
 transliterate = "^1.10.2"
-psycopg2-binary = "^2.9.3"
 
 [tool.poetry.dev-dependencies]
 autopep8 = "^1.6.0"
