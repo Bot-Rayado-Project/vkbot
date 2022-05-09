@@ -97,3 +97,48 @@ async def db_get_headman_group(user_id: int, connection: typing.Optional[asyncpg
         return ''
     await db_close(connection)
     return dict(database_responce)['stream_group']
+
+
+async def db_get_blueprints_buttons(user_id: int, connection: typing.Optional[asyncpg.Connection] = None) -> tuple:
+    '''Забирает кнопки шаблонов у человека'''
+    connection = connection or await db_connect_env_variables()
+    if connection is None:
+        logger.error('Connection is None')
+        return ('Пустая ячейка', 'Пустая ячейка', 'Пустая ячейка')
+    database_responce = await connection.fetchrow(f'SELECT keyboard_buttons FROM config WHERE user_id={user_id};')
+    if database_responce is None:
+        logger.info(f'{user_id} - отсутствуют шаблоны.')
+        await connection.fetch(f"INSERT INTO config VALUES({user_id}, 'Пустая ячейка, Пустая ячейка, Пустая ячейка', False, 'first_btn');")
+        await db_close(connection)
+        return ('Пустая ячейка', 'Пустая ячейка', 'Пустая ячейка')
+    await db_close(connection)
+    buttons = dict(database_responce)['keyboard_buttons'].split(', ')
+    logger.info(f'{user_id} - {tuple(buttons)}')
+    return tuple(buttons)
+
+
+async def db_set_blueprints_buttons(user_id: int, blueprint: str, button: str, connection: typing.Optional[asyncpg.Connection] = None) -> bool | None:
+    '''Ставит кнопки шаблонов у человека'''
+    connection = connection or await db_connect_env_variables()
+    if connection is None:
+        logger.error('Connection is None')
+        return None
+    database_responce = await connection.fetchrow(f'SELECT keyboard_buttons FROM config WHERE user_id={user_id};')
+    if database_responce is None:
+        logger.info(f'{user_id} - отсутствуют шаблоны.')
+        await connection.fetch(f"INSERT INTO config VALUES({user_id}, 'Пустая ячейка, Пустая ячейка, Пустая ячейка', False, 'first_btn');")
+    database_responce = await connection.fetchrow(f'SELECT keyboard_buttons FROM config WHERE user_id={user_id};')
+    buttons = dict(database_responce)['keyboard_buttons'].split(', ')
+    if blueprint == buttons[0] or blueprint == buttons[1] or blueprint == buttons[2]:
+        return False
+    if button == 'first_button':
+        buttons[0] = blueprint
+    elif button == 'second_button':
+        buttons[1] = blueprint
+    else:
+        buttons[2] = blueprint
+    _buttons = buttons[0] + ', ' + buttons[1] + ', ' + buttons[2]
+    logger.info(f'{user_id} - {tuple(buttons)} - {_buttons}')
+    await connection.fetch(f"UPDATE config SET keyboard_buttons='{_buttons}' where user_id={user_id};")
+    await db_close(connection)
+    return True

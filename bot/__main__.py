@@ -4,7 +4,7 @@ routers_list = [routers.priority_router, routers.help_router,
                 routers.donate_router, routers.joke_router,
                 routers.schedule_router, routers.edit_router,
                 routers.edit_personal_router, routers.edit_headman_router,
-                routers.menu_router]
+                routers.blueprints_router, routers.menu_router]
 
 bot = SimpleLongPollBot(TOKENS, GROUPID)
 

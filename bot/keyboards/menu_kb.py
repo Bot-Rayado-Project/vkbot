@@ -6,6 +6,8 @@ from bot.utils import personal_request as pr
 from bot.utils import EditPersonalRequest
 from bot.utils import headman_request as hr
 from bot.utils import EditHeadmanRequest
+from bot.utils import blueprints_request as br
+from bot.utils import BlueprintsRequest
 
 
 async def create_menu_kb(user_id: int) -> Keyboard:
@@ -13,6 +15,7 @@ async def create_menu_kb(user_id: int) -> Keyboard:
     hr.edit_headman_requests[user_id] = EditHeadmanRequest()
     sr.user_schedule_requests[user_id] = ScheduleRequest()
     pr.edit_personal_requests[user_id] = EditPersonalRequest(user_id)
+    br.user_blueprints_requests[user_id] = BlueprintsRequest()
 
     button = await db_get_priority_button(user_id)
 
