@@ -6,3 +6,4 @@ from bot.routers.menu.joke import joke_router
 from bot.routers.schedule.schedule import schedule_router
 from bot.routers.schedule.edit import edit_router
 from bot.routers.schedule.edit_personal import edit_personal_router
+from bot.routers.schedule.edit_headman import edit_headman_router

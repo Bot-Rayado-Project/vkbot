@@ -4,10 +4,13 @@ from bot.utils import schedule_request as sr
 from bot.utils import ScheduleRequest
 from bot.utils import personal_request as pr
 from bot.utils import EditPersonalRequest
+from bot.utils import headman_request as hr
+from bot.utils import EditHeadmanRequest
 
 
 async def create_menu_kb(user_id: int) -> Keyboard:
     '''Генерирует стартовую клавиатуру и устанавливает реквесты пользователя на стандарт'''
+    hr.edit_headman_requests[user_id] = EditHeadmanRequest()
     sr.user_schedule_requests[user_id] = ScheduleRequest()
     pr.edit_personal_requests[user_id] = EditPersonalRequest(user_id)
 

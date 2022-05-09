@@ -4,3 +4,5 @@ import bot.utils.schedule_request
 from bot.utils.parity import get_parity
 from bot.utils.personal_request import EditPersonalRequest
 import bot.utils.personal_request
+from bot.utils.headman_request import EditHeadmanRequest
+import bot.utils.headman_request

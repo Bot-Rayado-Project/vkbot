@@ -83,3 +83,17 @@ async def db_get_access_to_headman_edit(user_id: int, connection: typing.Optiona
         return False
     await db_close(connection)
     return dict(database_responce)['headman_panel']
+
+
+async def db_get_headman_group(user_id: int, connection: typing.Optional[asyncpg.Connection] = None) -> str:
+    '''Забирает права старосты у человека'''
+    connection = connection or await db_connect_env_variables()
+    if connection is None:
+        logger.error('Connection is None')
+        return ''
+    database_responce = await connection.fetchrow(f'SELECT stream_group FROM accesses WHERE user_id={user_id};')
+    if database_responce is None:
+        await db_close(connection)
+        return ''
+    await db_close(connection)
+    return dict(database_responce)['stream_group']

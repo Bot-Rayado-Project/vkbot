@@ -818,3 +818,156 @@ EDIT_SCHEDULE_PERSONAL_MOVE_KB.add_text_button(text=EDIT_SCHEDULE_PERSONAL_MOVE_
 EDIT_SCHEDULE_PERSONAL_MOVE_KB.add_text_button(text=EDIT_SCHEDULE_PERSONAL_MOVE_BUTTONS[3],
                                                color=ButtonColor.PRIMARY,
                                                payload=EDIT_SCHEDULE_PERSONAL_MOVE_BUTTONS_PAYLOAD[3])
+
+'''
+***
+Создание клавиатур для четности
+***
+'''
+
+EDIT_SCHEDULE_HEADMAN_PARITY_BUTTONS: list = ['Четная неделя', 'Нечетная неделя',
+                                              'Назад', 'Меню']
+EDIT_SCHEDULE_HEADMAN_PARITY_BUTTONS_PAYLOAD: list = [{'edit_schedule_headman_parity_button': 'even'},
+                                                      {'edit_schedule_headman_parity_button': 'odd'},
+                                                      {'edit_schedule_headman_parity_button': 'back'},
+                                                      {'button': 'menu'}]
+EDIT_SCHEDULE_HEADMAN_PARITY_KB: Keyboard = Keyboard(one_time=False)
+
+EDIT_SCHEDULE_HEADMAN_PARITY_KB.add_text_button(text=EDIT_SCHEDULE_HEADMAN_PARITY_BUTTONS[0],
+                                                color=ButtonColor.SECONDARY,
+                                                payload=EDIT_SCHEDULE_HEADMAN_PARITY_BUTTONS_PAYLOAD[0])
+EDIT_SCHEDULE_HEADMAN_PARITY_KB.add_text_button(text=EDIT_SCHEDULE_HEADMAN_PARITY_BUTTONS[1],
+                                                color=ButtonColor.SECONDARY,
+                                                payload=EDIT_SCHEDULE_HEADMAN_PARITY_BUTTONS_PAYLOAD[1])
+EDIT_SCHEDULE_HEADMAN_PARITY_KB.add_row()
+EDIT_SCHEDULE_HEADMAN_PARITY_KB.add_text_button(text=EDIT_SCHEDULE_HEADMAN_PARITY_BUTTONS[2],
+                                                color=ButtonColor.PRIMARY,
+                                                payload=EDIT_SCHEDULE_HEADMAN_PARITY_BUTTONS_PAYLOAD[2])
+EDIT_SCHEDULE_HEADMAN_PARITY_KB.add_text_button(text=EDIT_SCHEDULE_HEADMAN_PARITY_BUTTONS[3],
+                                                color=ButtonColor.PRIMARY,
+                                                payload=EDIT_SCHEDULE_HEADMAN_PARITY_BUTTONS_PAYLOAD[3])
+
+'''
+***
+Создание клавиатур для дней недели
+***
+'''
+
+EDIT_SCHEDULE_HEADMAN_DAY_BUTTONS: list = ['Понедельник', 'Вторник', 'Среда',
+                                           'Четверг', 'Пятница', 'Суббота',
+                                           'Назад', 'Меню']
+EDIT_SCHEDULE_HEADMAN_DAY_BUTTONS_PAYLOAD: list = [{'edit_schedule_headman_day_button': 'ponedelnik'},
+                                                   {'edit_schedule_headman_day_button': 'vtornik'},
+                                                   {'edit_schedule_headman_day_button': 'sreda'},
+                                                   {'edit_schedule_headman_day_button': 'chetverg'},
+                                                   {'edit_schedule_headman_day_button': 'pjatnitsa'},
+                                                   {'edit_schedule_headman_day_button': 'subbota'},
+                                                   {'edit_schedule_headman_day_button': 'back'},
+                                                   {'button': 'menu'}]
+EDIT_SCHEDULE_HEADMAN_DAY_KB: Keyboard = Keyboard(one_time=False)
+
+EDIT_SCHEDULE_HEADMAN_DAY_KB.add_text_button(text=EDIT_SCHEDULE_HEADMAN_DAY_BUTTONS[0],
+                                             color=ButtonColor.SECONDARY,
+                                             payload=EDIT_SCHEDULE_HEADMAN_DAY_BUTTONS_PAYLOAD[0])
+EDIT_SCHEDULE_HEADMAN_DAY_KB.add_text_button(text=EDIT_SCHEDULE_HEADMAN_DAY_BUTTONS[1],
+                                             color=ButtonColor.SECONDARY,
+                                             payload=EDIT_SCHEDULE_HEADMAN_DAY_BUTTONS_PAYLOAD[1])
+EDIT_SCHEDULE_HEADMAN_DAY_KB.add_text_button(text=EDIT_SCHEDULE_HEADMAN_DAY_BUTTONS[2],
+                                             color=ButtonColor.SECONDARY,
+                                             payload=EDIT_SCHEDULE_HEADMAN_DAY_BUTTONS_PAYLOAD[2])
+EDIT_SCHEDULE_HEADMAN_DAY_KB.add_row()
+EDIT_SCHEDULE_HEADMAN_DAY_KB.add_text_button(text=EDIT_SCHEDULE_HEADMAN_DAY_BUTTONS[3],
+                                             color=ButtonColor.SECONDARY,
+                                             payload=EDIT_SCHEDULE_HEADMAN_DAY_BUTTONS_PAYLOAD[3])
+EDIT_SCHEDULE_HEADMAN_DAY_KB.add_text_button(text=EDIT_SCHEDULE_HEADMAN_DAY_BUTTONS[4],
+                                             color=ButtonColor.SECONDARY,
+                                             payload=EDIT_SCHEDULE_HEADMAN_DAY_BUTTONS_PAYLOAD[4])
+EDIT_SCHEDULE_HEADMAN_DAY_KB.add_text_button(text=EDIT_SCHEDULE_HEADMAN_DAY_BUTTONS[5],
+                                             color=ButtonColor.SECONDARY,
+                                             payload=EDIT_SCHEDULE_HEADMAN_DAY_BUTTONS_PAYLOAD[5])
+EDIT_SCHEDULE_HEADMAN_DAY_KB.add_row()
+EDIT_SCHEDULE_HEADMAN_DAY_KB.add_text_button(text=EDIT_SCHEDULE_HEADMAN_DAY_BUTTONS[6],
+                                             color=ButtonColor.PRIMARY,
+                                             payload=EDIT_SCHEDULE_HEADMAN_DAY_BUTTONS_PAYLOAD[6])
+EDIT_SCHEDULE_HEADMAN_DAY_KB.add_text_button(text=EDIT_SCHEDULE_HEADMAN_DAY_BUTTONS[7],
+                                             color=ButtonColor.PRIMARY,
+                                             payload=EDIT_SCHEDULE_HEADMAN_DAY_BUTTONS_PAYLOAD[7])
+
+'''
+***
+Создание клавиатур для выбора пары
+***
+'''
+
+EDIT_SCHEDULE_HEADMAN_PAIR_BUTTONS: list = ['1 пара', '2 пара', '3 пара',
+                                            '4 пара', '5 пара', 'Общ. аннотация',
+                                            'Сбросить все изменения', 'Назад', 'Меню']
+EDIT_SCHEDULE_HEADMAN_PAIR_BUTTONS_PAYLOAD: list = [{'edit_schedule_headman_pair_button': 'first_pair'},
+                                                    {'edit_schedule_headman_pair_button': 'second_pair'},
+                                                    {'edit_schedule_headman_pair_button': 'third_pair'},
+                                                    {'edit_schedule_headman_pair_button': 'fourth_pair'},
+                                                    {'edit_schedule_headman_pair_button': 'fifth_pair'},
+                                                    {'edit_schedule_headman_pair_button': 'whole_day'},
+                                                    {'edit_schedule_headman_pair_button': 'reset_day'},
+                                                    {'edit_schedule_headman_pair_button': 'back'},
+                                                    {'button': 'menu'}]
+EDIT_SCHEDULE_HEADMAN_PAIR_KB: Keyboard = Keyboard(one_time=False)
+
+EDIT_SCHEDULE_HEADMAN_PAIR_KB.add_text_button(text=EDIT_SCHEDULE_HEADMAN_PAIR_BUTTONS[0],
+                                              color=ButtonColor.SECONDARY,
+                                              payload=EDIT_SCHEDULE_HEADMAN_PAIR_BUTTONS_PAYLOAD[0])
+EDIT_SCHEDULE_HEADMAN_PAIR_KB.add_text_button(text=EDIT_SCHEDULE_HEADMAN_PAIR_BUTTONS[1],
+                                              color=ButtonColor.SECONDARY,
+                                              payload=EDIT_SCHEDULE_HEADMAN_PAIR_BUTTONS_PAYLOAD[1])
+EDIT_SCHEDULE_HEADMAN_PAIR_KB.add_text_button(text=EDIT_SCHEDULE_HEADMAN_PAIR_BUTTONS[2],
+                                              color=ButtonColor.SECONDARY,
+                                              payload=EDIT_SCHEDULE_HEADMAN_PAIR_BUTTONS_PAYLOAD[2])
+EDIT_SCHEDULE_HEADMAN_PAIR_KB.add_row()
+EDIT_SCHEDULE_HEADMAN_PAIR_KB.add_text_button(text=EDIT_SCHEDULE_HEADMAN_PAIR_BUTTONS[3],
+                                              color=ButtonColor.SECONDARY,
+                                              payload=EDIT_SCHEDULE_HEADMAN_PAIR_BUTTONS_PAYLOAD[3])
+EDIT_SCHEDULE_HEADMAN_PAIR_KB.add_text_button(text=EDIT_SCHEDULE_HEADMAN_PAIR_BUTTONS[4],
+                                              color=ButtonColor.SECONDARY,
+                                              payload=EDIT_SCHEDULE_HEADMAN_PAIR_BUTTONS_PAYLOAD[4])
+EDIT_SCHEDULE_HEADMAN_PAIR_KB.add_text_button(text=EDIT_SCHEDULE_HEADMAN_PAIR_BUTTONS[5],
+                                              color=ButtonColor.SECONDARY,
+                                              payload=EDIT_SCHEDULE_HEADMAN_PAIR_BUTTONS_PAYLOAD[5])
+EDIT_SCHEDULE_HEADMAN_PAIR_KB.add_row()
+EDIT_SCHEDULE_HEADMAN_PAIR_KB.add_text_button(text=EDIT_SCHEDULE_HEADMAN_PAIR_BUTTONS[6],
+                                              color=ButtonColor.NEGATIVE,
+                                              payload=EDIT_SCHEDULE_HEADMAN_PAIR_BUTTONS_PAYLOAD[6])
+EDIT_SCHEDULE_HEADMAN_PAIR_KB.add_row()
+EDIT_SCHEDULE_HEADMAN_PAIR_KB.add_text_button(text=EDIT_SCHEDULE_HEADMAN_PAIR_BUTTONS[7],
+                                              color=ButtonColor.PRIMARY,
+                                              payload=EDIT_SCHEDULE_HEADMAN_PAIR_BUTTONS_PAYLOAD[7])
+EDIT_SCHEDULE_HEADMAN_PAIR_KB.add_text_button(text=EDIT_SCHEDULE_HEADMAN_PAIR_BUTTONS[8],
+                                              color=ButtonColor.PRIMARY,
+                                              payload=EDIT_SCHEDULE_HEADMAN_PAIR_BUTTONS_PAYLOAD[8])
+
+'''
+***
+Создание клавиатур для выбора действия с парой
+***
+'''
+
+EDIT_SCHEDULE_HEADMAN_MOVE_BUTTONS: list = ['Перезаписать(записать)', 'Удалить',
+                                            'Назад', 'Меню']
+EDIT_SCHEDULE_HEADMAN_MOVE_BUTTONS_PAYLOAD: list = [{'edit_schedule_headman_move_button': 'rewrite'},
+                                                    {'edit_schedule_headman_move_button': 'delete'},
+                                                    {'edit_schedule_headman_move_button': 'back'},
+                                                    {'button': 'menu'}]
+EDIT_SCHEDULE_HEADMAN_MOVE_KB: Keyboard = Keyboard(one_time=True)
+
+EDIT_SCHEDULE_HEADMAN_MOVE_KB.add_text_button(text=EDIT_SCHEDULE_HEADMAN_MOVE_BUTTONS[0],
+                                              color=ButtonColor.SECONDARY,
+                                              payload=EDIT_SCHEDULE_HEADMAN_MOVE_BUTTONS_PAYLOAD[0])
+EDIT_SCHEDULE_HEADMAN_MOVE_KB.add_text_button(text=EDIT_SCHEDULE_HEADMAN_MOVE_BUTTONS[1],
+                                              color=ButtonColor.SECONDARY,
+                                              payload=EDIT_SCHEDULE_HEADMAN_MOVE_BUTTONS_PAYLOAD[1])
+EDIT_SCHEDULE_HEADMAN_MOVE_KB.add_row()
+EDIT_SCHEDULE_HEADMAN_MOVE_KB.add_text_button(text=EDIT_SCHEDULE_HEADMAN_MOVE_BUTTONS[2],
+                                              color=ButtonColor.PRIMARY,
+                                              payload=EDIT_SCHEDULE_HEADMAN_MOVE_BUTTONS_PAYLOAD[2])
+EDIT_SCHEDULE_HEADMAN_MOVE_KB.add_text_button(text=EDIT_SCHEDULE_HEADMAN_MOVE_BUTTONS[3],
+                                              color=ButtonColor.PRIMARY,
+                                              payload=EDIT_SCHEDULE_HEADMAN_MOVE_BUTTONS_PAYLOAD[3])
