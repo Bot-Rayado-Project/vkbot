@@ -1,5 +1,5 @@
 import json
-from vkwave.bots import simple_bot_message_handler, DefaultRouter, SimpleBotEvent, PayloadFilter, PayloadContainsFilter
+from vkwave.bots import simple_bot_message_handler, DefaultRouter, SimpleBotEvent, PayloadContainsFilter
 from bot.logger import get_logger
 from bot.utils import personal_request as pr
 from bot.utils import EditPersonalRequest
