@@ -11,7 +11,7 @@ ENV ENVIRON=${ENVIRON} \
   PIP_DEFAULT_TIMEOUT=100 \
   POETRY_VERSION=1.0.0
 
-# System deps:
+# Poetry Installation:
 RUN pip install "poetry==$POETRY_VERSION"
 
 # Copy only requirements to cache them in docker layer:

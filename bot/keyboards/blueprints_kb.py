@@ -764,6 +764,7 @@ CREATE_SCHEDULE_BLUEPRINT_GROUP_BIN_KB.add_text_button(text=CREATE_SCHEDULE_BLUE
                                                        color=ButtonColor.PRIMARY,
                                                        payload=CREATE_SCHEDULE_BLUEPRINT_GROUP_BIN_BUTTONS_PAYLOAD[11])
 
+# Словарь совпадения клавиатуры по факультету
 
 CREATE_SCHEDULE_BLUEPRINT_FACULTY_MATCHING = {
     'it': CREATE_SCHEDULE_BLUEPRINT_STREAM_IT_KB,
@@ -772,6 +773,8 @@ CREATE_SCHEDULE_BLUEPRINT_FACULTY_MATCHING = {
     'tseimk': CREATE_SCHEDULE_BLUEPRINT_STREAM_TSEIMK_KB,
     'siss': CREATE_SCHEDULE_BLUEPRINT_STREAM_SISS_KB
 }
+
+# Словарь совпадения клавиатуры по потоку
 
 CREATE_SCHEDULE_BLUEPRINT_STREAM_MATCHING = {
     'bfi': CREATE_SCHEDULE_BLUEPRINT_GROUP_BFI_KB,

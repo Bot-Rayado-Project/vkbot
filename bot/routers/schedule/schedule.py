@@ -9,6 +9,12 @@ logger = get_logger(__name__)
 
 schedule_router = DefaultRouter()
 
+'''
+*
+Отвечает за последовательное формирование запроса на вывод расписания
+*
+'''
+
 
 @simple_bot_message_handler(schedule_router, PayloadFilter({"menu_button": "schedule"}))
 async def schedule(event: SimpleBotEvent) -> None:

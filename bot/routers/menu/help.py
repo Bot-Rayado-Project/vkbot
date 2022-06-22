@@ -6,6 +6,7 @@ help_router = DefaultRouter()
 
 @simple_bot_message_handler(help_router, PayloadFilter({"menu_button": "help"}))
 async def help(event: SimpleBotEvent) -> None:
+    '''Обработчик кнопки "Помощь" по пейлоаду'''
     photo_monkey = await PhotoUploader(event.api_ctx).get_attachment_from_path(peer_id=event.object.object.message.peer_id, file_path='bot/img/monkey.jpg')
     await event.answer(message='В случае ошибок или вопросов пишите: \n@lamabot2000\n@crymother\n \
     \nИспользование шаблонов:\n\nСоздаете шаблон, который будет выводить нужное вам расписание по одному клику. Шаблоны хранятся в кнопке "Шаблоны расписания".\n \
@@ -21,6 +22,7 @@ async def help(event: SimpleBotEvent) -> None:
 
 @simple_bot_message_handler(help_router, TextFilter("помощь"))
 async def help(event: SimpleBotEvent) -> None:
+    '''Обработчик кнопки "Помощь" по тексту'''
     photo_monkey = await PhotoUploader(event.api_ctx).get_attachment_from_path(peer_id=event.object.object.message.peer_id, file_path='bot/img/monkey.jpg')
     await event.answer(message='В случае ошибок или вопросов пишите: \n@lamabot2000\n@crymother\n \
     \nИспользование шаблонов:\n\nСоздаете шаблон, который будет выводить нужное вам расписание по одному клику. Шаблоны хранятся в кнопке "Шаблоны расписания".\n \

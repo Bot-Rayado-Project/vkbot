@@ -16,18 +16,13 @@ async def get_schedule_for_day(id: int, day: str, stream_group: str) -> str:
     stream_group = stream_group.lower()
     day_time_utc = datetime.weekday(datetime.today().utcnow() +
                                     timedelta(hours=3))
-
-    if day == 'завтра':
-        day_time_utc += 1
+    day_time_utc += 1 if day == 'завтра' else day_time_utc
 
     if day_time_utc == 6:
         return 'Занятий нет'
 
-    if day_time_utc == 7:
-        day_time_utc = 0
+    day_time_utc = 0 if day_time_utc == 7 else day_time_utc
 
-    else:
-        pass
     parity = await get_parity()
 
     if parity == 'четная' and day == 'завтра' and day_time_utc == 0:
@@ -204,6 +199,7 @@ async def get_schedule_for_whole_week(id: int, week: str, stream_group: str) -> 
 
 
 async def get_schedule_custom_headman(id: int, stream_group: str, day_of_week: str, parity: bool) -> str:
+    '''Получает расписание, измененное старостой (Используется в редакторе расписания)'''
     try:
         output = '⸻⸻⸻⸻⸻\n' + 'Группа: ' + stream_group.upper() + '\n' \
             + 'День недели: ' + day_of_week.capitalize() + '\n' + 'Неделя: ' + parity.capitalize() + '\n' \
@@ -232,6 +228,7 @@ async def get_schedule_custom_headman(id: int, stream_group: str, day_of_week: s
 
 
 async def get_schedule_custom_personal(id: int, stream_group: str, day_of_week: str, parity: bool) -> str:
+    '''Получает персональное расписание с изменениями (Используется в редакторе расписания)'''
     try:
         output = '⸻⸻⸻⸻⸻\n' + 'Группа: ' + stream_group.upper() + '\n' \
             + 'День недели: ' + day_of_week.capitalize() + '\n' + 'Неделя: ' + parity.capitalize() + '\n' \

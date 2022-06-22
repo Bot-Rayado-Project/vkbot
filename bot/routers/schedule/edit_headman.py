@@ -12,6 +12,14 @@ logger = get_logger(__name__)
 
 edit_headman_router = DefaultRouter()
 
+'''
+*
+Отвечает за редактор расписания для старост. Возможно попасть только из вне, только имея права старосты.
+Эмулирует процесс выбора пары и ее редактирование/удаление + взаимодействие с аннотациями
+ко всему дню недели.
+*
+'''
+
 
 @simple_bot_message_handler(edit_headman_router, PayloadContainsFilter("edit_schedule_headman_parity_button"))
 async def edit_schedule_parity(event: SimpleBotEvent) -> None:

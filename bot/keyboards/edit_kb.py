@@ -639,6 +639,7 @@ EDIT_SCHEDULE_PERSONAL_GROUP_BIN_KB.add_text_button(text=EDIT_SCHEDULE_PERSONAL_
                                                     color=ButtonColor.PRIMARY,
                                                     payload=EDIT_SCHEDULE_PERSONAL_GROUP_BIN_BUTTONS_PAYLOAD[11])
 
+# Словарь совпадения клавиатуры по факультету
 
 EDIT_SCHEDULE_PERSONAL_FACULTY_MATCHING = {
     'it': EDIT_SCHEDULE_PERSONAL_STREAM_IT_KB,
@@ -647,6 +648,8 @@ EDIT_SCHEDULE_PERSONAL_FACULTY_MATCHING = {
     'tseimk': EDIT_SCHEDULE_PERSONAL_STREAM_TSEIMK_KB,
     'siss': EDIT_SCHEDULE_PERSONAL_STREAM_SISS_KB
 }
+
+# Словарь совпадения клавиатуры по потоку
 
 EDIT_SCHEDULE_PERSONAL_STREAM_MATCHING = {
     'bfi': EDIT_SCHEDULE_PERSONAL_GROUP_BFI_KB,

@@ -7,6 +7,7 @@ log_format = '%(asctime)s.%(msecs)03d %(filename)s:%(lineno)d %(levelname)s %(me
 
 
 def get_file_handler() -> logging.FileHandler:
+    '''Инициализирует обработчик вывода логов в файл'''
     file_handler = logging.FileHandler(
         "logs/logs.log", encoding='UTF-8', mode='w')
     file_handler.setLevel(logging.INFO)
@@ -15,6 +16,7 @@ def get_file_handler() -> logging.FileHandler:
 
 
 def get_smtp_handler() -> logging.handlers.SMTPHandler:
+    '''Инициализирует обработчик с отправлением логов на почту'''
     smtp_handler = logging.handlers.SMTPHandler(mailhost=("smtp.gmail.com", 587),
                                                 fromaddr=str(EADRESS),
                                                 toaddrs=str(EADRESS),
@@ -28,6 +30,7 @@ def get_smtp_handler() -> logging.handlers.SMTPHandler:
 
 
 def get_stream_handler() -> logging.StreamHandler:
+    '''Инициализирует обработчик вывода логов в stdout'''
     stream_handler = logging.StreamHandler()
     stream_handler.setLevel(logging.INFO)
     stream_handler.setFormatter(logging.Formatter(log_format))
@@ -35,6 +38,7 @@ def get_stream_handler() -> logging.StreamHandler:
 
 
 def get_logger(name: str) -> logging.Logger:
+    '''Собирает логгер из компонентов'''
     logger = logging.getLogger(name)
     logger.setLevel(logging.INFO)
     logger.addHandler(get_smtp_handler())

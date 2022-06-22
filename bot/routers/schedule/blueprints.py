@@ -13,11 +13,13 @@ blueprints_router = DefaultRouter()
 
 @simple_bot_message_handler(blueprints_router, PayloadFilter({"menu_button": "config"}))
 async def blueprints(event: SimpleBotEvent) -> None:
+    '''Обработчик кнопки шаблонов'''
     await event.answer(message='Выберите шаблон или создайте новый.', keyboard=(await create_blueprints_kb(event.from_id)).get_keyboard())
 
 
 @simple_bot_message_handler(blueprints_router, PayloadContainsFilter('blueprints_button_cell'))
 async def blueprints_cells(event: SimpleBotEvent) -> None:
+    '''Обработчик выбранной ячейки с шаблоном. Если шаблон пустой, возвращает соответствующий ответ. Иначе обращается к REST за расписанием'''
     cell = event.text.lower()
     if cell == 'пустая ячейка':
         await event.answer(message='Ячейка пуста. Создайте шаблон с помощью кнопки "Создать шаблон".', keyboard=(await create_blueprints_kb(event.from_id)).get_keyboard())
@@ -39,12 +41,14 @@ async def blueprints_cells(event: SimpleBotEvent) -> None:
 
 @simple_bot_message_handler(blueprints_router, PayloadFilter({"blueprints_button": "create_blueprint"}))
 async def blueprint_create(event: SimpleBotEvent) -> None:
+    '''Обработчик кнопки создания шаблонов'''
     br.user_blueprints_requests[event.from_id] = BlueprintsRequest()
     await event.answer(message='Выберите ячейку для (пере-)записи', keyboard=(await create_blueprints_choose_cell_choose_cell_kb(event.from_id)).get_keyboard())
 
 
 @simple_bot_message_handler(blueprints_router, PayloadContainsFilter('blueprints_choose_cell_button_cell'))
 async def blueprint_choose_cells(event: SimpleBotEvent) -> None:
+    '''Обработчик кнопки выбора ячейки после создания шаблона'''
     if br.user_blueprints_requests.get(event.from_id) == None:
         await event.answer(message='Запрашиваемая вами клавиатура изменилась в связи с обновлением. \
         Во избежание ошибок повторите свой запрос', keyboard=(await create_menu_kb(event.from_id)).get_keyboard())
@@ -65,6 +69,7 @@ async def blueprint_choose_cells(event: SimpleBotEvent) -> None:
 
 @simple_bot_message_handler(blueprints_router, PayloadContainsFilter("create_schedule_blueprint_day_button"))
 async def blueprints_create_day(event: SimpleBotEvent) -> None:
+    '''Обработчик дней при создании шаблона'''
     if br.user_blueprints_requests.get(event.from_id) == None:
         await event.answer(message='Запрашиваемая вами клавиатура изменилась в связи с обновлением. \
         Во избежание ошибок повторите свой запрос', keyboard=(await create_menu_kb(event.from_id)).get_keyboard())
@@ -89,6 +94,7 @@ async def blueprints_create_day(event: SimpleBotEvent) -> None:
 
 @ simple_bot_message_handler(blueprints_router, PayloadContainsFilter("create_schedule_blueprint_parity_button"))
 async def blueprints_create_parity(event: SimpleBotEvent) -> None:
+    '''Обработчик четности недели при создании шаблона'''
     if br.user_blueprints_requests.get(event.from_id) == None:
         await event.answer(message='Запрашиваемая вами клавиатура изменилась в связи с обновлением. \
         Во избежание ошибок повторите свой запрос', keyboard=(await create_menu_kb(event.from_id)).get_keyboard())
@@ -113,6 +119,7 @@ async def blueprints_create_parity(event: SimpleBotEvent) -> None:
 
 @ simple_bot_message_handler(blueprints_router, PayloadContainsFilter("create_schedule_blueprint_faculty_button"))
 async def blueprints_create_faculty(event: SimpleBotEvent) -> None:
+    '''Обработчик выбора факультета при создании шаблона'''
     if br.user_blueprints_requests.get(event.from_id) == None:
         await event.answer(message='Запрашиваемая вами клавиатура изменилась в связи с обновлением. \
         Во избежание ошибок повторите свой запрос', keyboard=(await create_menu_kb(event.from_id)).get_keyboard())
@@ -145,6 +152,7 @@ async def blueprints_create_faculty(event: SimpleBotEvent) -> None:
 
 @simple_bot_message_handler(blueprints_router, PayloadContainsFilter("create_schedule_blueprint_stream_button"))
 async def blueprints_create_stream(event: SimpleBotEvent) -> None:
+    '''Обработчик кнопки выбора потока при создании шаблона'''
     if br.user_blueprints_requests.get(event.from_id) == None:
         await event.answer(message='Запрашиваемая вами клавиатура изменилась в связи с обновлением. \
         Во избежание ошибок повторите свой запрос', keyboard=(await create_menu_kb(event.from_id)).get_keyboard())
@@ -184,6 +192,8 @@ async def blueprints_create_stream(event: SimpleBotEvent) -> None:
 
 @simple_bot_message_handler(blueprints_router, PayloadContainsFilter("create_schedule_blueprint_group_button"))
 async def schedule_group(event: SimpleBotEvent) -> None:
+    '''Обработчик кнопки выбора группы при создании шаблона. Является заключительной функцией в цикле создания шаблона.
+       Возвращает в меню выбора шаблона при успехе и записывает резульат в БД'''
     if br.user_blueprints_requests.get(event.from_id) == None:
         await event.answer(message='Запрашиваемая вами клавиатура изменилась в связи с обновлением. \
         Во избежание ошибок повторите свой запрос', keyboard=(await create_menu_kb(event.from_id)).get_keyboard())

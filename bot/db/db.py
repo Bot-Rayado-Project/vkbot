@@ -31,6 +31,7 @@ async def db_connect(user: str, password: str, name: str, host: str) -> asyncpg.
 
 
 async def db_connect_env_variables() -> asyncpg.Connection | None:
+    '''Выполняет подключение к БД, с использованием переменных окружения'''
     connection = await db_connect(DBUSER, DBPASSWORD, DBNAME, DBHOST)
     return connection
 
@@ -61,6 +62,7 @@ async def db_get_priority_button(user_id: int, connection: typing.Optional[async
 
 
 async def db_change_priority_button(user_id: int, connection: typing.Optional[asyncpg.Connection] = None) -> str:
+    '''Меняет кнопку приоритета из меню на противоположную'''
     connection = connection or await db_connect_env_variables()
     button = await db_get_priority_button(user_id)
     if button == 'староста':

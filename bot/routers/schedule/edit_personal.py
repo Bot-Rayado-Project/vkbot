@@ -12,6 +12,13 @@ logger = get_logger(__name__)
 
 edit_personal_router = DefaultRouter()
 
+'''
+*
+Отвечает за редактор расписания персонально. Эмулирует процесс выбора пары и 
+ее редактирование/удаление + взаимодействие с аннотациями ко всему дню недели.
+*
+'''
+
 
 @simple_bot_message_handler(edit_personal_router, PayloadContainsFilter("edit_schedule_personal_faculty_button"))
 async def edit_schedule_faculty(event: SimpleBotEvent) -> None:

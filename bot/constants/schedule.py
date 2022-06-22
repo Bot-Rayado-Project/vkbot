@@ -1,3 +1,4 @@
+# Наименования дней недели для вывода
 
 DAYS_ENG = ["ponedelnik", "vtornik", "sreda",
             "chetverg", "pjatnitsa", "subbota"]
