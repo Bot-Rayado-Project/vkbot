@@ -18,6 +18,6 @@ VK Bot Rayado - написан на языке программирования 
 
 # Разработчики
 
-[Александр Разумов](https://vk.com/lamabot2000)
+[Александр Разумов](https://t.me/ALPHA_KENNYBODY)
 
-[Иван Чепиков](https://vk.com/crymother)
+[Иван Чепиков](https://t.me/darttusin)
