@@ -1,4 +1,4 @@
-from vkwave.bots import simple_bot_message_handler, DefaultRouter, SimpleBotEvent, TextFilter, PayloadFilter
+from vkwave.bots import simple_bot_message_handler, DefaultRouter, SimpleBotEvent, TextFilter, PayloadFilter, CommandsFilter
 from bot.keyboards import create_menu_kb
 from bot.utils import personal_request as pr
 from bot.utils import post_request
@@ -6,6 +6,8 @@ from bot.constants import RESTIP, RESTPORT
 from bot.logger import get_logger
 from bot.utils import headman_request as hr
 from bot.utils import EditHeadmanRequest
+from vkwave.bots import Keyboard, ButtonColor
+import random
 import json
 
 logger = get_logger(__name__)
@@ -28,13 +30,36 @@ async def menu(event: SimpleBotEvent) -> None:
                        ' - Быстрая работа бота\n - Регулярные обновления', keyboard=(await create_menu_kb(event.from_id)).get_keyboard())
 
 
+@simple_bot_message_handler(menu_router, CommandsFilter(("shuffle")))
+async def shuffle(event: SimpleBotEvent) -> None:
+    '''Обработчик - получает список пользователей в чате и перемешивает их.'''
+    users_list = []
+    chat_users = (await event.api_ctx.messages.get_conversation_members(peer_id=event.object.object.dict().get("message").get("peer_id"))).response.dict().get("items")
+    chat_users_ids = [_user_id for _user_id in [user_id.get(
+        "member_id") for user_id in chat_users] if _user_id > 0]
+    for user_id in chat_users_ids:
+        user_data = (await event.api_ctx.users.get(user_ids=[user_id])).response[0]
+        users_list += ["@id" + str(user_id) + " " +
+                       user_data.first_name + " " + user_data.last_name]
+    random.shuffle(users_list)
+    for i in range(len(users_list)):
+        users_list[i] = str((i + 1)) + ". " + users_list[i] + "\n"
+    print(event.text)
+    event_name = event.text.replace("/shuffle", "")
+    if event_name != "":
+        await event.answer(message=event_name + "\n" + ' '.join(users_list))
+    else:
+        await event.answer(message=' '.join(users_list))
+
+
 @simple_bot_message_handler(menu_router)
 async def menu(event: SimpleBotEvent) -> None:
     '''Обработчик всех остальных команд посылаемых пользователем.
        В случае, если до этого было взаимодействие с редактором расписания, совершит необходимые действия
        для изменения расписания (post, get запросы к REST сервису для записи/считывания изменений).'''
-    if pr.edit_personal_requests.get(event.from_id) == None or hr.edit_headman_requests.get(event.from_id) == None:
-        await event.answer(message='Выберите необходимую вам кнопку на клавиатуре', keyboard=(await create_menu_kb(event.from_id)).get_keyboard())
+    if (pr.edit_personal_requests.get(event.from_id) == None or hr.edit_headman_requests.get(event.from_id) == None):
+        if int(event.object.object.dict().get("message").get("id")) != 0:
+            await event.answer(message='Выберите необходимую вам кнопку на клавиатуре', keyboard=(await create_menu_kb(event.from_id)).get_keyboard())
     else:
         if pr.edit_personal_requests[event.from_id].writing_changes_or_annotation == True:
             # Записываем изменения
