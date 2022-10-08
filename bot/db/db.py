@@ -8,6 +8,26 @@ import typing
 logger = get_logger(__name__)
 
 
+async def connect_create_if_not_exists(user, database):
+    try:
+        conn = await asyncpg.connect(user=user, database=database)
+    except asyncpg.InvalidCatalogNameError:
+        # Database does not exist, create it.
+        sys_conn = await asyncpg.connect(
+            database='',
+            user='postgres'
+        )
+        await sys_conn.execute(
+            f'CREATE DATABASE "{database}" OWNER "{user}"'
+        )
+        await sys_conn.close()
+
+        # Connect to the newly created database.
+        conn = await asyncpg.connect(user=user, database=database)
+
+    return conn
+
+
 async def db_connect(user: str, password: str, name: str, host: str) -> asyncpg.Connection | None:
     '''Выполняет подключение к базе данных. В случае ошибки подключение выполняет еще одну попытку. Всего попыток 5.
     В случае последней неудачи возвращает None, иначе - asyncpg.Connection'''
@@ -18,6 +38,23 @@ async def db_connect(user: str, password: str, name: str, host: str) -> asyncpg.
             if tries != 5:
                 logger.info(
                     f'Successfully connected to database {name} to host {host} with user {user}')
+            return connection
+        except asyncpg.InvalidCatalogNameError as i:
+            logger.info("Database does not exist, create it.")
+            sys_conn = await asyncpg.connect(
+                database='template1',
+                user='postgres',
+                host=host,
+                password=password
+            )
+            await sys_conn.execute(
+                f'CREATE DATABASE "{name}" OWNER "{user}"'
+            )
+            await sys_conn.close()
+            connection: asyncpg.Connection = await asyncpg.connect(user=user, password=password, database=name, host=host)
+            with open('bot/db/dump.sql', 'r') as file:
+                logger.info("Seeding database")
+                await connection.execute(file)
             return connection
         except Exception as e:
             tries -= 1
