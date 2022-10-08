@@ -16,7 +16,7 @@ async def get_schedule_for_day(id: int, day: str, stream_group: str) -> str:
     stream_group = stream_group.lower()
     day_time_utc = datetime.weekday(datetime.today().utcnow() +
                                     timedelta(hours=3))
-    day_time_utc += 1 if day == 'завтра' else day_time_utc
+    day_time_utc = day_time_utc + 1 if day == 'завтра' else day_time_utc
 
     if day_time_utc == 6:
         return 'Занятий нет'

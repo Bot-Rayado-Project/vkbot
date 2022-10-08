@@ -20,7 +20,7 @@ async def get_parity() -> str:
 
     if month >= 9:
         week = date.isocalendar()[1]
-        weeks_past_sem = datetime.strptime(date, format).isocalendar(
+        weeks_past_sem = datetime.strptime(date.strftime(format), format).isocalendar(
         )[1] - datetime.strptime('{}-09-01'.format(current_year), format).isocalendar()[1] + 1
         week += weeks_past_sem
 
