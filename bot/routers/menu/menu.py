@@ -52,6 +52,13 @@ async def shuffle(event: SimpleBotEvent) -> None:
         await event.answer(message=' '.join(users_list))
 
 
+@simple_bot_message_handler(menu_router, CommandsFilter(("clear")))
+async def clear_keybaord(event: SimpleBotEvent) -> None:
+    '''Удаляет клавиатуру по надобности'''
+    keyboard = Keyboard(True)
+    await event.answer(message='Клавиатура удалена.', keyboard=keyboard.get_empty_keyboard())
+
+
 @simple_bot_message_handler(menu_router)
 async def menu(event: SimpleBotEvent) -> None:
     '''Обработчик всех остальных команд посылаемых пользователем.
