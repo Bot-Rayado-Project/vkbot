@@ -1,30 +1,26 @@
+import calendar
 from datetime import datetime, timedelta
 
 
-async def get_parity() -> str:
-    '''Получает текущую четность недели'''
-    date = datetime.date(datetime.today() + timedelta(hours=3))
-    month = str(date)[5:7]
-    month = int(str(date)[6:7]) if month[0] == '0' else int(str(date)[5:7])
-    format = "%Y-%m-%d"
-    past_year = str(
-        int(str(datetime.date(datetime.today() + timedelta(hours=3)))[:4]) - 1)
-    current_year = str(datetime.date(
-        datetime.today() + timedelta(hours=3)))[:4]
+'''
+*
+Этот файл отвечает за определение чётности недели, одна единственная функция
+*
+'''
 
-    if month < 9:
-        week = date.isocalendar()[1]
-        weeks_past_year = datetime.strptime('{}-12-31'.format(past_year), format).isocalendar(
-        )[1] - datetime.strptime('{}-09-01'.format(past_year), format).isocalendar()[1] + 1
-        week += weeks_past_year
 
-    if month >= 9:
-        week = date.isocalendar()[1]
-        weeks_past_sem = datetime.strptime(date.strftime(format), format).isocalendar(
-        )[1] - datetime.strptime('{}-09-01'.format(current_year), format).isocalendar()[1] + 1
-        week += weeks_past_sem
+def get_parity() -> str:
 
-    if week % 2 == 0:
-        return 'четная'
-    else:
-        return 'нечетная'
+    now = datetime.now()
+    year = now.year
+    month = now.month
+    day = now.day
+    calendar_ = calendar.TextCalendar(calendar.MONDAY)
+    lines = calendar_.formatmonth(year, month).split('\n')
+    days_by_week = [week.lstrip().split() for week in lines[2:]]
+    str_day = str(day)
+    for index, week in enumerate(days_by_week):
+        if str_day in week:
+            number = index + 1
+            break
+    return "четная" if number % 2 == 0 else "нечетная"

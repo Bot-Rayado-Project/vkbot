@@ -240,16 +240,13 @@ SCHEDULE_GROUP_BFI_KB.add_text_button(text=SCHEDULE_GROUP_BFI_BUTTONS[3],
 
 # ----- БВТ ----- #
 
-SCHEDULE_GROUP_BVT_BUTTONS: list = ['БВТ2101', 'БВТ2102', 'БВТ2103', 'БВТ2104', 'БВТ2105',
-                                    'БВТ2106', 'БВТ2107', 'БВТ2108', 'Назад', 'Меню']
+SCHEDULE_GROUP_BVT_BUTTONS: list = ['БВТ2101', 'БВТ2102', 'БВТ2103',
+                                    'БВТ2104', 'БВТ2105', 'Назад', 'Меню']
 SCHEDULE_GROUP_BVT_BUTTONS_PAYLOAD: list = [{'schedule_group_button': 'bvt2101'},
                                             {'schedule_group_button': 'bvt2102'},
                                             {'schedule_group_button': 'bvt2103'},
                                             {'schedule_group_button': 'bvt2104'},
                                             {'schedule_group_button': 'bvt2105'},
-                                            {'schedule_group_button': 'bvt2106'},
-                                            {'schedule_group_button': 'bvt2107'},
-                                            {'schedule_group_button': 'bvt2108'},
                                             {'schedule_group_button': 'back'},
                                             {'button': 'menu'}]
 SCHEDULE_GROUP_BVT_KB: Keyboard = Keyboard(one_time=False)
@@ -270,34 +267,23 @@ SCHEDULE_GROUP_BVT_KB.add_text_button(text=SCHEDULE_GROUP_BVT_BUTTONS[3],
 SCHEDULE_GROUP_BVT_KB.add_text_button(text=SCHEDULE_GROUP_BVT_BUTTONS[4],
                                       color=ButtonColor.SECONDARY,
                                       payload=SCHEDULE_GROUP_BVT_BUTTONS_PAYLOAD[4])
+SCHEDULE_GROUP_BVT_KB.add_row()
 SCHEDULE_GROUP_BVT_KB.add_text_button(text=SCHEDULE_GROUP_BVT_BUTTONS[5],
-                                      color=ButtonColor.SECONDARY,
+                                      color=ButtonColor.PRIMARY,
                                       payload=SCHEDULE_GROUP_BVT_BUTTONS_PAYLOAD[5])
-SCHEDULE_GROUP_BVT_KB.add_row()
 SCHEDULE_GROUP_BVT_KB.add_text_button(text=SCHEDULE_GROUP_BVT_BUTTONS[6],
-                                      color=ButtonColor.SECONDARY,
+                                      color=ButtonColor.PRIMARY,
                                       payload=SCHEDULE_GROUP_BVT_BUTTONS_PAYLOAD[6])
-SCHEDULE_GROUP_BVT_KB.add_text_button(text=SCHEDULE_GROUP_BVT_BUTTONS[7],
-                                      color=ButtonColor.SECONDARY,
-                                      payload=SCHEDULE_GROUP_BVT_BUTTONS_PAYLOAD[7])
-SCHEDULE_GROUP_BVT_KB.add_row()
-SCHEDULE_GROUP_BVT_KB.add_text_button(text=SCHEDULE_GROUP_BVT_BUTTONS[8],
-                                      color=ButtonColor.PRIMARY,
-                                      payload=SCHEDULE_GROUP_BVT_BUTTONS_PAYLOAD[8])
-SCHEDULE_GROUP_BVT_KB.add_text_button(text=SCHEDULE_GROUP_BVT_BUTTONS[9],
-                                      color=ButtonColor.PRIMARY,
-                                      payload=SCHEDULE_GROUP_BVT_BUTTONS_PAYLOAD[9])
 
 # ----- БСТ ----- #
 
 SCHEDULE_GROUP_BST_BUTTONS: list = ['БСТ2101', 'БСТ2102', 'БСТ2103', 'БСТ2104', 'БСТ2105',
-                                    'БСТ2106', 'Назад', 'Меню']
+                                    'Назад', 'Меню']
 SCHEDULE_GROUP_BST_BUTTONS_PAYLOAD: list = [{'schedule_group_button': 'bst2101'},
                                             {'schedule_group_button': 'bst2102'},
                                             {'schedule_group_button': 'bst2103'},
                                             {'schedule_group_button': 'bst2104'},
                                             {'schedule_group_button': 'bst2105'},
-                                            {'schedule_group_button': 'bst2106'},
                                             {'schedule_group_button': 'back'},
                                             {'button': 'menu'}]
 SCHEDULE_GROUP_BST_KB: Keyboard = Keyboard(one_time=False)
@@ -318,16 +304,13 @@ SCHEDULE_GROUP_BST_KB.add_text_button(text=SCHEDULE_GROUP_BST_BUTTONS[3],
 SCHEDULE_GROUP_BST_KB.add_text_button(text=SCHEDULE_GROUP_BST_BUTTONS[4],
                                       color=ButtonColor.SECONDARY,
                                       payload=SCHEDULE_GROUP_BST_BUTTONS_PAYLOAD[4])
-SCHEDULE_GROUP_BST_KB.add_text_button(text=SCHEDULE_GROUP_BST_BUTTONS[5],
-                                      color=ButtonColor.SECONDARY,
-                                      payload=SCHEDULE_GROUP_BST_BUTTONS_PAYLOAD[5])
 SCHEDULE_GROUP_BST_KB.add_row()
+SCHEDULE_GROUP_BST_KB.add_text_button(text=SCHEDULE_GROUP_BST_BUTTONS[5],
+                                      color=ButtonColor.PRIMARY,
+                                      payload=SCHEDULE_GROUP_BST_BUTTONS_PAYLOAD[5])
 SCHEDULE_GROUP_BST_KB.add_text_button(text=SCHEDULE_GROUP_BST_BUTTONS[6],
                                       color=ButtonColor.PRIMARY,
                                       payload=SCHEDULE_GROUP_BST_BUTTONS_PAYLOAD[6])
-SCHEDULE_GROUP_BST_KB.add_text_button(text=SCHEDULE_GROUP_BST_BUTTONS[7],
-                                      color=ButtonColor.PRIMARY,
-                                      payload=SCHEDULE_GROUP_BST_BUTTONS_PAYLOAD[7])
 
 # ----- БЭИ ----- #
 

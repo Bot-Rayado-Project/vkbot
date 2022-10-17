@@ -213,16 +213,13 @@ EDIT_SCHEDULE_PERSONAL_GROUP_BFI_KB.add_text_button(text=EDIT_SCHEDULE_PERSONAL_
 
 # ----- БВТ ----- #
 
-EDIT_SCHEDULE_PERSONAL_GROUP_BVT_BUTTONS: list = ['БВТ2101', 'БВТ2102', 'БВТ2103', 'БВТ2104', 'БВТ2105',
-                                                  'БВТ2106', 'БВТ2107', 'БВТ2108', 'Назад', 'Меню']
+EDIT_SCHEDULE_PERSONAL_GROUP_BVT_BUTTONS: list = ['БВТ2101', 'БВТ2102', 'БВТ2103',
+                                                  'БВТ2104', 'БВТ2105', 'Назад', 'Меню']
 EDIT_SCHEDULE_PERSONAL_GROUP_BVT_BUTTONS_PAYLOAD: list = [{'edit_schedule_personal_group_button': 'bvt2101'},
                                                           {'edit_schedule_personal_group_button': 'bvt2102'},
                                                           {'edit_schedule_personal_group_button': 'bvt2103'},
                                                           {'edit_schedule_personal_group_button': 'bvt2104'},
                                                           {'edit_schedule_personal_group_button': 'bvt2105'},
-                                                          {'edit_schedule_personal_group_button': 'bvt2106'},
-                                                          {'edit_schedule_personal_group_button': 'bvt2107'},
-                                                          {'edit_schedule_personal_group_button': 'bvt2108'},
                                                           {'edit_schedule_personal_group_button': 'back'},
                                                           {'button': 'menu'}]
 EDIT_SCHEDULE_PERSONAL_GROUP_BVT_KB: Keyboard = Keyboard(one_time=False)
@@ -243,34 +240,23 @@ EDIT_SCHEDULE_PERSONAL_GROUP_BVT_KB.add_text_button(text=EDIT_SCHEDULE_PERSONAL_
 EDIT_SCHEDULE_PERSONAL_GROUP_BVT_KB.add_text_button(text=EDIT_SCHEDULE_PERSONAL_GROUP_BVT_BUTTONS[4],
                                                     color=ButtonColor.SECONDARY,
                                                     payload=EDIT_SCHEDULE_PERSONAL_GROUP_BVT_BUTTONS_PAYLOAD[4])
+EDIT_SCHEDULE_PERSONAL_GROUP_BVT_KB.add_row()
 EDIT_SCHEDULE_PERSONAL_GROUP_BVT_KB.add_text_button(text=EDIT_SCHEDULE_PERSONAL_GROUP_BVT_BUTTONS[5],
-                                                    color=ButtonColor.SECONDARY,
+                                                    color=ButtonColor.PRIMARY,
                                                     payload=EDIT_SCHEDULE_PERSONAL_GROUP_BVT_BUTTONS_PAYLOAD[5])
-EDIT_SCHEDULE_PERSONAL_GROUP_BVT_KB.add_row()
 EDIT_SCHEDULE_PERSONAL_GROUP_BVT_KB.add_text_button(text=EDIT_SCHEDULE_PERSONAL_GROUP_BVT_BUTTONS[6],
-                                                    color=ButtonColor.SECONDARY,
+                                                    color=ButtonColor.PRIMARY,
                                                     payload=EDIT_SCHEDULE_PERSONAL_GROUP_BVT_BUTTONS_PAYLOAD[6])
-EDIT_SCHEDULE_PERSONAL_GROUP_BVT_KB.add_text_button(text=EDIT_SCHEDULE_PERSONAL_GROUP_BVT_BUTTONS[7],
-                                                    color=ButtonColor.SECONDARY,
-                                                    payload=EDIT_SCHEDULE_PERSONAL_GROUP_BVT_BUTTONS_PAYLOAD[7])
-EDIT_SCHEDULE_PERSONAL_GROUP_BVT_KB.add_row()
-EDIT_SCHEDULE_PERSONAL_GROUP_BVT_KB.add_text_button(text=EDIT_SCHEDULE_PERSONAL_GROUP_BVT_BUTTONS[8],
-                                                    color=ButtonColor.PRIMARY,
-                                                    payload=EDIT_SCHEDULE_PERSONAL_GROUP_BVT_BUTTONS_PAYLOAD[8])
-EDIT_SCHEDULE_PERSONAL_GROUP_BVT_KB.add_text_button(text=EDIT_SCHEDULE_PERSONAL_GROUP_BVT_BUTTONS[9],
-                                                    color=ButtonColor.PRIMARY,
-                                                    payload=EDIT_SCHEDULE_PERSONAL_GROUP_BVT_BUTTONS_PAYLOAD[9])
 
 # ----- БСТ ----- #
 
-EDIT_SCHEDULE_PERSONAL_GROUP_BST_BUTTONS: list = ['БСТ2101', 'БСТ2102', 'БСТ2103', 'БСТ2104', 'БСТ2105',
-                                                  'БСТ2106', 'Назад', 'Меню']
+EDIT_SCHEDULE_PERSONAL_GROUP_BST_BUTTONS: list = ['БСТ2101', 'БСТ2102', 'БСТ2103',
+                                                  'БСТ2104', 'БСТ2105', 'Назад', 'Меню']
 EDIT_SCHEDULE_PERSONAL_GROUP_BST_BUTTONS_PAYLOAD: list = [{'edit_schedule_personal_group_button': 'bst2101'},
                                                           {'edit_schedule_personal_group_button': 'bst2102'},
                                                           {'edit_schedule_personal_group_button': 'bst2103'},
                                                           {'edit_schedule_personal_group_button': 'bst2104'},
                                                           {'edit_schedule_personal_group_button': 'bst2105'},
-                                                          {'edit_schedule_personal_group_button': 'bst2106'},
                                                           {'edit_schedule_personal_group_button': 'back'},
                                                           {'button': 'menu'}]
 EDIT_SCHEDULE_PERSONAL_GROUP_BST_KB: Keyboard = Keyboard(one_time=False)
@@ -291,16 +277,13 @@ EDIT_SCHEDULE_PERSONAL_GROUP_BST_KB.add_text_button(text=EDIT_SCHEDULE_PERSONAL_
 EDIT_SCHEDULE_PERSONAL_GROUP_BST_KB.add_text_button(text=EDIT_SCHEDULE_PERSONAL_GROUP_BST_BUTTONS[4],
                                                     color=ButtonColor.SECONDARY,
                                                     payload=EDIT_SCHEDULE_PERSONAL_GROUP_BST_BUTTONS_PAYLOAD[4])
-EDIT_SCHEDULE_PERSONAL_GROUP_BST_KB.add_text_button(text=EDIT_SCHEDULE_PERSONAL_GROUP_BST_BUTTONS[5],
-                                                    color=ButtonColor.SECONDARY,
-                                                    payload=EDIT_SCHEDULE_PERSONAL_GROUP_BST_BUTTONS_PAYLOAD[5])
 EDIT_SCHEDULE_PERSONAL_GROUP_BST_KB.add_row()
+EDIT_SCHEDULE_PERSONAL_GROUP_BST_KB.add_text_button(text=EDIT_SCHEDULE_PERSONAL_GROUP_BST_BUTTONS[5],
+                                                    color=ButtonColor.PRIMARY,
+                                                    payload=EDIT_SCHEDULE_PERSONAL_GROUP_BST_BUTTONS_PAYLOAD[5])
 EDIT_SCHEDULE_PERSONAL_GROUP_BST_KB.add_text_button(text=EDIT_SCHEDULE_PERSONAL_GROUP_BST_BUTTONS[6],
                                                     color=ButtonColor.PRIMARY,
                                                     payload=EDIT_SCHEDULE_PERSONAL_GROUP_BST_BUTTONS_PAYLOAD[6])
-EDIT_SCHEDULE_PERSONAL_GROUP_BST_KB.add_text_button(text=EDIT_SCHEDULE_PERSONAL_GROUP_BST_BUTTONS[7],
-                                                    color=ButtonColor.PRIMARY,
-                                                    payload=EDIT_SCHEDULE_PERSONAL_GROUP_BST_BUTTONS_PAYLOAD[7])
 
 # ----- БЭИ ----- #
 
