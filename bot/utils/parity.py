@@ -9,7 +9,7 @@ from datetime import datetime, timedelta
 '''
 
 
-def get_parity() -> str:
+async def get_parity() -> str:
 
     now = datetime.now()
     year = now.year
